@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minimal revision - guidelines</title>
+<style>
+  :root{--bg:#f6f8fb;--panel:#ffffff;--ink:#eef2f7;--line:#d7dee7;--text:#1b2733;--dim:#5c6b7a;
+        --accent:#2f6fb0;--good:#1f8a54;--warn:#a5680a;--mark:#ffd9d9;--markfg:#7a1f1f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;
+       line-height:1.6;padding:0 0 90px}
+  .wrap{max-width:800px;margin:0 auto;padding:0 18px}
+  header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+         padding:12px 0}
+  header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  h1{font-size:16px} .sub{font-size:12px;color:var(--dim)} .spacer{flex:1}
+  .bar{flex:0 0 120px;height:5px;background:#c3ccd6;border-radius:3px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+  .intro{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+          padding:18px 20px;margin:22px 0 10px}
+  .intro h2{font-size:19px;margin-bottom:8px}
+  .intro p{font-size:14px;margin-bottom:9px}
+  .toc{font-size:13px;color:var(--dim);margin:6px 0 0;padding-left:20px}
+  .toc li{margin:2px 0} .toc a{color:var(--accent);text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+        padding:18px 20px;margin:14px 0}
+  .sec h2{font-size:17px;margin-bottom:10px;display:flex;align-items:baseline;gap:10px}
+  .sec h2 .n{font-size:12px;color:var(--dim);font-weight:400;min-width:1.2em}
+  .sec .body p{font-size:14.2px;margin:0 0 10px}
+  .sec .body p:last-child{margin-bottom:0}
+  .sec .body ul{margin:0 0 10px 20px} .sec .body ul ul{margin:4px 0 4px 18px}
+  .sec .body li{font-size:14.2px;margin:3px 0}
+  .sec .body strong{font-weight:600}
+  del{color:var(--markfg);background:var(--mark);text-decoration:line-through;
+      border-radius:3px;padding:0 3px}
+  .llmnote{background:#fff5e6;border:1px solid #e8c88a;border-radius:8px;padding:11px 13px;
+           font-size:13.4px;margin:14px 0}
+  footer{margin:26px 0 0;text-align:center}
+  .btn{background:var(--accent);border:1px solid var(--accent);color:#fff;border-radius:7px;
+       padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;
+       display:inline-block}
+  .btn:hover{filter:brightness(1.08)}
+  .fnote{font-size:12px;color:var(--dim);margin-top:10px}
+  @media (max-width:420px){ .bar{flex-basis:70px} }
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <h1>Minimal revision <span class="sub">&mdash; annotation guidelines</span></h1>
+  <span class="spacer"></span>
+  <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+</div></header>
+
+<main class="wrap">
+  <div class="intro">
+    <h2>Before you start</h2>
+    <p>Please read these guidelines in full. They define the task precisely, and the
+       practice round that follows assumes you have read them. Two worked examples are
+       included &mdash; the Lennon example in section 3 and the horses example in section 7
+       &mdash; and they are the quickest way to understand what a good revision looks like.</p>
+    <p>There is no time limit. You can scroll back at any point, and the same guidelines
+       stay available from inside the practice round.</p>
+    <ol class="toc"><li><a href="#terminology">Terminology</a></li><li><a href="#revision">Revision guidelines</a></li><li><a href="#intent">Informational intent</a></li><li><a href="#specificity-test">The question specificity test</a></li><li><a href="#answerability">Answerability</a></li><li><a href="#specificity">Specificity</a></li><li><a href="#horses">A second worked example</a></li><li><a href="#deletion">Deletion</a></li><li><a href="#workflow">Annotation workflow</a></li><li><a href="#additional">Additional points</a></li></ol>
+  </div>
+
+  <section class="sec" id="terminology" data-sec="terminology"><h2><span class="n">1</span>Terminology</h2><div class="body"><p><strong>Target text:</strong> The text we scan for hallucinations. Could be LLM generated or human written. We attempt to find and correct all non factual details (with respect to the source text) within this text.</p>
+<p><strong>Source:</strong> The reference text that the target text is intended to reflect. It serves as our ground truth and provides the factual evidence against which the target text is compared to detect hallucinated statements.</p>
+<p><strong>Statement:</strong> The different propositions or units of information the target text consists of. Each statement may be entailed or contradicted by the source, or neither (&quot;neutral&quot;). A statement is a hallucination to revise when it is contradicted or merely neutral (i.e. not entailed neither contradicted) - both are non-faithful; only entailed statements are left untouched.</p></div></section><section class="sec" id="revision" data-sec="revision"><h2><span class="n">2</span>Revision guidelines</h2><div class="body"><p>You are provided with a ground-truth source, a hallucination-containing target text and a set of marked hallucinated statements within that target text. Your job is to revise the target text and correct all hallucinations in the optimal and most minimal manner, according to the following criteria:</p>
+<ul>
+<li>A minimal revision should aim to preserve as much as possible the <strong>target text&#x27;s</strong> author&#x27;s original information and intent while editing its content to be faithful to the <strong>source text</strong>.</li>
+<li>Faithfulness is judged under <strong>reasonable world knowledge</strong> and high-likelihood inference, but you may not introduce non-trivial facts absent from the source, even if they&#x27;re true in the real world.</li>
+<ul>
+<li>Common knowledge: Argentina is in South America.</li>
+<li>Non common-knowledge: Lionel Messi was born in Rosario.</li>
+</ul>
+<li><strong>Common knowledge</strong> is defined by what the text <strong>assumes</strong> that &quot;typical&quot; readers of the text would know.</li>
+<ul>
+<li>For example, in a medical journal, the knowledge of common medical equipment and processes may be expected.</li>
+</ul>
+<li>The intent we aim to keep is the <strong>informational intent</strong> (defined below) of the original text, that is, the information the author tried to give when they wrote the target text.</li>
+</ul>
+<p>Please note that while mostly correct, certain detected hallucinated statements might be non-accurately marked; so if you feel like the marked hallucination is faithful to the source text - or that only part of it is hallucinated - please mark that and continue to the next marked hallucination. In addition, do revise only the part of the originally marked span you believe is actually not-faithful to the source text.</p></div></section><section class="sec" id="intent" data-sec="intent"><h2><span class="n">3</span>Informational intent</h2><div class="body"><p>This is the information the author (assume a human author here) intended to provide. This intent may be captured by phrasing a hypothetical question that the author intended to answer. In a hallucinated statement, the author provided an answer not faithful to the source text.</p>
+<p>A good revision preserves <strong>all salvageable faithful information</strong> from the hallucination, and answers a question <strong>as close as possible</strong> to the original question the author intended to answer - with faithful information from the source.</p>
+<p>A properly revised text communicates the same <strong>informational intent</strong> of the original hallucination, but with <strong>faithful</strong> source-backed information.</p>
+<p>Consider the following example:</p>
+<ul>
+<li><strong>Source:</strong> &quot;John Lennon was born in Liverpool&quot;</li>
+</ul>
+<p><strong>Target:</strong> &quot;Lennon was born in Germany&quot;</p>
+<p>The best revision for this example pair is &quot;Lennon was born in England&quot;:</p>
+<ul>
+<li>It preserves the salvageable faithful statement &quot;Lennon was born in Europe&quot; which is faithful to the source <strong>and</strong> implied by the target text.</li>
+<li>It answers the question &quot;in which country was Lennon born?&quot; which is the exact question the target <strong>attempted</strong> to answer.</li>
+<li>It is entailed by the source text. (Liverpool being in England is considered common knowledge)</li>
+</ul></div></section><section class="sec" id="specificity-test" data-sec="specificity-test"><h2><span class="n">4</span>The question specificity test</h2><div class="body"><p>To find the closest revision that satisfies the original informational-intent, we will search for the <strong>most specific</strong> question that can be answered by both the source and the hallucination (that is, the hallucination answers it falsely, and the source answers it faithfully).</p>
+<p>When constructing these questions, make your best guess at understanding the author&#x27;s intent and try to construct a question that the author <strong>actually intended to answer</strong> (or give information about) when they wrote their original hallucinated statement.</p>
+<p>The best revision would then be the faithful answer to this question, based on the source text.</p></div></section><section class="sec" id="answerability" data-sec="answerability"><h2><span class="n">5</span>Answerability</h2><div class="body"><p>Throughout, we say a text <strong>answers</strong> a question Q (with respect to a source text S) if it entails a direct answer to Q. That means that the text may provide an answer that is more specific (detailed) than Q strictly requires, but the answer expected by Q can still be implied from it. For example:</p>
+<ul>
+<li>&quot;John Lennon was born in Liverpool&quot; answers &quot;in which country was John Lennon born?&quot;, because being born in Liverpool <strong>entails</strong> being born in England.</li>
+<li>When we say the <em>hallucination</em> answers Q, we mean only that it supplies an answer of the type Q asks for - while that answer will, clearly, be false (hallucinated) relative to the source.</li>
+</ul></div></section><section class="sec" id="specificity" data-sec="specificity"><h2><span class="n">6</span>Specificity</h2><div class="body"><p>We define specificity of question as follows:</p>
+<ul>
+<li>A question Q1 is <strong>more specific</strong> than Q2, <em>with respect to a given text</em>, if every answer to Q1 that is faithful to the text also answers Q2, while some answer to Q2 faithful to the text does not answer Q1.</li>
+<li>A question is <strong>most specific</strong> with respect to a text if there&#x27;s no other question that is more specific than it <em>with respect to that text</em>.</li>
+<li>A question is most specific <em>with respect to both the source and the target texts</em> if there&#x27;s no other question that is <strong>more specific</strong> with respect to both.</li>
+<li>Reminder: as noted in the definition of &quot;answerable&quot; above, a question would be regarded as answerable by the source, or the target, only if it is <strong>clearly</strong> implied from the respective text by common knowledge expected from a reader of that text.</li>
+</ul>
+<p>Applying the above test to the target text &quot;Lennon was born in Germany&quot;, we will try to find the most specific question that can be answered by both the source and the target.</p>
+<p>One question that can be derived here is &quot;Where was Lennon born&quot;. The direct answer from the hallucinated text is <strong>Germany</strong>, while the source still provides many viable answers (the direct answer <strong>Liverpool</strong>, and the implied <strong>England, the UK, Europe ...</strong>). We can narrow down and choose a more <strong>specific</strong> question &quot;In which country was Lennon born?&quot;. Now the only viable answer from the source is <strong>England</strong>, which is the best revision for this example.</p>
+<p>When helpful, we recommend an iterative question generation process, where an annotator starts with a less specific question, inspects the derived possible answers from the source texts, tests whether a more specific question can be asked, until it has reached the most specific granularity.</p>
+<p><strong>Note: The question must be one the source can actually answer.</strong> When narrowing, make sure the question you settle on is answerable <em>by the source</em> - do not keep a presupposition the source does not support, or add a specific value just to match the original text&#x27;s specificity.</p></div></section><section class="sec" id="horses" data-sec="horses"><h2><span class="n">7</span>A second worked example</h2><div class="body"><ul>
+<li><strong>Source:</strong> &quot;The horses got stuck in mud as they were being ridden on a beach by the slipway near Quail Holme Road, Knott End at about 10:30 BST on Sunday. The Fleetwood-Knott End ferry and two kayakers helped with the rescue operation...&quot;</li>
+<li><strong>Target:</strong> Two horses have been rescued from the River Ribble in Lancashire.</li>
+<li><strong>Revision A (false):</strong> Two horses have been rescued from the <del>River Ribble</del> <strong>mud</strong> in Lancashire.</li>
+<li><strong>Revision B (correct):</strong> Two horses have been rescued from <del>the River Ribble</del> <strong>a beach near Knott End</strong> in Lancashire</li>
+</ul>
+<p>The target said the horses were rescued from <em>&quot;the River Ribble&quot;</em>. The informational intent here was to provide the <strong>geographical location</strong> (from where were the horses rescued?).</p>
+<p>However, the specific question <em>&quot;from which river were the horses rescued?&quot;</em> is <strong>not</strong> answerable by the source. The <strong>answerable</strong> question is the coarser <em>&quot;from which place were they rescued?&quot;</em>, whose faithful answer is <em>&quot;a beach near Knott End&quot;</em>.</p>
+<ul>
+<li><em>&quot;The mud&quot;</em> is not a good revision as it states which <strong>substance</strong> the horses were stuck in, and misses the geographic locational intent.</li>
+</ul>
+<p>Notice that the deliverable is the revision R, not the question. If two different questions lead to the same R, both are fine. (However, we still ask you to provide the question in your annotation to understand the reason for the revision chosen).</p></div></section><section class="sec" id="deletion" data-sec="deletion"><h2><span class="n">8</span>Deletion</h2><div class="body"><p>If we can not find a meaningful question answerable by both the target and the source, there is no valid intent-preserving replacement for the hallucinated content.</p>
+<p>In this case - we delete the hallucinated clause completely, while, if needed, making sure to revise the target phrasing to keep it grammatical and fluent.</p>
+<ul>
+<li>However, make sure to avoid adding any new information from the source text not present in the original target text. Constrain yourself to grammatical and phrasing adjustments.</li>
+</ul></div></section><section class="sec" id="workflow" data-sec="workflow"><h2><span class="n">9</span>Annotation workflow</h2><div class="body"><p>You will be provided with the source text, and a target text with different <strong>marked hallucinations</strong> (already detected)</p>
+<p>For each single marked hallucinated statement (span) and texts you will:</p>
+<ul>
+<li>Attempt to find Q1, a specific question answerable from both the hallucinated span and the source text.</li>
+<ul>
+<li>If Q1 was found, inspect its specificity and the candidate source answers and if needed, continue to find more and more specific questions, until finding Qmax, the most specific question answerable by both the target and the source.</li>
+<li>Replace the unfaithful part in the target with the answer <strong>from the source</strong> answering the question Qmax, leaving the rest of the sentence intact.</li>
+</ul>
+<li>If no meaningful Q exists, delete the unfaithful part in the hallucinated span completely.</li>
+<ul>
+<li><strong>Rule of thumb:</strong> if you can eventually notice that the answer (to Qmax) that you found could be dropped from the revised target without any loss of information, then it&#x27;s vacuous - so just delete the span instead of inserting anything.</li>
+<ul>
+<li>E.g. if the source says nothing about where Lennon was born, don&#x27;t revise &quot;Lennon was born in Germany&quot; to &quot;Lennon was born in a country&quot;; just delete.</li>
+</ul>
+</ul>
+<li>After replacing/deleting, make the necessary <strong>grammar or lexical adjustment</strong> to render the text coherent and sensible, but <strong>without adding any new information</strong> beyond the answer to Qmax</li>
+</ul></div></section><section class="sec" id="additional" data-sec="additional"><h2><span class="n">10</span>Additional points</h2><div class="body"><ul>
+<li>Before submitting, check the revised text against the hallucination again: is there anything faithful that the hallucination implied and the text lost? We aim to keep <strong>all faithful information</strong> that was entailed by the hallucinated text. In such a case, look for a question whose answer will preserve this faithful information from the target, if one exists.</li>
+<li>Where the source provides wording that fits the slot, use the source&#x27;s wording <strong>verbatim</strong> rather than paraphrasing.</li>
+<li>Make the smallest edit that restores faithfulness and preserves informational goal - <strong>do not</strong> improve fluency, style or content of the original non-hallucinated text</li>
+<ul>
+<li>However, when you do need to phrase a statement yourself, try to sound as <strong>natural</strong> as possible.</li>
+</ul>
+<li>Please <strong>do not use any LLMs</strong>, we are attempting to examine natural human writing.</li>
+</ul>
+<p>After finishing each source-target texts pair, we will provide you with several meta-metric questions useful for our research. Please take your time to answer them properly.</p></div></section>
+
+  <div class="llmnote">Please <strong>do not use ChatGPT, Claude, Gemini or any other
+    language model</strong> at any point &mdash; here, in the practice round, or in the
+    annotation itself. We are studying how people write faithful minimal revisions, so we
+    need your own work.</div>
+
+  <footer>
+    <a class="btn" id="go" href="demo.html">I have read the guidelines &mdash; start the practice round</a>
+    <p class="fnote">The practice round has 10 short examples with worked
+       solutions. Nothing in it is scored.</p>
+  </footer>
+</main>
+
+<script>
+/* ─────────────────────── reading measurement ───────────────────────
+   README.md records reading the guidelines as the one line of the budget with no number
+   behind it. This is that number.
+
+   Per section, time accumulates only while the section intersects the viewport AND the
+   tab is visible, so a coffee break with the page open is not reading time. Alongside it:
+   scroll depth reached, how many scroll gestures it took, and the largest single jump,
+   which is what a drag of the scrollbar to the bottom looks like.
+
+   WHAT IT IS FOR. Not rejection -- Prolific penalises participants for rejections and
+   engagement quality is not valid grounds, so a submission that arrives is approved and
+   paid. It is for deciding who to INVITE to the next round, and for exclusion at analysis
+   time. Nothing here is shown to the candidate and they are not told they are timed:
+   watching a clock changes the thing being measured.                                   */
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec";
+const TOOL_VERSION = "guidelines-v1";
+const SOURCE_SHA = "c529192eb3e059b2";
+const QS = new URLSearchParams(location.search);
+const PROLIFIC = {
+  pid: QS.get("PROLIFIC_PID") || "",
+  study: QS.get("STUDY_ID") || "",
+  session: QS.get("SESSION_ID") || ""
+};
+const SKEY = "revguide:" + TOOL_VERSION + ":" + (PROLIFIC.pid || "anon");
+
+const secs = Array.from(document.querySelectorAll(".sec"));
+const T = {started: Date.now(), ms: {}, views: {}, scrolls: 0, maxJump: 0, depth: 0};
+secs.forEach((s) => { T.ms[s.dataset.sec] = 0; T.views[s.dataset.sec] = 0; });
+
+try {
+  const saved = JSON.parse(localStorage.getItem(SKEY) || "null");
+  if (saved && saved.ms) {
+    Object.keys(T.ms).forEach((k) => { T.ms[k] = saved.ms[k] || 0;
+                                        T.views[k] = (saved.views || {})[k] || 0; });
+    T.started = saved.started || T.started;
+    T.scrolls = saved.scrolls || 0; T.maxJump = saved.maxJump || 0;
+    T.depth = saved.depth || 0;
+  }
+} catch (e) { /* private window or blocked storage: start clean */ }
+
+const onScreen = new Set();
+let since = Date.now(), hidden = document.hidden;
+
+function tick() {
+  const now = Date.now();
+  if (!hidden) {
+    const dt = now - since;
+    onScreen.forEach((id) => { T.ms[id] += dt; });
+  }
+  since = now;
+}
+
+/* threshold 0.35 so a section only counts as being read once a third of it is on
+   screen -- a section that merely flashes past during a fast scroll accumulates no time,
+   which is exactly the signal we want to keep. */
+const io = new IntersectionObserver((entries) => {
+  tick();
+  entries.forEach((e) => {
+    const id = e.target.dataset.sec;
+    if (e.isIntersecting) {
+      if (!onScreen.has(id)) { onScreen.add(id); T.views[id] += 1; }
+    } else { onScreen.delete(id); }
+  });
+}, {threshold: 0.35});
+secs.forEach((s) => io.observe(s));
+
+document.addEventListener("visibilitychange", () => {
+  tick(); hidden = document.hidden; since = Date.now();
+});
+
+let lastY = window.scrollY;
+addEventListener("scroll", () => {
+  const y = window.scrollY, jump = Math.abs(y - lastY);
+  if (jump > 4) { T.scrolls += 1; if (jump > T.maxJump) T.maxJump = jump; }
+  lastY = y;
+  const doc = document.documentElement;
+  const max = Math.max(1, doc.scrollHeight - innerHeight);
+  const d = Math.min(1, y / max);
+  if (d > T.depth) T.depth = d;
+  document.getElementById("prog").style.width = (T.depth * 100).toFixed(1) + "%";
+  save();
+}, {passive: true});
+
+function save() {
+  tick();
+  try { localStorage.setItem(SKEY, JSON.stringify(T)); } catch (e) {}
+}
+
+function payload(partial) {
+  tick();
+  const per = {};
+  Object.keys(T.ms).forEach((k) => { per[k] = Math.round(T.ms[k] / 1000); });
+  const read = Object.values(per).reduce((a, b) => a + b, 0);
+  return {
+    tool: TOOL_VERSION, stage: "guidelines", partial: !!partial,
+    prolific_pid: PROLIFIC.pid, study_id: PROLIFIC.study, session_id: PROLIFIC.session,
+    guidelines_sha: SOURCE_SHA,
+    read_s: read,
+    wall_s: Math.round((Date.now() - T.started) / 1000),
+    section_s: per, section_views: T.views,
+    scrolls: T.scrolls, max_jump_px: Math.round(T.maxJump),
+    depth: Math.round(T.depth * 100) / 100,
+    sections_unseen: Object.keys(per).filter((k) => per[k] < 2).length,
+    screen: innerWidth + "x" + innerHeight
+  };
+}
+
+let posted = false;
+function report(partial) {
+  if (posted && !partial) return;
+  if (!partial) posted = true;
+  const body = JSON.stringify(payload(partial));
+  try {
+    if (navigator.sendBeacon &&
+        navigator.sendBeacon(ENDPOINT, new Blob([body], {type: "text/plain;charset=utf-8"})))
+      return;
+    fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
+                     headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+  } catch (e) { /* fire and forget: the candidate never waits for us and never sees us fail */ }
+}
+
+/* Posted twice over, deliberately: once when they move on, and once from pagehide for
+   anyone who leaves without clicking through. The second is how we see the people who
+   abandon at the guidelines, whom a click can never reach. Dedupe on prolific_pid,
+   preferring the row with partial blank, then the largest wall_s. */
+addEventListener("pagehide", () => { if (!posted) report(true); });
+
+document.getElementById("go").addEventListener("click", (e) => {
+  report(false);
+  const u = new URL(document.getElementById("go").getAttribute("href"), location.href);
+  if (PROLIFIC.pid) u.searchParams.set("PROLIFIC_PID", PROLIFIC.pid);
+  if (PROLIFIC.study) u.searchParams.set("STUDY_ID", PROLIFIC.study);
+  if (PROLIFIC.session) u.searchParams.set("SESSION_ID", PROLIFIC.session);
+  e.preventDefault();
+  location.href = u.toString();
+});
+</script>
+</body>
+</html>
