@@ -37,7 +37,7 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);
   font-size:16px;line-height:1.6;margin:0;padding-block:44px 80px;
   padding-left:max(16px,env(safe-area-inset-left,0px));
   padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:1320px;margin:0 auto}
+.wrap{max-width:1520px;margin:0 auto}
 header{max-width:1320px;margin:0 auto;display:flex;align-items:flex-start;
   justify-content:space-between;gap:24px}
 .themetoggle{flex:none;margin-top:10px;font:inherit;font-size:13px;color:var(--muted);
@@ -65,6 +65,10 @@ h1 .sub{display:block;font-size:.46em;font-weight:400;color:var(--muted);
 .card.wide > h2,.card.wide > h3,.card.wide > h4{grid-column:1 / -1}
 .card.wide > .body{grid-column:1}
 .card.wide > .marginfig{grid-column:2;position:sticky;top:20px}
+/* One section's figures need more room than the 500px column gives. */
+.card.xwide{max-width:1520px;grid-template-columns:minmax(0,600px) minmax(0,820px)}
+.card.xwide > .marginfig{position:static}
+.card.xwide .marginfig figure + figure{margin-top:24px}
 .card > h2,.card > h3,.card > h4{margin-top:4px}
 .marginfig{margin:6px 0 0}
 .fullfig{max-width:1320px;margin:16px 0 30px}
@@ -85,6 +89,9 @@ h2 .n,h3 .n,h4 .n{display:inline-block;min-width:1.5em;color:var(--muted);
 .body ul ul{list-style:circle}
 .body p.note{border-left:3px solid var(--mark-line);background:var(--mark);
   padding:11px 14px;border-radius:0 3px 3px 0}
+.body li.callout{list-style:none;margin-left:-1.45em;border-left:3px solid var(--mark-line);
+  background:var(--mark);padding:11px 14px;border-radius:0 3px 3px 0}
+.body li.callout ul{margin-bottom:0}
 del{opacity:.6}
 strong{font-weight:600}
 figure{margin:0 0 14px}
@@ -175,22 +182,7 @@ a{color:var(--accent)}
 <li value="2"><strong>Minimal specificity change.</strong> Answer in the same <strong>facet</strong> the author was writing about, at as close a level of detail as the source allows.</li>
 </ol>
 <p>Both are illustrated by the worked examples that follow: the first shows information loss, the second shows specificity change.</p>
-<p>To satisfy both at once, we search for the <strong>most specific</strong> question that can be answered by both the source and the hallucination (that is, the hallucination answers it falsely, and the source answers it faithfully). The best revision is then the faithful answer to that question, based on the source text.</p>
-<p>This is the information the author (assume a human author here) intended to provide. This intent may be captured by phrasing a hypothetical question that the author intended to answer. In a hallucinated statement, the author provided an answer not faithful to the source text.</p>
-<p>When constructing these questions, make your best assessment of the author&#x27;s intent and try to construct a question that the author <strong>actually intended to answer</strong> (or give information about) when they wrote their original hallucinated statement.</p>
-<p>A good revision preserves <strong>all salvageable faithful information</strong> from the hallucination — that is, whatever the hallucinated statement happened to get right — and answers a question <strong>as close as possible</strong> to the original question the author intended to answer - with faithful information from the source.</p>
-<p>A properly revised text communicates the same <strong>informational intent</strong> of the original hallucination, but with <strong>faithful</strong> source-backed information.</p>
-<p>Consider the following example:</p>
-<ul>
-<li><strong>Source:</strong> “John Lennon was born in Liverpool”</li>
-</ul>
-<p><strong>Target:</strong> “Lennon was born in Germany”</p>
-<p>The best revision for this example pair is “Lennon was born in England”:</p>
-<ul>
-<li>It preserves the salvageable faithful statement “Lennon was born in Europe” which is faithful to the source <strong>and</strong> implied by the target text.</li>
-<li>It answers the question “in which country was Lennon born?” which is the exact question the target <strong>attempted</strong> to answer.</li>
-<li>It is entailed by the source text. (Liverpool being in England is considered common knowledge)</li>
-</ul></div><div class="marginfig"><figure><svg viewBox="0 0 470 330" width="100%" role="img" aria-label="A source, a target, the question the author meant to answer, and the answer each of the two texts gives to it" xmlns="http://www.w3.org/2000/svg">
+<p>To satisfy both at once, we search for the <strong>most specific</strong> question that can be answered by both the source and the hallucination (that is, the hallucination answers it falsely, and the source answers it faithfully). The best revision is then the faithful answer to that question, based on the source text.</p></div><div class="marginfig"><figure><svg viewBox="0 0 470 330" width="100%" role="img" aria-label="A source, a target, the question the author meant to answer, and the answer each of the two texts gives to it" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="a5" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 <path d="M0,0 L7,3.5 L0,7 z" fill="var(--muted)"/></marker></defs>
 
@@ -218,7 +210,38 @@ a{color:var(--accent)}
 <line x1="8" y1="282" x2="462" y2="282" stroke="var(--rule)" stroke-dasharray="3 3"/>
 <text x="8" y="302" class="svg-cap">Both answers imply <tspan class="svg-k">Lennon was born in Europe</tspan>. That is the</text>
 <text x="8" y="317" class="svg-cap">salvageable part, and the revision has to keep it.</text>
-</svg><figcaption>What a revision has to preserve.</figcaption></figure></div></div></section><section class="sec lvl4" id="answerability" data-sec="answerability"><div class="card"><h4>Answerability</h4><div class="body"><p>Throughout, we say a text <strong>answers</strong> a question Q (with respect to a source text S) if it entails a direct answer to Q. That means that the text may provide an answer that is more specific (detailed) than Q strictly requires, but the answer expected by Q can still be implied from it. For example:</p>
+</svg><figcaption>What a revision has to preserve.</figcaption></figure></div></div></section><section class="sec lvl4" id="intent-what" data-sec="intent-what"><div class="card"><h4>What informational intent is</h4><div class="body"><p>This is the information the author (assume a human author here) intended to provide. This intent may be captured by phrasing a hypothetical question that the author intended to answer. In a hallucinated statement, the author provided an answer not faithful to the source text.</p>
+<p>When constructing these questions, make your best assessment of the author&#x27;s intent and try to construct a question that the author <strong>actually intended to answer</strong> (or give information about) when they wrote their original hallucinated statement.</p>
+<p>A good revision preserves <strong>all salvageable faithful information</strong> from the hallucination — that is, whatever the hallucinated statement happened to get right — and answers a question <strong>as close as possible</strong> to the original question the author intended to answer - with faithful information from the source.</p>
+<p>A properly revised text communicates the same <strong>informational intent</strong> of the original hallucination, but with <strong>faithful</strong> source-backed information.</p>
+<p>Consider the following example:</p>
+<ul>
+<li><strong>Source:</strong> “John Lennon was born in Liverpool”</li>
+</ul>
+<p><strong>Target:</strong> “Lennon was born in Germany”</p>
+<p>The best revision for this example pair is “Lennon was born in England”:</p>
+<ul>
+<li>It preserves the salvageable faithful statement “Lennon was born in Europe” which is faithful to the source <strong>and</strong> implied by the target text.</li>
+<li>It answers the question “in which country was Lennon born?” which is the exact question the target <strong>attempted</strong> to answer.</li>
+<li>It is entailed by the source text. (Liverpool being in England is considered common knowledge)</li>
+</ul></div></div></section><section class="sec lvl4" id="common-knowledge" data-sec="common-knowledge"><div class="card wide"><h4>Common knowledge</h4><div class="body"><p><strong>Common knowledge</strong> is defined by what the text <strong>assumes</strong> that “typical” readers of the text would know.</p>
+<ul>
+<li>For example, in a medical journal, the knowledge of common medical equipment and processes may be expected.</li>
+</ul>
+<p>A practical test: <strong>if you would have to look it up, it is not common knowledge.</strong> The definition above is about the text&#x27;s assumed reader rather than about you personally, but when you are unsure, this is an easier question to ask yourself.</p>
+<p>The line is not always sharp. Consider three cases, in order:</p>
+<ul>
+<li>The source says the match was played in Munich; the target says it was played in Germany. Munich is a city in Germany - <strong>Common knowledge</strong> — no reader of this text would need to look that up.</li>
+<li>The source refers to “the magazine&#x27;s Film Awards ceremony”; the target calls it “the magazine&#x27;s <strong>annual</strong> Film Awards ceremony”. <strong>Genuinely arguable.</strong> A regular reader of that magazine may well know the ceremony is annual; another reader would have to check. Two careful annotators can disagree here.</li>
+<li>The source never gives a celebrity&#x27;s age; the target calls her “the <strong>62-year-old</strong> actress”. <strong>Not common knowledge</strong> — even if it is true, it is a fact most people would have to look up, so it is neutral with regard to the source, and must be revised.</li>
+</ul>
+<p>Where exactly the line falls will differ a little between annotators, and that is expected — it is part of what makes the task hard. Use your discretion and make the best call.</p></div><div class="marginfig"><figure><svg viewBox="0 0 470 240" width="100%" role="img" aria-label="A scale from clearly common knowledge through a contested middle band to clearly not common knowledge, with the four cases placed on it" xmlns="http://www.w3.org/2000/svg">
+<text x="8" y="18" class="svg-lab">IS IT COMMON KNOWLEDGE?</text>
+<rect x="30" y="32" width="16" height="56" rx="8" fill="var(--ok-bg)" stroke="var(--ok)"/>
+<rect x="30" y="100" width="16" height="56" rx="8" fill="var(--mark)" stroke="var(--mark-line)"/>
+<rect x="30" y="168" width="16" height="56" rx="8" fill="var(--dis-bg)" stroke="var(--dis)"/>
+<circle cx="38" cy="56" r="6" fill="var(--ok)"/><text x="62" y="54" class="svg-t">Munich &#8594; Germany</text><text x="62" y="71" class="svg-cap">no reader of this text would look that up</text><circle cx="38" cy="124" r="6" fill="var(--mark-line)"/><text x="62" y="122" class="svg-t">the magazine&#8217;s <tspan class="svg-k">annual</tspan> ceremony</text><text x="62" y="139" class="svg-cap">two careful annotators can disagree here</text><circle cx="38" cy="192" r="6" fill="var(--dis)"/><text x="62" y="190" class="svg-t">the <tspan class="svg-k">62-year-old</tspan> actress</text><text x="62" y="207" class="svg-cap">true, but most people would have to look it up</text>
+</svg><figcaption>The same three cases, as one scale.</figcaption></figure></div></div></section><section class="sec lvl4" id="answerability" data-sec="answerability"><div class="card"><h4>Answerability</h4><div class="body"><p>Throughout, we say a text <strong>answers</strong> a question Q (with respect to a source text S) if it entails a direct answer to Q. That means that the text may provide an answer that is more specific (detailed) than Q strictly requires, but the answer expected by Q can still be implied from it. For example:</p>
 <ul>
 <li>&quot;John Lennon was born in Liverpool&quot; answers &quot;in which country was John Lennon born?&quot;, because being born in Liverpool <strong>entails</strong> being born in England.</li>
 <li>When we say the <em>hallucination</em> answers Q, we mean only that it supplies an answer of the type Q asks for — while that answer will, clearly, be false (hallucinated) relative to the source.</li>
@@ -226,28 +249,7 @@ a{color:var(--accent)}
 <ul>
 <li>E.g: The answer should be &quot;Lennon was born in England&quot; and not just &quot;England&quot;.</li>
 </ul>
-</ul></div></div></section><section class="sec lvl4" id="common-knowledge" data-sec="common-knowledge"><div class="card wide"><h4>Common knowledge</h4><div class="body"><p><strong>Common knowledge</strong> is defined by what the text <strong>assumes</strong> that “typical” readers of the text would know.</p>
-<ul>
-<li>For example, in a medical journal, the knowledge of common medical equipment and processes may be expected.</li>
-</ul>
-<p>A practical test: <strong>if you would have to look it up, it is not common knowledge.</strong> The definition above is about the text&#x27;s assumed reader rather than about you personally, but when you are unsure, this is an easier question to ask yourself.</p>
-<p>The line is not always sharp. Consider four cases, in order:</p>
-<ul>
-<li>The source says the match was played in Munich; the target says it was played in Germany. Munich is a city in Germany - <strong>Common knowledge</strong> — no reader of this text would need to look that up.</li>
-<li>The source says the summit opened on a Tuesday; the target says it opened on a weekday. <strong>Common knowledge</strong> — it follows from the source by ordinary reasoning.</li>
-<li>The source refers to “the magazine&#x27;s Film Awards ceremony”; the target calls it “the magazine&#x27;s <strong>annual</strong> Film Awards ceremony”. <strong>Genuinely arguable.</strong> A regular reader of that magazine may well know the ceremony is annual; another reader would have to check. Two careful annotators can disagree here.</li>
-<li>The source never gives a celebrity&#x27;s age; the target calls her “the <strong>62-year-old</strong> actress”. <strong>Not common knowledge</strong> — even if it is true, it is a fact most people would have to look up, so it is an introduced fact and must be revised.</li>
-</ul>
-<p>Where exactly the line falls will differ a little between annotators, and that is expected — it is part of what makes the task hard. Use your discretion and make the best call.</p></div><div class="marginfig"><figure><svg viewBox="0 0 470 326" width="100%" role="img" aria-label="A scale from clearly common knowledge through a contested middle band to clearly not common knowledge, with the four cases placed on it" xmlns="http://www.w3.org/2000/svg">
-<text x="8" y="18" class="svg-lab">IS IT COMMON KNOWLEDGE?</text>
-<rect x="30" y="32" width="16" height="92" rx="8" fill="var(--ok-bg)" stroke="var(--ok)"/>
-<rect x="30" y="132" width="16" height="64" rx="8" fill="var(--mark)" stroke="var(--mark-line)"/>
-<rect x="30" y="204" width="16" height="60" rx="8" fill="var(--dis-bg)" stroke="var(--dis)"/>
-<text x="8" y="286" class="svg-cap">The middle band is real, and it is where this task is</text>
-<text x="8" y="301" class="svg-cap">hardest. Make a considered call rather than guessing</text>
-<text x="8" y="316" class="svg-cap">at a rule that does not exist.</text>
-<circle cx="38" cy="56" r="6" fill="var(--ok)"/><text x="62" y="54" class="svg-t">Munich &#8594; Germany</text><text x="62" y="71" class="svg-cap">no reader of this text would look that up</text><circle cx="38" cy="104" r="6" fill="var(--ok)"/><text x="62" y="102" class="svg-t">Tuesday &#8594; a weekday</text><text x="62" y="119" class="svg-cap">follows from the source by ordinary reasoning</text><circle cx="38" cy="168" r="6" fill="var(--mark-line)"/><text x="62" y="166" class="svg-t">the magazine&#8217;s <tspan class="svg-k">annual</tspan> ceremony</text><text x="62" y="183" class="svg-cap">two careful annotators can disagree here</text><circle cx="38" cy="232" r="6" fill="var(--dis)"/><text x="62" y="230" class="svg-t">the <tspan class="svg-k">62-year-old</tspan> actress</text><text x="62" y="247" class="svg-cap">true, but most people would have to look it up</text>
-</svg><figcaption>The same four cases, as one scale.</figcaption></figure></div></div></section><section class="sec lvl4" id="specificity" data-sec="specificity"><div class="card"><h4>Specificity</h4><div class="body"><p>We define specificity of question as follows:</p>
+</ul></div></div></section><section class="sec lvl4" id="specificity" data-sec="specificity"><div class="card wide xwide"><h4>Specificity</h4><div class="body"><p>We define specificity of question as follows:</p>
 <ul>
 <li>A question Q1 is <strong>more</strong> <strong>specific</strong> than Q2, <em>with respect to a given text</em>, if every answer to Q1 that is faithful to the text also answers Q2, while some answer to Q2 faithful to the text does not answer Q1.</li>
 <li>A question is <strong>most specific</strong> with respect to a text if there’s no other question that is more specific than it <em>with respect to that text</em>.</li>
@@ -258,65 +260,64 @@ a{color:var(--accent)}
 <p>When helpful, we recommend an iterative question generation process, where an annotator starts with a less specific question (<strong>Q1</strong>), inspects the derived possible answers from the source texts, tests whether a more specific question can be asked, until it has reached the most specific granularity (<strong>Qmax</strong>).</p>
 <p class="note"><strong>Note: The question must be one the source can actually answer.</strong> When narrowing, make sure the question you settle on is answerable <em>by the source</em> — do not keep a presupposition the source does not support, or add a specific value just to match the original text’s specificity.</p>
 <p>Additional example:</p>
-<ul>
-<li><strong>Source:</strong> “The horses got stuck in mud as they were being ridden on a beach by the slipway near Quail Holme Road, Knott End at about 10:30 BST on Sunday. The Fleetwood-Knott End ferry and two kayakers helped with the rescue operation…”</li>
-<li><strong>Target:</strong> Two horses have been rescued from the River Ribble in Lancashire.</li>
-<li><strong>Revision A (incorrect):</strong> Two horses have been rescued from the <del>River Ribble</del> <strong>mud</strong> in Lancashire.</li>
-<li><strong>Revision B (correct):</strong> Two horses have been rescued from <del>the River Ribble</del> a beach near Knott End in Lancashire</li>
-</ul>
 <p>The target said the horses were rescued from <em>“the River Ribble”</em>. The informational intent here was to provide the <strong>geographical location</strong> (from where were the horses rescued?).</p>
 <p>However, the specific question <em>“from which river were the horses rescued?”</em> is <strong>not</strong> answerable by the source. The <strong>answerable</strong> question is the coarser <em>“from which place were they rescued?”</em>, whose faithful <strong>complete sentence</strong> answer is <em>“the horses were rescued from a beach near Knott End”</em>.</p>
 <ul>
-<li><em>“The horses were rescued from the mud”</em> is not a good revision as it states which <strong>substance</strong> the horses were stuck in, and misses the geographic locational intent.</li>
+<li><em>“The horses were rescued from the mud”</em> is the suboptimal revision as it states which <strong>substance</strong> the horses were stuck in, and misses the geographic locational intent.</li>
 <li>We would replace “the river Ribble” with “a beach near Knott End” - the span from the complete sentence answer that can replace the hallucinated span cleanly.</li>
 </ul>
-<p>Notice that the deliverable is the revision R, not the question. If two different questions lead to the same R, both are fine. (However, we still ask you to provide the question in your annotation to understand the reason for the revision chosen).</p></div></div><div class="fullfig"><figure><svg viewBox="0 0 1080 318" width="100%" role="img" aria-label="A lattice of statements from specific to general beside the questions that pick out each level, with the usable level highlighted and every answer written as a full statement" xmlns="http://www.w3.org/2000/svg">
+<p>Notice that the deliverable is the revision R, not the question. If two different questions lead to the same R, both are fine. (However, we still ask you to provide the question in your annotation to understand the reason for the revision chosen).</p></div><div class="marginfig"><figure><svg viewBox="0 0 700 530" width="100%" role="img" aria-label="A lattice of statements from specific to general, above the questions that pick out each level, with the usable level highlighted" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="a2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 <path d="M0,0 L7,3.5 L0,7 z" fill="var(--muted)"/></marker></defs>
 <text x="8" y="18" class="svg-lab">STATEMENTS &#8212; MORE SPECIFIC AT THE TOP</text>
-<rect x="56" y="34" width="156" height="28" rx="3" fill="var(--paper)" stroke="var(--rule)"/>
-<text x="68" y="53" class="svg-t">born in Liverpool</text>
-<text x="220" y="53" class="svg-cap">source</text>
-<line x1="134" y1="62" x2="134" y2="84" stroke="var(--muted)" marker-end="url(#a2)"/>
-<rect x="56" y="90" width="156" height="28" rx="3" fill="var(--ok-bg)" stroke="var(--ok)"/>
-<text x="68" y="109" class="svg-t">born in England</text>
-<rect x="250" y="90" width="156" height="28" rx="3" fill="var(--dis-bg)" stroke="var(--dis)"/>
-<text x="262" y="109" class="svg-t">born in Germany</text>
-<text x="414" y="109" class="svg-cap">hallucination</text>
-<line x1="134" y1="118" x2="186" y2="146" stroke="var(--muted)" marker-end="url(#a2)"/>
-<line x1="328" y1="118" x2="276" y2="146" stroke="var(--muted)" marker-end="url(#a2)"/>
-<rect x="152" y="152" width="156" height="28" rx="3" fill="var(--mark)" stroke="var(--mark-line)" stroke-width="2"/>
-<text x="164" y="171" class="svg-t">born in Europe</text>
-<text x="316" y="164" class="svg-cap"><tspan class="svg-k">both of them imply this</tspan></text>
-<text x="316" y="178" class="svg-cap">so every valid revision must too</text>
-<line x1="230" y1="180" x2="230" y2="202" stroke="var(--muted)" marker-end="url(#a2)"/>
-<rect x="152" y="208" width="156" height="28" rx="3" fill="var(--paper)" stroke="var(--rule)" stroke-dasharray="3 3"/>
-<text x="164" y="227" class="svg-t" opacity="0.6">born on Earth</text>
-<text x="316" y="227" class="svg-cap" opacity="0.7">trivial &#8212; carries no information</text>
-<line x1="474" y1="28" x2="474" y2="268" stroke="var(--rule)"/>
-<text x="502" y="18" class="svg-lab">THE QUESTION THAT PICKS OUT EACH LEVEL</text>
-<rect x="502" y="30" width="558" height="70" rx="3" fill="var(--paper)" stroke="var(--rule)" opacity="0.55"/><text x="514" y="52" class="svg-t" opacity="0.75"><tspan>On which continent was Lennon born?</tspan></text><text x="1048" y="52" class="svg-cap" text-anchor="end" opacity="0.75">both answer it &#8212; keep narrowing</text><text x="514" y="73" class="svg-cap" opacity="0.75">source: Lennon was born in Europe</text><text x="514" y="90" class="svg-cap" opacity="0.75">target: Lennon was born in Europe</text><rect x="502" y="108" width="558" height="70" rx="3" fill="var(--mark)" stroke="var(--mark-line)" stroke-width="2"/><text x="514" y="130" class="svg-t"><tspan class="svg-k">In which country was Lennon born?</tspan></text><text x="1048" y="130" class="svg-cap" text-anchor="end">&#8592; take this one</text><text x="514" y="151" class="svg-cap">source: <tspan class="svg-k" fill="var(--ok)">Lennon was born in England</tspan></text><text x="514" y="168" class="svg-cap">target: <tspan class="svg-k" fill="var(--dis)">Lennon was born in Germany</tspan></text><rect x="502" y="186" width="558" height="70" rx="3" fill="var(--paper)" stroke="var(--rule)" opacity="0.55"/><text x="514" y="208" class="svg-t" opacity="0.75"><tspan>In which city was Lennon born?</tspan></text><text x="1048" y="208" class="svg-cap" text-anchor="end" opacity="0.75">the target has no answer here</text><text x="514" y="229" class="svg-cap" opacity="0.75">source: Lennon was born in Liverpool</text><text x="514" y="246" class="svg-cap" opacity="0.75">target: &#8212; the target never named a city</text>
-<text x="8" y="288" class="svg-cap">Stop at the <tspan class="svg-k">most specific question both texts still answer</tspan>. Coarser than that and the target's answer is already true, so there is nothing to correct and the</text>
-<text x="8" y="304" class="svg-cap">revision would throw away what the target had. Finer, and the target gives no answer to compare. Answers are written as complete statements so their specificity can be compared.</text>
-</svg><figcaption>Which question to settle on — and why the ones above and below it fail.</figcaption></figure></div><div class="fullfig"><figure><svg viewBox="0 0 1080 222" width="100%" role="img" aria-label="The horses example with the wrong and the right revision side by side, and the question each one answers" xmlns="http://www.w3.org/2000/svg">
-<text x="8" y="18" class="svg-lab">TARGET</text>
-<text x="8" y="42" class="svg-t">Two horses have been rescued from <tspan class="svg-k" fill="var(--dis)">the River Ribble</tspan> in Lancashire.</text>
-<line x1="8" y1="60" x2="1064" y2="60" stroke="var(--rule)"/>
-<rect x="8" y="78" width="518" height="110" rx="4" fill="var(--dis-bg)" stroke="var(--dis)"/>
-<text x="22" y="100" class="svg-lab" fill="var(--dis)">REVISION A &#8212; WRONG</text>
-<text x="22" y="126" class="svg-t">&#8230;rescued from <tspan text-decoration="line-through" opacity="0.55">the River Ribble</tspan> <tspan class="svg-k">the mud</tspan>&#8230;</text>
-<text x="22" y="152" class="svg-cap">answers <tspan class="svg-k">which substance were they stuck in?</tspan></text>
-<text x="22" y="172" class="svg-cap">&#8212; a different facet. The author was giving a place.</text>
-<rect x="546" y="78" width="518" height="110" rx="4" fill="var(--ok-bg)" stroke="var(--ok)"/>
-<text x="560" y="100" class="svg-lab" fill="var(--ok)">REVISION B &#8212; RIGHT</text>
-<text x="560" y="126" class="svg-t">&#8230;rescued from <tspan text-decoration="line-through" opacity="0.55">the River Ribble</tspan> <tspan class="svg-k">a beach near Knott End</tspan>&#8230;</text>
-<text x="560" y="152" class="svg-cap">answers <tspan class="svg-k">from which place were they rescued?</tspan></text>
-<text x="560" y="172" class="svg-cap">&#8212; the same facet, and the source can answer it.</text>
-<text x="8" y="212" class="svg-cap">The source cannot name a river, so the question drops from <tspan class="svg-k">which river</tspan> to <tspan class="svg-k">which place</tspan>. The facet never changes.</text>
-</svg><figcaption>One intent, answered in two different facets.</figcaption></figure></div></section><section class="sec lvl4" id="deletion" data-sec="deletion"><div class="card wide"><h4>Deletion</h4><div class="body"><p>If we can not find a meaningful question answerable by both the target and the source, there is no valid intent-preserving replacement for the hallucinated content.</p>
-<p>In this case - we delete the hallucinated clause completely, while, if needed, making sure to revise the target phrasing to keep it grammatical and fluent.</p>
+<rect x="60" y="30" width="170" height="28" rx="3" fill="var(--paper)" stroke="var(--rule)"/>
+<text x="72" y="49" class="svg-t">born in Liverpool</text>
+<text x="240" y="49" class="svg-cap">source</text>
+<line x1="145" y1="58" x2="145" y2="78" stroke="var(--muted)" marker-end="url(#a2)"/>
+<rect x="60" y="84" width="170" height="28" rx="3" fill="var(--ok-bg)" stroke="var(--ok)"/>
+<text x="72" y="103" class="svg-t">born in England</text>
+<rect x="270" y="84" width="170" height="28" rx="3" fill="var(--dis-bg)" stroke="var(--dis)"/>
+<text x="282" y="103" class="svg-t">born in Germany</text>
+<text x="450" y="103" class="svg-cap">hallucination</text>
+<line x1="145" y1="112" x2="205" y2="140" stroke="var(--muted)" marker-end="url(#a2)"/>
+<line x1="355" y1="112" x2="295" y2="140" stroke="var(--muted)" marker-end="url(#a2)"/>
+<rect x="165" y="146" width="170" height="28" rx="3" fill="var(--mark)" stroke="var(--mark-line)" stroke-width="2"/>
+<text x="177" y="165" class="svg-t">born in Europe</text>
+<text x="345" y="158" class="svg-cap"><tspan class="svg-k">both of them imply this</tspan></text>
+<text x="345" y="172" class="svg-cap">so every valid revision should too</text>
+<line x1="250" y1="174" x2="250" y2="196" stroke="var(--muted)" marker-end="url(#a2)"/>
+<rect x="165" y="202" width="170" height="28" rx="3" fill="var(--paper)" stroke="var(--rule)" stroke-dasharray="3 3"/>
+<text x="177" y="221" class="svg-t" opacity="0.6">born on Earth</text>
+<text x="345" y="221" class="svg-cap" opacity="0.7">trivial &#8212; carries no information</text>
+<line x1="8" y1="256" x2="692" y2="256" stroke="var(--rule)"/>
+<text x="8" y="280" class="svg-lab">THE QUESTION THAT PICKS OUT EACH LEVEL</text>
+<rect x="8" y="292" width="684" height="70" rx="3" fill="var(--paper)" stroke="var(--rule)" opacity="0.55"/><text x="22" y="315" class="svg-t" opacity="0.75"><tspan>On which continent was Lennon born?</tspan></text><text x="678" y="315" class="svg-cap" text-anchor="end" opacity="0.75">both answer it &#8212; keep narrowing</text><text x="22" y="336" class="svg-cap" opacity="0.75">source: Lennon was born in Europe</text><text x="22" y="353" class="svg-cap" opacity="0.75">target: Lennon was born in Europe</text><rect x="8" y="370" width="684" height="70" rx="3" fill="var(--mark)" stroke="var(--mark-line)" stroke-width="2"/><text x="22" y="393" class="svg-t"><tspan class="svg-k">In which country was Lennon born?</tspan></text><text x="678" y="393" class="svg-cap" text-anchor="end">&#8592; take this one &#8212; the right specificity</text><text x="22" y="414" class="svg-cap">source: <tspan class="svg-k" fill="var(--ok)">Lennon was born in England</tspan></text><text x="22" y="431" class="svg-cap">target: <tspan class="svg-k" fill="var(--dis)">Lennon was born in Germany</tspan></text><rect x="8" y="448" width="684" height="70" rx="3" fill="var(--paper)" stroke="var(--rule)" opacity="0.55"/><text x="22" y="471" class="svg-t" opacity="0.75"><tspan>In which city was Lennon born?</tspan></text><text x="678" y="471" class="svg-cap" text-anchor="end" opacity="0.75">too specific</text><text x="22" y="492" class="svg-cap" opacity="0.75">source: Lennon was born in Liverpool</text><text x="22" y="509" class="svg-cap" opacity="0.75">target: &#8212; does not answer this question</text>
+</svg><figcaption>Which question to settle on.</figcaption></figure></div><div class="marginfig"><figure><svg viewBox="0 0 700 378" width="100%" role="img" aria-label="The horses source and target with the suboptimal and the optimal revision, and the question each one answers" xmlns="http://www.w3.org/2000/svg">
+<text x="8" y="18" class="svg-lab">SOURCE</text>
+<rect x="8" y="26" width="684" height="56" rx="4" fill="var(--paper)" stroke="var(--rule)"/>
+<text x="22" y="48" class="svg-t">The horses got stuck in mud as they were being ridden on a beach by the</text>
+<text x="22" y="68" class="svg-t">slipway near Quail Holme Road, Knott End at about 10:30 BST on Sunday.</text>
+
+<text x="8" y="102" class="svg-lab">TARGET</text>
+<rect x="8" y="110" width="684" height="34" rx="4" fill="var(--raised)" stroke="var(--rule)"/>
+<text x="22" y="132" class="svg-t">Two horses have been rescued from <tspan class="svg-k" fill="var(--dis)">the River Ribble</tspan> in Lancashire.</text>
+
+<rect x="8" y="162" width="684" height="76" rx="4" fill="var(--dis-bg)" stroke="var(--dis)"/>
+<text x="22" y="184" class="svg-lab" fill="var(--dis)">REVISION A &#8212; SUBOPTIMAL</text>
+<text x="22" y="208" class="svg-t">&#8230;rescued from <tspan text-decoration="line-through" opacity="0.55">the River Ribble</tspan> <tspan class="svg-k">the mud</tspan>&#8230;</text>
+<text x="22" y="228" class="svg-cap">answers <tspan class="svg-k">which substance were they stuck in?</tspan> &#8212; a different type of information</text>
+
+<rect x="8" y="250" width="684" height="76" rx="4" fill="var(--ok-bg)" stroke="var(--ok)"/>
+<text x="22" y="272" class="svg-lab" fill="var(--ok)">REVISION B &#8212; OPTIMAL</text>
+<text x="22" y="296" class="svg-t">&#8230;rescued from <tspan text-decoration="line-through" opacity="0.55">the River Ribble</tspan> <tspan class="svg-k">a beach near Knott End</tspan>&#8230;</text>
+<text x="22" y="316" class="svg-cap">answers <tspan class="svg-k">from which place were they rescued?</tspan> &#8212; the same type, and the source can answer it</text>
+
+<text x="8" y="350" class="svg-cap">The source cannot name a river, so the question drops from <tspan class="svg-k">which river</tspan> to <tspan class="svg-k">which place</tspan>.</text>
+<text x="8" y="366" class="svg-cap">The facet &#8212; the type of information being given &#8212; should stay the same.</text>
+</svg><figcaption>One intent, answered with two different types of information.</figcaption></figure></div></div></section><section class="sec lvl4" id="deletion" data-sec="deletion"><div class="card wide"><h4>Deletion</h4><div class="body"><p>If we can not find a meaningful question answerable by both the target and the source, there is no valid intent-preserving replacement for the hallucinated content.</p>
+<p>In this case - we delete the hallucinated clause completely.</p>
 <ul>
-<li>However, make sure to avoid adding any new information from the source text not present in the original target text. Constrain yourself to grammatical and phrasing adjustments.</li>
+<li>Repairing the grammar your edit breaks applies to deletion and replacement alike, and is step 4 of the workflow below.</li>
 <li>Example: the target says “The 50-year-old blond man quit his job”, but the source never mentions his hair colour, and offers no other description of his appearance that could take its place. There is no question about his appearance that both texts can answer, so delete the word: “The 50-year-old man quit his job”.</li>
 </ul></div><div class="marginfig"><figure><svg viewBox="0 0 430 182" width="100%" role="img" aria-label="A hallucinated modifier deleted, leaving a grammatical sentence with nothing put in its place" xmlns="http://www.w3.org/2000/svg">
 <text x="8" y="18" class="svg-lab">TARGET</text>
@@ -376,7 +377,7 @@ a{color:var(--accent)}
 <ol>
 <li value="1">Adjust the marked span and convert it into a <strong>complete statement</strong> H.</li>
 <ol>
-<li value="1">That is, converting “England” to “Lennon was born in England”</li>
+<li value="1">That is, converting “Germany” to “Lennon was born in Germany”</li>
 </ol>
 <li value="2">Attempt to find Q1, a specific question answerable from both H and the source text.</li>
 <ol>
@@ -387,7 +388,7 @@ a{color:var(--accent)}
 <li value="3">If no meaningful Q exists, remove the span related to H from the target completely.</li>
 </ol>
 <ul>
-<li><strong>Rule of thumb:</strong> if you can eventually notice that the answer (to Qmax) that you found could be dropped from the revised target without any loss of information, then it&#x27;s vacuous — so just delete the span instead of inserting anything.</li>
+<li class="callout"><strong>Rule of thumb:</strong> if you can eventually notice that the answer (to Qmax) that you found could be dropped from the revised target without any loss of information, then it&#x27;s vacuous — so just delete the span instead of inserting anything.</li>
 <ul>
 <li>E.g. if the source says nothing about where Lennon was born, don&#x27;t revise &quot;Lennon was born in Germany&quot; to &quot;Lennon was born in a country&quot;; just delete.</li>
 </ul>
@@ -409,14 +410,14 @@ a{color:var(--accent)}
 <li>Please <strong>do not use any LLMs</strong>,  we are attempting to examine natural human writing.</li>
 </ul>
 <p>After finishing each source-target texts pair, we will provide you with several meta-metric questions useful for our research. Please take your time to answer them properly.</p>
-<p>Please now continue to the demo file for initial practice. Thank you very much for your cooperation. :)</p></div></div></section>
+<p>Please now continue to the demo file for initial practice. Thank you very much for your cooperation. 🙂</p></div></div></section>
   <div class="llmnote">Please do not use any LLMs at any point — here, in the practice round, or in the annotation itself. We are studying how people write faithful minimal revisions, so we need your own work.</div>
   <div class="cta"><a id="go" href="demo.html">Continue to the practice round</a></div>
 </div>
 <script>
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec';
 var TOOL_VERSION = 'guidelines-v2';
-var SOURCE_SHA = '72e31f4397756975';
+var SOURCE_SHA = 'cc35901b97e3ea73';
 
 // Theme toggle. The page is light for everyone by default; this only remembers a
 // reader who asked for dark. localStorage can throw in a private window, so every
