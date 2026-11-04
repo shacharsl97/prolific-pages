@@ -318,7 +318,7 @@ a{color:var(--accent)}
 <ul>
 <li>However, make sure to avoid adding any new information from the source text not present in the original target text. Constrain yourself to grammatical and phrasing adjustments.</li>
 <li>Example: the target says “The 50-year-old blond man quit his job”, but the source never mentions his hair colour, and offers no other description of his appearance that could take its place. There is no question about his appearance that both texts can answer, so delete the word: “The 50-year-old man quit his job”.</li>
-</ul></div><div class="marginfig"><figure><svg viewBox="0 0 430 218" width="100%" role="img" aria-label="A hallucinated modifier deleted, leaving a grammatical sentence with nothing put in its place" xmlns="http://www.w3.org/2000/svg">
+</ul></div><div class="marginfig"><figure><svg viewBox="0 0 430 182" width="100%" role="img" aria-label="A hallucinated modifier deleted, leaving a grammatical sentence with nothing put in its place" xmlns="http://www.w3.org/2000/svg">
 <text x="8" y="18" class="svg-lab">TARGET</text>
 <rect x="8" y="28" width="412" height="32" rx="3" fill="var(--dis-bg)" stroke="var(--dis)"/>
 <text x="20" y="49" class="svg-t">The 50-year-old <tspan class="svg-k" fill="var(--dis)">blond</tspan> man quit his job.</text>
@@ -327,9 +327,7 @@ a{color:var(--accent)}
 <text x="8" y="128" class="svg-lab">REVISION</text>
 <rect x="8" y="138" width="412" height="32" rx="3" fill="var(--ok-bg)" stroke="var(--ok)"/>
 <text x="20" y="159" class="svg-t">The 50-year-old man quit his job.</text>
-<text x="8" y="192" class="svg-cap"><tspan class="svg-k">Nothing was added in its place.</tspan></text>
-<text x="8" y="207" class="svg-cap">The word simply goes.</text>
-</svg><figcaption>When no answer exists, the span just goes.</figcaption></figure></div></div></section><section class="sec lvl2" id="workflow" data-sec="workflow"><div class="card"><h2><span class="n">3</span>Annotation Workflow</h2><div class="body"><p>You will be provided with the source text, and a target text with different <strong>marked hallucinations</strong> (already detected)</p></div></div><div class="fullfig"><figure><svg viewBox="0 0 1080 408" width="100%" role="img" aria-label="The procedure as a flowchart that branches at Q1 into replace and delete and rejoins for the grammar repair, beside the same example shown at each stage" xmlns="http://www.w3.org/2000/svg">
+</svg><figcaption>When no question answerable by both the source and target exists, delete.</figcaption></figure></div></div></section><section class="sec lvl2" id="workflow" data-sec="workflow"><div class="card"><h2><span class="n">3</span>Annotation Workflow</h2><div class="body"><p>You will be provided with the source text, and a target text with different <strong>marked hallucinations</strong> (already detected)</p></div></div><div class="fullfig"><figure><svg viewBox="0 0 1080 408" width="100%" role="img" aria-label="The procedure as a flowchart that branches at Q1 into replace and delete and rejoins for the grammar repair, beside the same example shown at each stage" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="a3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 <path d="M0,0 L7,3.5 L0,7 z" fill="var(--muted)"/></marker></defs>
 <text x="8" y="18" class="svg-lab">WHAT YOU DO</text>
