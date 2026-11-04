@@ -128,29 +128,37 @@ a{color:var(--accent)}
 <p><strong>Statement:</strong> The different propositions or units of information the target text consists of. Each statement may be entailed or contradicted by the source, or neither (“neutral”). A statement is a hallucination to revise when it is contradicted or merely neutral (i.e. not entailed neither contradicted) — both are non-faithful; only entailed statements are left untouched.</p>
 <ul>
 <li>For example, if the target text is “Danny ate a green apple”, it can be decomposed into two different statements: “Danny ate an apple” and “The apple was green”.</li>
-</ul></div><div class="marginfig"><figure><svg viewBox="0 0 540 240" width="100%" role="img" aria-label="A source and a target text, with one span marked as a hallucination and one marked as entailed" xmlns="http://www.w3.org/2000/svg">
+</ul></div><div class="marginfig"><figure><svg viewBox="0 0 470 314" width="100%" role="img" aria-label="A source text, a target text, and one statement picked out of the target that the source contradicts" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 <path d="M0,0 L7,3.5 L0,7 z" fill="var(--muted)"/></marker></defs>
-<rect x="8" y="26" width="236" height="82" rx="4" fill="var(--paper)" stroke="var(--rule)"/>
-<text x="20" y="44" class="svg-lab">SOURCE</text>
-<text x="20" y="66" class="svg-t">The ferry and two kayakers</text>
-<text x="20" y="84" class="svg-t">helped with the rescue near</text>
-<text x="20" y="102" class="svg-t">Knott End on Sunday.</text>
-<rect x="8" y="140" width="236" height="82" rx="4" fill="var(--raised)" stroke="var(--rule)"/>
-<text x="20" y="158" class="svg-lab">TARGET TEXT</text>
-<text x="20" y="180" class="svg-t">Two horses were rescued</text>
-<rect x="19" y="188" width="128" height="17" fill="var(--mark)"/>
-<text x="20" y="201" class="svg-t">from the River Ribble</text>
-<line x1="20" y1="221" x2="74" y2="221" stroke="var(--ok)" stroke-width="2"/>
-<text x="20" y="218" class="svg-t">on Sunday.</text>
-<line x1="248" y1="66" x2="278" y2="66" stroke="var(--muted)" marker-end="url(#ar)"/>
-<text x="286" y="62" class="svg-cap">Ground truth. Everything is</text>
-<text x="286" y="77" class="svg-cap">judged against this, nothing else.</text>
-<line x1="248" y1="196" x2="278" y2="196" stroke="var(--mark-line)" marker-end="url(#ar)"/>
-<text x="286" y="192" class="svg-cap"><tspan class="svg-k">Marked hallucination</tspan></text>
-<text x="286" y="207" class="svg-cap">the statement you revise</text>
-<line x1="248" y1="220" x2="278" y2="220" stroke="var(--ok)" marker-end="url(#ar)"/>
-<text x="286" y="224" class="svg-cap"><tspan class="svg-k">Entailed</tspan> &#8212; leave it alone</text>
+
+<text x="92" y="56" class="svg-t" text-anchor="end"><tspan class="svg-k">Source</tspan></text>
+<text x="92" y="72" class="svg-cap" text-anchor="end">the ground truth</text>
+<line x1="96" y1="52" x2="114" y2="52" stroke="var(--muted)" marker-end="url(#ar)"/>
+<rect x="118" y="26" width="344" height="78" rx="4" fill="var(--paper)" stroke="var(--rule)"/>
+<text x="130" y="50" class="svg-t">The horses got stuck in mud on a beach</text>
+<text x="130" y="70" class="svg-t">near Knott End. The ferry and two kayakers</text>
+<text x="130" y="90" class="svg-t">helped with the rescue.</text>
+
+<text x="92" y="150" class="svg-t" text-anchor="end"><tspan class="svg-k">Target text</tspan></text>
+<text x="92" y="166" class="svg-cap" text-anchor="end">the text you revise</text>
+<line x1="96" y1="146" x2="114" y2="146" stroke="var(--muted)" marker-end="url(#ar)"/>
+<rect x="118" y="126" width="344" height="60" rx="4" fill="var(--raised)" stroke="var(--rule)"/>
+<text x="130" y="150" class="svg-t">Two horses have been rescued from</text>
+<rect x="128" y="160" width="116" height="18" fill="var(--mark)"/>
+<text x="130" y="174" class="svg-t">the River Ribble in Lancashire.</text>
+
+<path d="M186,178 L186,226" stroke="var(--mark-line)" stroke-dasharray="3 3"
+      marker-end="url(#ar)"/>
+
+<text x="92" y="250" class="svg-t" text-anchor="end"><tspan class="svg-k">Statement</tspan></text>
+<text x="92" y="266" class="svg-cap" text-anchor="end">one unit of it</text>
+<line x1="96" y1="246" x2="114" y2="246" stroke="var(--muted)" marker-end="url(#ar)"/>
+<rect x="118" y="228" width="172" height="30" rx="4" fill="var(--mark)" stroke="var(--mark-line)"/>
+<text x="130" y="248" class="svg-t">the River Ribble</text>
+
+<text x="118" y="286" class="svg-cap">The source puts the rescue at a beach near Knott End,</text>
+<text x="118" y="301" class="svg-cap">so this statement is <tspan class="svg-k">contradicted</tspan> &#8212; a hallucination to revise.</text>
 </svg><figcaption>The three terms, on one item.</figcaption></figure></div></div></section><section class="sec lvl2" id="revision" data-sec="revision"><div class="card"><h2><span class="n">2</span>Revision guidelines</h2><div class="body"><p>You are provided with a ground-truth source, a hallucination-containing target text and a set of marked hallucinated statements within that target text. Your job is to revise the target text and correct all hallucinations in the optimal and most minimal manner, according to the following criteria:</p>
 <p><strong>GOAL</strong> — Fix the marked non-faithful statements in a summary so that everything it says is supported by its source, while changing the <strong>meaning</strong> as little as possible.</p>
 <ul>
