@@ -14,6 +14,8 @@
   --ok:#2f6b45; --ok-bg:#eaf4ee;
   --dis:#9c2b2b; --dis-bg:#fdf1f0;
   --rej-bg:#f1f3f2;
+  --on-accent:#ffffff;
+  --note:#fdf3dd; --note-line:#d9a441;
   --display:'Newsreader',Georgia,serif;
   --body:'IBM Plex Sans',system-ui,sans-serif;
   color-scheme:light;
@@ -24,7 +26,10 @@
   --mark:#4a3a1c; --mark-line:#c89a3f;
   --ok:#7fc79b; --ok-bg:#18261e;
   --dis:#e98f8a; --dis-bg:#2a1c1c;
-  --rej-bg:#1e2422; color-scheme:dark;
+  --rej-bg:#1e2422;
+  --on-accent:#10243a;
+  --note:#33291a; --note-line:#c89a3f;
+  color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;
@@ -70,20 +75,26 @@ mark.sp.off{background:var(--rej-bg);border-bottom-color:var(--muted);opacity:.7
 .choice{font:inherit;font-size:13px;border:1px solid var(--rule);background:transparent;
   color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer}
 .choice[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
-  color:#fff;font-weight:600}
+  color:var(--on-accent);font-weight:600}
 label.fl{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
 input[type=text],textarea{font:inherit;font-size:15px;width:100%;color:var(--ink);
   background:var(--raised);border:1px solid var(--rule);border-radius:6px;padding:9px 11px}
-textarea{min-height:70px;resize:vertical;line-height:1.6}
+textarea{min-height:160px;resize:vertical;line-height:1.7;overflow:hidden}
 input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
-.err{color:var(--dis);font-size:12.5px;margin:5px 0 0}
+.err{color:var(--dis);background:var(--dis-bg);border:1px solid var(--dis);
+  border-radius:6px;font-size:13.5px;font-weight:600;padding:8px 12px;margin:0;
+  flex-basis:100%}
+.err:empty{display:none}
+.notice{background:var(--note);border-left:3px solid var(--note-line);
+  border-radius:0 4px 4px 0;padding:9px 12px;margin:0 0 10px;font-size:13.5px}
+.hint{color:var(--muted);font-size:12.5px;margin:0 0 10px}
 .split{margin:10px 0 0;padding:11px 13px;background:var(--mark);
   border-left:3px solid var(--mark-line);border-radius:0 4px 4px 0}
 .split p{margin:0 0 9px;font-size:13px}
 .word{font:inherit;font-size:14px;border:1px solid var(--mark-line);background:var(--raised);
   color:var(--ink);border-radius:4px;padding:3px 9px;margin:0 5px 5px 0;cursor:pointer}
 .word:hover{background:var(--mark-line)}
-.cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;
+.cta{display:inline-block;background:var(--accent);color:var(--on-accent);text-decoration:none;
   border:0;font:inherit;font-weight:600;padding:12px 26px;border-radius:6px;cursor:pointer;
   font-size:16px}
 .cta[disabled]{opacity:.45;cursor:not-allowed}
@@ -101,6 +112,13 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
 .llm{border:1px solid var(--dis);background:var(--dis-bg);border-radius:6px;
   padding:12px 15px;margin:18px 0 0;font-size:14px}
 .saved{font-size:12px;color:var(--muted)}
+@media (max-width:560px){
+  .bar{padding:7px max(12px,env(safe-area-inset-left,0px))}
+  .barin{gap:9px;font-size:12px}
+  .barbtn{padding:4px 10px;font-size:11.5px}
+  .wrap{padding:16px max(14px,env(safe-area-inset-left,0px))}
+  h1{font-size:23px}
+}
 @media (max-width:900px){
   .panes{grid-template-columns:minmax(0,1fr)}
   .pane.src{position:static;max-height:420px}
@@ -128,7 +146,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec';
 var TOOL_VERSION = 'annotate-v1';
 var NEXT_PAGE = 'debrief.html';
-var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three restaurants in Coventry, Wolverhampton and West Bromwich and an address in Handsworth, Birmingham. Police suspect the men were working for \"next to nothing\". A 49-year-old man and a 45-year-old woman have been arrested on suspicion of slavery offences. See more stories from Birmingham and the Black Country here . The victims are thought to be mainly Slovakian and Romanian. The suspects, who are both Slovakian, have been arrested on suspicion of providing staff through a recruitment consultancy. The raided restaurants were Ming Moon, Stafford Road in Wolverhampton, Wing Wah, Fletchamstead Highway in Coventry and Red Leaf, High Street in West Bromwich. Five suspected slavery victims were found at the Chinese restaurant in Wolverhampton, 12 at Wing Wah Coventry and three at the an address on Anthrobus Road in Handsworth. The men will be given the opportunity to speak to specially trained officers and helped into alternative accommodation. West Midlands Police said signs of modern slavery to look out for include \"large groups of people staying in multi-occupancy houses and being transported to and from addresses in vans or minibuses from early in the morning and not coming back until late at night\". Further investigations are underway, the force added.", "summary": "Two people have been arrested on suspicion of slavery offences after 26 men were rescued from Chinese restaurants in the West Midlands.", "spans": ["26 men"]}, {"id": "p2", "source": "The side's appearance in France will be its first at a major tournament since the 1958 World Cup. Players and coaches left their base at the Vale Resort, Vale of Glamorgan, on Saturday and headed to Cardiff Airport. After a send-off from pupils from Ysgol Treganna, Cardiff, the team took off for a friendly in Sweden on Sunday. They will then head to France ahead of the team's first game of the tournament against Slovakia on 11 June.", "summary": "The Wales football team has left for Euro 2016 in France.", "spans": ["Wales", "Euro 2016"]}, {"id": "p3", "source": "Two people were left with \"life-changing\" injuries when a corrosive substance was thrown on to them through their car windows. Cousins Resham Khan and Jameel Muhktar had been celebrating Ms Khan's 21st birthday before the attack. John Tomlin, 24, is described as white, 6ft tall, of stocky build and with short fair hair. He is known to frequent the Canning Town area. Ms Khan, a student at Manchester Metropolitan University, and Mr Muhktar suffered severe burns to the face and body in the attack on 21 June. \"Within seconds, my cousin started screaming. Her eyes were blistered, her face started melting. My face started melting\", Mr Muhktar said. According to police, they had stopped at traffic lights when the man approached them and threw the toxic substance at Ms Khan through the window. The attacker then circled around the car and threw more of the acid at Mr Muhktar, before eventually fleeing the scene. Mr Muhktar, 37, had to be temporarily placed in an induced coma to treat his injuries. \"I'm in a really bad way. I'm going to be scarred for life. I can't walk properly, I can't hear properly, I can't sleep\", he said. Police said there was no current information to suggest the attack was racially or religiously motivated.", "summary": "Police have released CCTV images of a man they want to speak to in connection with an acid attack in east London.", "spans": ["CCTV images", "in east London."]}, {"id": "p4", "source": "Hoppus got married in 2000 (see Personal life) just before the band prepared to record their highly anticipated follow-up, \"Take Off Your Pants and Jacket\" (2001). When the band regrouped to record their next record in 2003, all of the members had become fathers (or, in the case of Barker, becoming one) and the trio took a darker, more \"mature\" direction with their untitled fifth studio album, infusing experimentalist elements into their usual pop punk sound partially inspired by Box Car Racer. Unresolved feelings from that project would arise in late 2004 when the band began to argue regarding their future and recording process. The February 2005 break-up of blink-182 affected Hoppus greatly: \"I had no idea what to do.", "summary": "Two more records followed—the heavier \"Take Off Your Pants and Jacket\" (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.", "spans": ["heavier"]}, {"id": "p5", "source": "Beijing (CNN)Chinese police on Monday released five female activists who were detained last month, family and friends of the women tell CNN. Wei Tingting, Wang Man, Zheng Churan, Li Tingting and Wu Rongrong were freed. The women will be under police surveillance for a year and have their movements and activities restricted, attorney Liang Xiaojun said. Police can summon the women for questioning at any time, he added. The five members of China's Women's Rights Action Group were detained in Beijing, Guangzhou and Hangzhou a few days before events planned for International Women's Day on March 8. The United States had urged China to free them, and the international community harshly criticized keeping the women in custody. \"Each and every one of us has the right to speak out against sexual harassment and the many other injustices that millions of women and girls suffer around the world,\" U.S. Secretary of State John Kerry said in a statement Friday. \"We strongly support the efforts of these activists to make progress on these challenging issues, and we believe that Chinese authorities should also support them, not silence them.\" \"Free the five\" became a Twitter hashtag. Wang Qiushi, a lawyer for Wei, said police recommended last week that prosecutors press charges of \"assembling a crowd to disturb public order.\"", "summary": "Five Chinese feminist activists have been released from police custody after being held for over a month. They will be under surveillance and can be summoned for questioning at any time. Their detention had sparked international criticism, with the US calling for their release.", "spans": ["feminist activists"]}, {"id": "p6", "source": "Gastrointestinal illness has gripped 100 people on the cruise ship Celebrity Infinity, according to a report from the Centers for Disease Control. Of the ship's 2,117 passengers, 95 have suffered from vomiting, diarrhea and other symptoms, the CDC said. The illness has also affected five members of the 964-person crew. The CDC has yet to determine what's causing the ailments. Two staffers from the agency are scheduled to meet the West Coast-based ship in San Diego on Monday. The Infinity left San Diego on March 29. It made its last stop in Puerto Vallarta, Mexico, on April 10, according to MarineTraffic.com. Celebrity Cruises has been taking action since the outbreak began, including increasing cleaning and disinfection procedures, keeping passengers informed and taking specimens from the afflicted for testing by the CDC, the agency says. According to the Maritime Executive, this is the third time the Celebrity Infinity has suffered an outbreak of gastrointestinal illness, with others occurring in 2006 and 2013. The ship was built in 2001 and refurbished in 2011.", "summary": "Gastrointestinal illness has affected 100 people on the cruise ship Celebrity Infinity, according to the CDC. Symptoms include vomiting and diarrhea. The cause is unknown and two CDC staffers will meet the ship in San Diego on Monday. This is the third outbreak on the ship, which has a history of sanitation issues.", "spans": ["has a history of sanitation issues"]}, {"id": "p7", "source": "Tries from Macgraff Leuluai, Ah Van and Chris Bridge gave Widnes a 14-6 half-time lead, with Cas loanee Paddy Flynn responding against his parent club. Flynn scored another early in the second, but Ah Van, Lloyd White (2) and Joe Mellor tries made it 38-12. Despite three Cas tries in four minutes - Larne Patrick, Luke Gale and Flynn's hat-trick score - Widnes held on. The Vikings' victory had looked assured when Mellor took advantage of Castleford indecision on a short kick-off, running straight through to help them to a 26-point lead. But, having lost nine of their previous 10 matches, their defence creaked as they let Patrick, who has just signed a three-year deal to move from Huddersfield after his loan spell, in for a try. Gale and Flynn - on loan at Castleford from the Vikings until the end of the season - made it a nervy finish, but the Tigers suffered their fourth consecutive home league defeat. Widnes moved above Wakefield into seventh, while Castleford remain in sixth, one point above the Vikings. Castleford: Solomona, Monaghan, Crooks, Webster, Flynn, McShane, Gale, Jewitt, Milner, Patrick, Moors, McMeeken, Massey. Replacements: Millington, Springer, Tickle, Cook. Widnes: Hanbury, Thompson, Runciman, Bridge, Ah Van, Mellor,Brown, Cahill, White, Buchanan, Whitley, Dean, Leuluai. Replacements: J. Chapelhow, Manuokafoa, Walker, Heremaia. Referee: J Smith", "summary": "Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30. Tries from Macgraff Leuluai, Ah Van, and Chris Bridge gave Widnes a 14-6 lead at halftime. Castleford's Paddy Flynn responded with a try against his parent club. In the second half, Flynn scored another try, but Widnes extended their lead with tries from Ah Van, Lloyd White (2), and Joe Mellor. Castleford managed to score three tries in four minutes, but Widnes held on for the win. This victory moved Widnes above Wakefield into seventh place in the league standings. Castleford suffered their fourth consecutive home league defeat.", "spans": ["Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30"]}, {"id": "p8", "source": "The Briton finished more than two minutes ahead of Poland's Anna Harkowska in Nottwil, Switzerland. Storey can win a 17th title when she rides in Saturday's road race. \"It's a massive relief to win,\" said the 37-year-old, who is targeting further Paralympic success at next year's Games in Rio de Janeiro. Storey is Britain's most decorated female Paralympian with 22 medals. She has won 11 gold, eight silver and three bronze medals in both cycling and swimming across six Paralympics. She won four golds at the 2012 Games in London and has now won 21 world titles across both sports. Storey began her sporting career in the pool, winning six medals at the 1992 Paralympics before switching to cycling in 2005.", "summary": "The passage describes British Paralympian Sarah Storey's victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland. Storey, aged 37, aims to secure her 17th title in the upcoming road race. She is noted as Britain's most decorated female Paralympian with 22 medals, including 11 golds, 8 silvers, and 3 bronzes across cycling and swimming disciplines. Storey has won 21 world titles and achieved four gold medals at the 2012 London Paralympics. Her career began in swimming, where she won six medals at the 1992 Paralympics, before transitioning to cycling in 2005.", "spans": ["Sarah Storey"]}];
+var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three restaurants in Coventry, Wolverhampton and West Bromwich and an address in Handsworth, Birmingham. Police suspect the men were working for \"next to nothing\". A 49-year-old man and a 45-year-old woman have been arrested on suspicion of slavery offences. See more stories from Birmingham and the Black Country here . The victims are thought to be mainly Slovakian and Romanian. The suspects, who are both Slovakian, have been arrested on suspicion of providing staff through a recruitment consultancy. The raided restaurants were Ming Moon, Stafford Road in Wolverhampton, Wing Wah, Fletchamstead Highway in Coventry and Red Leaf, High Street in West Bromwich. Five suspected slavery victims were found at the Chinese restaurant in Wolverhampton, 12 at Wing Wah Coventry and three at the an address on Anthrobus Road in Handsworth. The men will be given the opportunity to speak to specially trained officers and helped into alternative accommodation. West Midlands Police said signs of modern slavery to look out for include \"large groups of people staying in multi-occupancy houses and being transported to and from addresses in vans or minibuses from early in the morning and not coming back until late at night\". Further investigations are underway, the force added.", "summary": "Two people have been arrested on suspicion of slavery offences after 26 men were rescued from Chinese restaurants in the West Midlands.", "spans": ["26 men"]}, {"id": "p2", "source": "The side's appearance in France will be its first at a major tournament since the 1958 World Cup. Players and coaches left their base at the Vale Resort, Vale of Glamorgan, on Saturday and headed to Cardiff Airport. After a send-off from pupils from Ysgol Treganna, Cardiff, the team took off for a friendly in Sweden on Sunday. They will then head to France ahead of the team's first game of the tournament against Slovakia on 11 June.", "summary": "The Wales football team has left for Euro 2016 in France.", "spans": ["Wales", "Euro 2016"]}, {"id": "p3", "source": "Two people were left with \"life-changing\" injuries when a corrosive substance was thrown on to them through their car windows. Cousins Resham Khan and Jameel Muhktar had been celebrating Ms Khan's 21st birthday before the attack. John Tomlin, 24, is described as white, 6ft tall, of stocky build and with short fair hair. He is known to frequent the Canning Town area. Ms Khan, a student at Manchester Metropolitan University, and Mr Muhktar suffered severe burns to the face and body in the attack on 21 June. \"Within seconds, my cousin started screaming. Her eyes were blistered, her face started melting. My face started melting\", Mr Muhktar said. According to police, they had stopped at traffic lights when the man approached them and threw the toxic substance at Ms Khan through the window. The attacker then circled around the car and threw more of the acid at Mr Muhktar, before eventually fleeing the scene. Mr Muhktar, 37, had to be temporarily placed in an induced coma to treat his injuries. \"I'm in a really bad way. I'm going to be scarred for life. I can't walk properly, I can't hear properly, I can't sleep\", he said. Police said there was no current information to suggest the attack was racially or religiously motivated.", "summary": "Police have released CCTV images of a man they want to speak to in connection with an acid attack in east London.", "spans": ["CCTV images", "in east London"]}, {"id": "p4", "source": "Hoppus got married in 2000 (see Personal life) just before the band prepared to record their highly anticipated follow-up, \"Take Off Your Pants and Jacket\" (2001). When the band regrouped to record their next record in 2003, all of the members had become fathers (or, in the case of Barker, becoming one) and the trio took a darker, more \"mature\" direction with their untitled fifth studio album, infusing experimentalist elements into their usual pop punk sound partially inspired by Box Car Racer. Unresolved feelings from that project would arise in late 2004 when the band began to argue regarding their future and recording process. The February 2005 break-up of blink-182 affected Hoppus greatly: \"I had no idea what to do.", "summary": "Two more records followed—the heavier \"Take Off Your Pants and Jacket\" (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.", "spans": ["heavier"]}, {"id": "p5", "source": "Beijing (CNN)Chinese police on Monday released five female activists who were detained last month, family and friends of the women tell CNN. Wei Tingting, Wang Man, Zheng Churan, Li Tingting and Wu Rongrong were freed. The women will be under police surveillance for a year and have their movements and activities restricted, attorney Liang Xiaojun said. Police can summon the women for questioning at any time, he added. The five members of China's Women's Rights Action Group were detained in Beijing, Guangzhou and Hangzhou a few days before events planned for International Women's Day on March 8. The United States had urged China to free them, and the international community harshly criticized keeping the women in custody. \"Each and every one of us has the right to speak out against sexual harassment and the many other injustices that millions of women and girls suffer around the world,\" U.S. Secretary of State John Kerry said in a statement Friday. \"We strongly support the efforts of these activists to make progress on these challenging issues, and we believe that Chinese authorities should also support them, not silence them.\" \"Free the five\" became a Twitter hashtag. Wang Qiushi, a lawyer for Wei, said police recommended last week that prosecutors press charges of \"assembling a crowd to disturb public order.\"", "summary": "Five Chinese feminist activists have been released from police custody after being held for over a month. They will be under surveillance and can be summoned for questioning at any time. Their detention had sparked international criticism, with the US calling for their release.", "spans": ["feminist activists"]}, {"id": "p6", "source": "Gastrointestinal illness has gripped 100 people on the cruise ship Celebrity Infinity, according to a report from the Centers for Disease Control. Of the ship's 2,117 passengers, 95 have suffered from vomiting, diarrhea and other symptoms, the CDC said. The illness has also affected five members of the 964-person crew. The CDC has yet to determine what's causing the ailments. Two staffers from the agency are scheduled to meet the West Coast-based ship in San Diego on Monday. The Infinity left San Diego on March 29. It made its last stop in Puerto Vallarta, Mexico, on April 10, according to MarineTraffic.com. Celebrity Cruises has been taking action since the outbreak began, including increasing cleaning and disinfection procedures, keeping passengers informed and taking specimens from the afflicted for testing by the CDC, the agency says. According to the Maritime Executive, this is the third time the Celebrity Infinity has suffered an outbreak of gastrointestinal illness, with others occurring in 2006 and 2013. The ship was built in 2001 and refurbished in 2011.", "summary": "Gastrointestinal illness has affected 100 people on the cruise ship Celebrity Infinity, according to the CDC. Symptoms include vomiting and diarrhea. The cause is unknown and two CDC staffers will meet the ship in San Diego on Monday. This is the third outbreak on the ship, which has a history of sanitation issues.", "spans": ["has a history of sanitation issues"]}, {"id": "p7", "source": "Tries from Macgraff Leuluai, Ah Van and Chris Bridge gave Widnes a 14-6 half-time lead, with Cas loanee Paddy Flynn responding against his parent club. Flynn scored another early in the second, but Ah Van, Lloyd White (2) and Joe Mellor tries made it 38-12. Despite three Cas tries in four minutes - Larne Patrick, Luke Gale and Flynn's hat-trick score - Widnes held on. The Vikings' victory had looked assured when Mellor took advantage of Castleford indecision on a short kick-off, running straight through to help them to a 26-point lead. But, having lost nine of their previous 10 matches, their defence creaked as they let Patrick, who has just signed a three-year deal to move from Huddersfield after his loan spell, in for a try. Gale and Flynn - on loan at Castleford from the Vikings until the end of the season - made it a nervy finish, but the Tigers suffered their fourth consecutive home league defeat. Widnes moved above Wakefield into seventh, while Castleford remain in sixth, one point above the Vikings. Castleford: Solomona, Monaghan, Crooks, Webster, Flynn, McShane, Gale, Jewitt, Milner, Patrick, Moors, McMeeken, Massey. Replacements: Millington, Springer, Tickle, Cook. Widnes: Hanbury, Thompson, Runciman, Bridge, Ah Van, Mellor,Brown, Cahill, White, Buchanan, Whitley, Dean, Leuluai. Replacements: J. Chapelhow, Manuokafoa, Walker, Heremaia. Referee: J Smith", "summary": "Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30. Tries from Macgraff Leuluai, Ah Van, and Chris Bridge gave Widnes a 14-6 lead at halftime. Castleford's Paddy Flynn responded with a try against his parent club. In the second half, Flynn scored another try, but Widnes extended their lead with tries from Ah Van, Lloyd White (2), and Joe Mellor. Castleford managed to score three tries in four minutes, but Widnes held on for the win. This victory moved Widnes above Wakefield into seventh place in the league standings. Castleford suffered their fourth consecutive home league defeat.", "spans": ["Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30"]}, {"id": "p8", "source": "The Briton finished more than two minutes ahead of Poland's Anna Harkowska in Nottwil, Switzerland. Storey can win a 17th title when she rides in Saturday's road race. \"It's a massive relief to win,\" said the 37-year-old, who is targeting further Paralympic success at next year's Games in Rio de Janeiro. Storey is Britain's most decorated female Paralympian with 22 medals. She has won 11 gold, eight silver and three bronze medals in both cycling and swimming across six Paralympics. She won four golds at the 2012 Games in London and has now won 21 world titles across both sports. Storey began her sporting career in the pool, winning six medals at the 1992 Paralympics before switching to cycling in 2005.", "summary": "The passage describes British Paralympian Sarah Storey's victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland. Storey, aged 37, aims to secure her 17th title in the upcoming road race. She is noted as Britain's most decorated female Paralympian with 22 medals, including 11 golds, 8 silvers, and 3 bronzes across cycling and swimming disciplines. Storey has won 21 world titles and achieved four gold medals at the 2012 London Paralympics. Her career began in swimming, where she won six medals at the 1992 Paralympics, before transitioning to cycling in 2005.", "spans": ["Sarah Storey"]}];
 
 (function () {
   var q = new URLSearchParams(location.search);
@@ -147,7 +165,7 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
         id: it.id, spans: it.spans.map(function (t, i) {
           return {sid: it.id + "-s" + i, text: t, act: "", q: "", r: ""};
         }),
-        grammar: "", lost: "", ms: 0, pastes: 0, keys: 0, done: false
+        grammar: "", touched: false, lost: "", ms: 0, pastes: 0, keys: 0, done: false
       };
     })};
   }
@@ -156,6 +174,10 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
     var el = document.getElementById("saved");
     if (el) { el.textContent = "saved"; setTimeout(function () { el.textContent = ""; }, 1400); }
   }
+
+  // Set when something the annotator cannot see coming has just happened to their
+  // revision. render() shows it once and clears it.
+  var notice = "";
 
   var itemStart = Date.now();
   function stamp() {
@@ -205,24 +227,41 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
     return text.replace(/\s{2,}/g, " ").replace(/\s+([,.;:!?])/g, "$1").trim();
   }
 
+  // Punctuation is its own token. Splitting on whitespace alone glues the full stop
+  // to the word before it, so deleting "sanitation issues" reported "of." as added and
+  // "of sanitation issues." as removed -- when "of" had not been touched at all.
+  function tok(s) { return String(s).match(/[\w'\u2019-]+|\s+|[^\w\s]/g) || []; }
+
   function wordDiff(a, b) {
-    var A = a.split(/(\s+)/), B = b.split(/(\s+)/), out = "";
+    var A = tok(a), B = tok(b), ops = [];
     var i = 0, j = 0;
-    while (i < A.length || j < B.length) {
-      if (i < A.length && j < B.length && A[i] === B[j]) { out += esc(A[i]); i++; j++; continue; }
-      var ni = A.indexOf(B[j], i), nj = B.indexOf(A[i], j);
-      if (j < B.length && (ni === -1 || (nj !== -1 && nj - j <= ni - i))) {
-        out += "<ins>" + esc(B[j]) + "</ins>"; j++;
-      } else if (i < A.length) { out += "<del>" + esc(A[i]) + "</del>"; i++; }
-      else { out += "<ins>" + esc(B[j]) + "</ins>"; j++; }
+    function push(kind, t) {
+      var last = ops[ops.length - 1];
+      if (last && last.kind === kind) last.text += t; else ops.push({kind: kind, text: t});
     }
-    return out;
+    while (i < A.length || j < B.length) {
+      if (i < A.length && j < B.length && A[i] === B[j]) { push("", A[i]); i++; j++; continue; }
+      var ni = A.indexOf(B[j], i), nj = B.indexOf(A[i], j);
+      if (j < B.length && (ni === -1 || (nj !== -1 && nj - j <= ni - i))) { push("ins", B[j]); j++; }
+      else if (i < A.length) { push("del", A[i]); i++; }
+      else { push("ins", B[j]); j++; }
+    }
+    return ops;
   }
+  function diffHtml(ops) {
+    return ops.map(function (o) {
+      return o.kind ? "<" + o.kind + ">" + esc(o.text) + "</" + o.kind + ">" : esc(o.text);
+    }).join("");
+  }
+  function diffChanged(ops) { return ops.some(function (o) { return o.kind; }); }
 
   // ---- render --------------------------------------------------------------
   var root = document.getElementById("app");
 
   function render() {
+    // Replacing innerHTML drops the page to the top, which threw the annotator back to
+    // the first statement every time they pressed a choice button further down.
+    var keepY = window.scrollY;
     var item = ITEMS[st.at], cur = st.items[st.at];
     document.getElementById("count").innerHTML =
       "item <b>" + (st.at + 1) + "</b> of " + ITEMS.length;
@@ -241,6 +280,9 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
         + btn(i, "not", "Not a hallucination", s.act)
         + (canSplit ? '<button type="button" class="choice" data-split="' + i
             + '">Split this span</button>' : "")
+        + (s.from && cur.spans[i + 1] && cur.spans[i + 1].from === s.from
+            ? '<button type="button" class="choice" data-merge="' + i
+              + '">Undo this split</button>' : "")
         + "</div>"
         + (s.split ? splitUI(i, s) : "")
         + (s.act && s.act !== "not"
@@ -258,8 +300,9 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
         + "</div>";
     }).join("");
 
-    var asm = assemble(item, cur);
-    if (!cur.grammar) { cur.grammar = asm; save(); }
+    // The revision follows the choices until the annotator edits it themselves. After
+    // that it is theirs, and nothing rebuilds it without saying so.
+    if (!cur.touched) { cur.grammar = assemble(item, cur); save(); }
 
     root.innerHTML =
       '<div class="panes">'
@@ -271,16 +314,21 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
       + '<div style="margin-top:18px">' + spansHtml + "</div>"
       + '<div class="pane" style="margin-top:4px">'
       + '<p class="lab">Your revision</p>'
+      + (notice ? '<p class="notice">' + esc(notice) + "</p>" : "")
       + '<p class="sub" style="font-size:13.5px;margin-bottom:10px">This is what your '
       + 'choices produce. Repair any grammar <em>your own edits</em> broke &mdash; change '
       + 'nothing else, and add no new information.</p>'
+      + (cur.touched ? '<p class="hint">You have edited this yourself, so it no longer '
+          + 'follows your choices automatically.</p>' : "")
       + '<textarea id="gram">' + esc(cur.grammar) + "</textarea></div>"
       + '<div class="foot"><button class="cta" id="next">'
       + (st.at === ITEMS.length - 1 ? "Finish" : "Save and continue") + "</button>"
       + '<span class="saved" id="saved"></span>'
       + '<span class="err" id="err"></span></div>'
       + "</div></div>";
+    notice = "";
     wire(item, cur);
+    window.scrollTo(0, keepY);
   }
 
   function btn(i, act, label, cursel) {
@@ -291,9 +339,13 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
   function splitUI(i, s) {
     var words = s.text.trim().split(/\s+/);
     var b = "";
+    // Only the words either side of the cut. Printing the whole phrase on every button
+    // made a long clause into a dozen near-identical lines with the boundary buried.
     for (var k = 1; k < words.length; k++) {
+      var L = words.slice(0, k), R = words.slice(k);
       b += '<button type="button" class="word" data-cut="' + i + ':' + k + '">'
-         + esc(words.slice(0, k).join(" ")) + " | " + esc(words.slice(k).join(" "))
+         + (L.length > 3 ? "&hellip; " : "") + esc(L.slice(-3).join(" "))
+         + ' <b>|</b> ' + esc(R.slice(0, 3).join(" ")) + (R.length > 3 ? " &hellip;" : "")
          + "</button>";
     }
     return '<div class="split"><p>This statement marks more than one detail. Choose where '
@@ -308,9 +360,17 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
       b.addEventListener("click", function () {
         var i = +b.dataset.i, s = cur.spans[i];
         s.act = (s.act === b.dataset.act) ? "" : b.dataset.act;
-        if (s.act !== "replace") s.r = "";
+        // The typed answer stays in state when the choice moves off Replace: the field
+        // is hidden, not emptied, so going back does not cost the annotator their work.
+        // post() sends r only for a span that is actually being replaced.
         s.split = false;
-        cur.grammar = "";
+        // A new choice means a different assembly, so a grammar repair written against
+        // the old one no longer applies. Rebuild -- but never silently.
+        if (cur.touched) {
+          notice = "Your choices changed, so the revision below was rebuilt from them. "
+                 + "Any wording you had repaired by hand is gone.";
+        }
+        cur.touched = false;
         save(); render();
       });
     });
@@ -326,23 +386,47 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
         if (!k) { s.split = false; save(); render(); return; }
         var w = s.text.trim().split(/\s+/);
         var left = w.slice(0, k).join(" "), right = w.slice(k).join(" ");
+        // Both halves inherit the choice and the question. Splitting used to throw them
+        // away, so an annotator who decided how to handle a span and then noticed it
+        // held two details was punished for noticing. The answer does not carry: it was
+        // written for the whole span and is wrong for either half on its own.
         cur.spans.splice(i, 1,
-          {sid: s.sid + "a", text: left, act: "", q: "", r: "", from: s.sid},
-          {sid: s.sid + "b", text: right, act: "", q: "", r: "", from: s.sid});
-        cur.grammar = "";
+          {sid: s.sid + "a", text: left, act: s.act, q: s.q, r: "", from: s.sid,
+           up: s.from || null},
+          {sid: s.sid + "b", text: right, act: s.act, q: s.q, r: "", from: s.sid,
+           up: s.from || null});
+        cur.touched = false;
         save(); render();
       });
     });
+    root.querySelectorAll("[data-merge]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var i = +b.dataset.merge, a = cur.spans[i], z = cur.spans[i + 1];
+        cur.spans.splice(i, 2, {sid: a.from, text: a.text + " " + z.text,
+          act: a.act || z.act, q: a.q || z.q, r: "", from: a.up || undefined,
+          up: undefined});
+        cur.touched = false;
+        save(); render();
+      });
+    });
+    var g = document.getElementById("gram");
+    function fit() { g.style.height = "auto"; g.style.height = (g.scrollHeight + 4) + "px"; }
+    fit();
     root.querySelectorAll("[data-q]").forEach(function (el) {
       el.addEventListener("input", function () { cur.spans[+el.dataset.q].q = el.value; save(); });
     });
     root.querySelectorAll("[data-r]").forEach(function (el) {
       el.addEventListener("input", function () {
-        cur.spans[+el.dataset.r].r = el.value; cur.grammar = ""; save();
+        cur.spans[+el.dataset.r].r = el.value;
+        // Rebuild as they type. Blanking the revision here and waiting for some later
+        // render is what made Finish report an empty revision over a box full of text.
+        if (!cur.touched) { cur.grammar = assemble(item, cur); g.value = cur.grammar; fit(); }
+        save();
       });
     });
-    var g = document.getElementById("gram");
-    g.addEventListener("input", function () { cur.grammar = g.value; save(); });
+    g.addEventListener("input", function () {
+      cur.grammar = g.value; cur.touched = true; save(); fit();
+    });
     [g].concat(Array.prototype.slice.call(root.querySelectorAll("input[type=text]")))
       .forEach(function (el) {
         el.addEventListener("paste", function () { cur.pastes += 1; save(); });
@@ -374,7 +458,12 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
   function submitItem(item, cur) {
     var p = problems(cur);
     var err = document.getElementById("err");
-    if (p.length) { err.textContent = p[0] + "."; return; }
+    if (p.length) {
+      err.textContent = p.join("; ") + ".";
+      var first = root.querySelector(".span:not(.done):not(.off)");
+      if (first) first.scrollIntoView({behavior: "smooth", block: "center"});
+      return;
+    }
     err.textContent = "";
     stamp();
     showDiff(item, cur);
@@ -383,25 +472,37 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
   // The last gate: the diff beside the original, and the one question that cannot be
   // answered without looking at both. A tick box would be clicked without reading.
   function showDiff(item, cur) {
+    var ops = wordDiff(item.summary, cur.grammar);
     var bg = document.createElement("div");
     bg.className = "modalbg";
-    bg.innerHTML =
-      '<div class="modal"><h2>Before you continue</h2>'
-      + '<p class="lab">What you changed</p>'
-      + '<div class="diff">' + wordDiff(item.summary, cur.grammar) + "</div>"
-      + '<p class="sub">Read your revision against the marked statements once more.</p>'
-      + '<p style="font-weight:600;margin:0 0 10px">Did you lose any salvageable '
-      + "faithful information?</p>"
-      + '<div class="row"><button type="button" class="choice" id="lostno">'
-      + "No &mdash; everything the statement got right is still there</button>"
-      + '<button type="button" class="choice" id="lostyes">Yes &mdash; let me fix it'
-      + "</button></div></div>";
+    // Asking "did you lose anything?" over an unchanged text reads as a trick question.
+    // When nothing moved, the thing worth confirming is that nothing moved on purpose.
+    bg.innerHTML = diffChanged(ops)
+      ? '<div class="modal"><h2>Before you continue</h2>'
+        + '<p class="lab">What you changed</p>'
+        + '<div class="diff">' + diffHtml(ops) + "</div>"
+        + '<p class="sub">Read your revision against the marked statements once more.</p>'
+        + '<p style="font-weight:600;margin:0 0 10px">Did you lose any salvageable '
+        + "faithful information?</p>"
+        + '<div class="row"><button type="button" class="choice" id="lostno">'
+        + "No &mdash; everything the statement got right is still there</button>"
+        + '<button type="button" class="choice" id="lostyes">Yes &mdash; let me fix it'
+        + "</button></div></div>"
+      : '<div class="modal"><h2>You are submitting the text unchanged</h2>'
+        + '<p class="sub">Your answers leave this summary exactly as it arrived, word for '
+        + "word. That is the right answer when every marked statement is faithful to the "
+        + "source &mdash; and the wrong one if any of them is not.</p>"
+        + '<div class="row"><button type="button" class="choice" id="lostno">'
+        + "That is my answer &mdash; continue</button>"
+        + '<button type="button" class="choice" id="lostyes">Let me look again'
+        + "</button></div></div>";
     document.body.appendChild(bg);
     document.getElementById("lostyes").addEventListener("click", function () {
       cur.lost = "yes"; save(); bg.remove(); itemStart = Date.now();
     });
     document.getElementById("lostno").addEventListener("click", function () {
-      cur.lost = "no"; cur.done = true; save(); bg.remove(); advance(cur);
+      cur.lost = diffChanged(ops) ? "no" : "unchanged";
+      cur.done = true; save(); bg.remove(); advance(cur);
     });
   }
 
@@ -427,7 +528,8 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
         item: cur.id, answer_ms: cur.ms, lost_check: cur.lost,
         pastes: cur.pastes, keys: cur.keys, revision: cur.grammar,
         spans: cur.spans.map(function (s) {
-          return {sid: s.sid, text: s.text, act: s.act, q: s.q, r: s.r,
+          return {sid: s.sid, text: s.text, act: s.act, q: s.q,
+                  r: s.act === "replace" ? s.r : "",
                   split_from: s.from || null};
         })
       }],
@@ -455,6 +557,8 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
       if (PRO.session) u.searchParams.set("SESSION_ID", PRO.session);
       href = u.toString();
     } catch (e) {}
+    document.getElementById("count").innerHTML =
+      "<b>all " + ITEMS.length + "</b> done";
     root.innerHTML = '<div class="pane"><h2>All eight done &mdash; thank you.</h2>'
       + '<p class="sub">One short page left: a few questions about the guidelines '
       + "themselves. Your answers there are the most useful thing we get from this "
