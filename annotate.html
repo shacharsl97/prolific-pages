@@ -26,7 +26,7 @@
   --mark:#4a3a1c; --mark-line:#c89a3f;
   --ok:#7fc79b; --ok-bg:#18261e;
   --dis:#e98f8a; --dis-bg:#2a1c1c;
-  --rej-bg:#1e2422;
+  --rej-bg:#2b323a;
   --on-accent:#10243a;
   --note:#33291a; --note-line:#c89a3f;
   color-scheme:dark;
@@ -61,10 +61,13 @@ h2{font-family:var(--display);font-size:20px;font-weight:600;margin:0 0 10px}
 .pane.src{position:sticky;top:64px;max-height:calc(100vh - 92px);overflow:auto}
 .doc{white-space:pre-wrap;font-size:15.5px;line-height:1.72}
 mark.sp{background:var(--mark);border-bottom:2px solid var(--mark-line);padding:1px 0;
-  cursor:pointer;border-radius:2px}
+  cursor:pointer;border-radius:2px;color:var(--ink)}
+/* The browser's own stylesheet puts color:black on <mark>, which it does not
+   adapt for a dark page. Every highlight -- the amber one most of all -- was
+   black text on a dark ground until this line. */
 mark.sp.active{background:var(--mark-line);color:#1c1b19}
 mark.sp.done{background:var(--ok-bg);border-bottom-color:var(--ok)}
-mark.sp.off{background:var(--rej-bg);border-bottom-color:var(--muted);opacity:.75}
+mark.sp.off{background:var(--rej-bg);border-bottom-color:var(--muted)}
 
 .span{border:1px solid var(--rule);border-left:3px solid var(--mark-line);
   border-radius:0 6px 6px 0;background:var(--paper);padding:14px 16px;margin:0 0 14px}
@@ -133,13 +136,13 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
   <button type="button" class="barbtn" id="theme"></button>
 </div></div>
 <div class="wrap">
-  <h1>Revise the marked statements</h1>
-  <p class="sub">The source is on the left and never changes. On the right is a summary of
+  <h1 id="task-h1">Revise the marked statements</h1>
+  <p class="sub" id="task-intro">The source is on the left and never changes. On the right is a summary of
     it with the unfaithful statements already marked. For each one: say which question it
     and the source both answer, then replace it with the source&rsquo;s answer &mdash; or
     delete it if the source has no answer to give.</p>
   <div id="app"></div>
-  <div class="llm">Please do not use any LLMs. We are studying how people write faithful
+  <div class="llm" id="llm-note">Please do not use any LLMs. We are studying how people write faithful
     minimal revisions, so we need your own work.</div>
 </div>
 <script>
@@ -174,10 +177,6 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
     var el = document.getElementById("saved");
     if (el) { el.textContent = "saved"; setTimeout(function () { el.textContent = ""; }, 1400); }
   }
-
-  // Set when something the annotator cannot see coming has just happened to their
-  // revision. render() shows it once and clears it.
-  var notice = "";
 
   var itemStart = Date.now();
   function stamp() {
@@ -248,10 +247,31 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
     }
     return ops;
   }
+  // Everything removed, then everything added. The alignment above pairs tokens one
+  // at a time, so swapping two words for two words came out "Five 26 people men" --
+  // accurate and unreadable. Whitespace inside a changed region belongs to both sides,
+  // which is what lets each block read as running text.
   function diffHtml(ops) {
-    return ops.map(function (o) {
-      return o.kind ? "<" + o.kind + ">" + esc(o.text) + "</" + o.kind + ">" : esc(o.text);
-    }).join("");
+    var out = "", dels = "", adds = "", held = "", open = false;
+    function flush() {
+      if (dels) out += "<del>" + esc(dels) + "</del>";
+      if (adds) out += "<ins>" + esc(adds) + "</ins>";
+      dels = adds = ""; open = false;
+      out += esc(held); held = "";
+    }
+    ops.forEach(function (o) {
+      if (o.kind) {
+        if (held) { dels += held; adds += held; held = ""; }
+        if (o.kind === "del") dels += o.text; else adds += o.text;
+        open = true;
+      } else if (open && !o.text.trim()) {
+        held += o.text;                       // might be inside the region, or after it
+      } else {
+        flush(); out += esc(o.text);
+      }
+    });
+    flush();
+    return out;
   }
   function diffChanged(ops) { return ops.some(function (o) { return o.kind; }); }
 
@@ -314,7 +334,7 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
       + '<div style="margin-top:18px">' + spansHtml + "</div>"
       + '<div class="pane" style="margin-top:4px">'
       + '<p class="lab">Your revision</p>'
-      + (notice ? '<p class="notice">' + esc(notice) + "</p>" : "")
+      + (cur.note ? '<p class="notice">' + esc(cur.note) + "</p>" : "")
       + '<p class="sub" style="font-size:13.5px;margin-bottom:10px">This is what your '
       + 'choices produce. Repair any grammar <em>your own edits</em> broke &mdash; change '
       + 'nothing else, and add no new information.</p>'
@@ -326,7 +346,6 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
       + '<span class="saved" id="saved"></span>'
       + '<span class="err" id="err"></span></div>'
       + "</div></div>";
-    notice = "";
     wire(item, cur);
     window.scrollTo(0, keepY);
   }
@@ -367,8 +386,8 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
         // A new choice means a different assembly, so a grammar repair written against
         // the old one no longer applies. Rebuild -- but never silently.
         if (cur.touched) {
-          notice = "Your choices changed, so the revision below was rebuilt from them. "
-                 + "Any wording you had repaired by hand is gone.";
+          cur.note = "Your choices changed, so the revision below was rebuilt from them. "
+                   + "Any wording you had repaired by hand is gone.";
         }
         cur.touched = false;
         save(); render();
@@ -390,6 +409,10 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
         // away, so an annotator who decided how to handle a span and then noticed it
         // held two details was punished for noticing. The answer does not carry: it was
         // written for the whole span and is wrong for either half on its own.
+        if (s.r.trim()) {
+          cur.note = "The answer you had written covered the whole statement, so it was "
+                   + "cleared. Each part needs its own.";
+        }
         cur.spans.splice(i, 1,
           {sid: s.sid + "a", text: left, act: s.act, q: s.q, r: "", from: s.sid,
            up: s.from || null},
@@ -402,9 +425,15 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
     root.querySelectorAll("[data-merge]").forEach(function (b) {
       b.addEventListener("click", function () {
         var i = +b.dataset.merge, a = cur.spans[i], z = cur.spans[i + 1];
+        // One answer can come back: it is the whole statement's again. Two cannot be
+        // joined into one, so the second is dropped and the annotator is told.
+        if (a.r.trim() && z.r.trim()) {
+          cur.note = "Both parts had an answer. The first was kept for the statement as "
+                   + "a whole; check it still says what you mean.";
+        }
         cur.spans.splice(i, 2, {sid: a.from, text: a.text + " " + z.text,
-          act: a.act || z.act, q: a.q || z.q, r: "", from: a.up || undefined,
-          up: undefined});
+          act: a.act || z.act, q: a.q || z.q, r: a.r.trim() || z.r,
+          from: a.up || undefined, up: undefined});
         cur.touched = false;
         save(); render();
       });
@@ -425,7 +454,13 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
       });
     });
     g.addEventListener("input", function () {
-      cur.grammar = g.value; cur.touched = true; save(); fit();
+      cur.grammar = g.value; cur.touched = true;
+      if (cur.note) {
+        cur.note = "";
+        var n = root.querySelector(".notice");
+        if (n) n.remove();
+      }
+      save(); fit();
     });
     [g].concat(Array.prototype.slice.call(root.querySelectorAll("input[type=text]")))
       .forEach(function (el) {
@@ -559,6 +594,12 @@ var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three re
     } catch (e) {}
     document.getElementById("count").innerHTML =
       "<b>all " + ITEMS.length + "</b> done";
+    // The heading and the instructions sit outside #app, so finishing used to leave
+    // "Revise the marked statements" and a paragraph of how-to above the thank-you.
+    ["task-h1", "task-intro", "llm-note"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
     root.innerHTML = '<div class="pane"><h2>All eight done &mdash; thank you.</h2>'
       + '<p class="sub">One short page left: a few questions about the guidelines '
       + "themselves. Your answers there are the most useful thing we get from this "
