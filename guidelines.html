@@ -128,7 +128,7 @@ a{color:var(--accent)}
 <p><strong>Statement:</strong> The different propositions or units of information the target text consists of. Each statement may be entailed or contradicted by the source, or neither (“neutral”). A statement is a hallucination to revise when it is contradicted or merely neutral (i.e. not entailed neither contradicted) — both are non-faithful; only entailed statements are left untouched.</p>
 <ul>
 <li>For example, if the target text is “Danny ate a green apple”, it can be decomposed into two different statements: “Danny ate an apple” and “The apple was green”.</li>
-</ul></div><div class="marginfig"><figure><svg viewBox="0 0 470 314" width="100%" role="img" aria-label="A source text, a target text, and one statement picked out of the target that the source contradicts" xmlns="http://www.w3.org/2000/svg">
+</ul></div><div class="marginfig"><figure><svg viewBox="0 0 470 274" width="100%" role="img" aria-label="A source text, a target text, and one statement picked out of the target that the source contradicts" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 <path d="M0,0 L7,3.5 L0,7 z" fill="var(--muted)"/></marker></defs>
 
@@ -157,9 +157,7 @@ a{color:var(--accent)}
 <rect x="118" y="228" width="172" height="30" rx="4" fill="var(--mark)" stroke="var(--mark-line)"/>
 <text x="130" y="248" class="svg-t">the River Ribble</text>
 
-<text x="118" y="286" class="svg-cap">The source puts the rescue at a beach near Knott End,</text>
-<text x="118" y="301" class="svg-cap">so this statement is <tspan class="svg-k">contradicted</tspan> &#8212; a hallucination to revise.</text>
-</svg><figcaption>The three terms, on one item.</figcaption></figure></div></div></section><section class="sec lvl2" id="revision" data-sec="revision"><div class="card"><h2><span class="n">2</span>Revision guidelines</h2><div class="body"><p>You are provided with a ground-truth source, a hallucination-containing target text and a set of marked hallucinated statements within that target text. Your job is to revise the target text and correct all hallucinations in the optimal and most minimal manner, according to the following criteria:</p>
+</svg></figure></div></div></section><section class="sec lvl2" id="revision" data-sec="revision"><div class="card"><h2><span class="n">2</span>Revision guidelines</h2><div class="body"><p>You are provided with a ground-truth source, a hallucination-containing target text and a set of marked hallucinated statements within that target text. Your job is to revise the target text and correct all hallucinations in the optimal and most minimal manner, according to the following criteria:</p>
 <p><strong>GOAL</strong> — Fix the marked non-faithful statements in a summary so that everything it says is supported by its source, while changing the <strong>meaning</strong> as little as possible.</p>
 <ul>
 <li>A minimal revision should aim to preserve as much as possible the <strong>target text’</strong>s author&#x27;s original information and intent while editing its content to be faithful to the <strong>source text</strong>.</li>
