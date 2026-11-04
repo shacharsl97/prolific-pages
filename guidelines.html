@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Minimal revision &mdash; annotation guidelines</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
 :root {
@@ -16,17 +17,12 @@
   --display:'Newsreader',Georgia,serif;
   --body:'IBM Plex Sans',system-ui,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,monospace;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper:#15171a; --raised:#1c1f23; --ink:#e8e6e2; --muted:#9a968f; --rule:#2e3237;
-    --accent:#7fb2e0;
-    --mark:#4a3a1c; --mark-line:#c89a3f;
-    --ok:#7fc79b; --ok-bg:#18261e;
-    --dis:#e98f8a; --dis-bg:#2a1c1c;
-    --rej-bg:#1e2422; color-scheme:dark;
-  }
-}
+/* Light by default for everyone, whatever the operating system is set to -- these are
+   read-once instructions and the figures were colour-checked on paper white. Dark is
+   available, but only if the reader asks for it with the toggle; there is deliberately
+   no prefers-color-scheme rule. */
 :root[data-theme="dark"] {
   --paper:#15171a; --raised:#1c1f23; --ink:#e8e6e2; --muted:#9a968f; --rule:#2e3237;
   --accent:#7fb2e0;
@@ -42,7 +38,13 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);
   padding-left:max(16px,env(safe-area-inset-left,0px));
   padding-right:max(16px,env(safe-area-inset-right,0px))}
 .wrap{max-width:1140px;margin:0 auto}
-header{max-width:660px}
+header{max-width:660px;display:flex;align-items:flex-start;justify-content:space-between;
+  gap:24px}
+.themetoggle{flex:none;margin-top:10px;font:inherit;font-size:13px;color:var(--muted);
+  background:transparent;border:1px solid var(--rule);border-radius:999px;
+  padding:6px 14px;cursor:pointer;white-space:nowrap;line-height:1}
+.themetoggle:hover{color:var(--ink);border-color:var(--muted)}
+.themetoggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 h1{font-family:var(--display);font-size:clamp(30px,5vw,44px);font-weight:600;margin:0;
   line-height:1.1;text-wrap:balance;letter-spacing:-.015em}
 h1 .sub{display:block;font-size:.46em;font-weight:400;color:var(--muted);
@@ -106,6 +108,7 @@ a{color:var(--accent)}
 <div class="wrap">
   <header>
     <h1>Minimal revision<span class="sub">annotation guidelines</span></h1>
+    <button type="button" id="theme" class="themetoggle"></button>
   </header>
   <hr class="rule">
   <section class="sec lvl2" id="terminology" data-sec="terminology"><h2><span class="n">1</span>Terminology</h2><div class="marginfig"><figure><svg viewBox="0 0 540 240" width="100%" role="img" aria-label="A source and a target text, with one span marked as a hallucination and one marked as entailed" xmlns="http://www.w3.org/2000/svg">
@@ -377,6 +380,29 @@ a{color:var(--accent)}
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec';
 var TOOL_VERSION = 'guidelines-v2';
 var SOURCE_SHA = '1fb90c1435aae641';
+
+// Theme toggle. The page is light for everyone by default; this only remembers a
+// reader who asked for dark. localStorage can throw in a private window, so every
+// access is guarded and the page is correct without it.
+(function () {
+  var root = document.documentElement, btn = document.getElementById("theme");
+  if (!btn) return;
+  function paint() {
+    var dark = root.getAttribute("data-theme") === "dark";
+    btn.textContent = dark ? "☀ Light" : "☾ Dark";
+    btn.setAttribute("aria-label",
+      dark ? "Switch to the light theme" : "Switch to the dark theme");
+  }
+  btn.addEventListener("click", function () {
+    var dark = root.getAttribute("data-theme") === "dark";
+    if (dark) { root.removeAttribute("data-theme"); } else {
+      root.setAttribute("data-theme", "dark");
+    }
+    try { localStorage.setItem("gl-theme", dark ? "light" : "dark"); } catch (e) {}
+    paint();
+  });
+  paint();
+})();
 
 // Per-section dwell. Accumulated only while a section is on screen AND the tab is
 // visible, so a coffee break is not reading time. Viewport width is logged because the
