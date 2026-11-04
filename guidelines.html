@@ -329,40 +329,29 @@ a{color:var(--accent)}
 <text x="20" y="159" class="svg-t">The 50-year-old man quit his job.</text>
 <text x="8" y="192" class="svg-cap"><tspan class="svg-k">Nothing was added in its place.</tspan></text>
 <text x="8" y="207" class="svg-cap">The word simply goes.</text>
-</svg><figcaption>When no answer exists, the span just goes.</figcaption></figure></div></div></section><section class="sec lvl2" id="workflow" data-sec="workflow"><div class="card"><h2><span class="n">3</span>Annotation Workflow</h2><div class="body"><p>You will be provided with the source text, and a target text with different <strong>marked hallucinations</strong> (already detected)</p></div></div><div class="fullfig"><figure><svg viewBox="0 0 1080 420" width="100%" role="img" aria-label="The annotation workflow as a flowchart, beside the same example shown at each stage" xmlns="http://www.w3.org/2000/svg">
+</svg><figcaption>When no answer exists, the span just goes.</figcaption></figure></div></div></section><section class="sec lvl2" id="workflow" data-sec="workflow"><div class="card"><h2><span class="n">3</span>Annotation Workflow</h2><div class="body"><p>You will be provided with the source text, and a target text with different <strong>marked hallucinations</strong> (already detected)</p></div></div><div class="fullfig"><figure><svg viewBox="0 0 1080 408" width="100%" role="img" aria-label="The procedure as a flowchart that branches at Q1 into replace and delete and rejoins for the grammar repair, beside the same example shown at each stage" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="a3" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
 <path d="M0,0 L7,3.5 L0,7 z" fill="var(--muted)"/></marker></defs>
 <text x="8" y="18" class="svg-lab">WHAT YOU DO</text>
-<rect x="24" y="34" width="224" height="32" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="36" y="55" class="svg-t">a marked span</text>
-<line x1="136" y1="66" x2="136" y2="80" stroke="var(--muted)" marker-end="url(#a3)"/><line x1="136" y1="116" x2="136" y2="130" stroke="var(--muted)" marker-end="url(#a3)"/><line x1="136" y1="166" x2="136" y2="180" stroke="var(--muted)" marker-end="url(#a3)"/><line x1="136" y1="216" x2="136" y2="230" stroke="var(--muted)" marker-end="url(#a3)"/><line x1="136" y1="266" x2="136" y2="280" stroke="var(--muted)" marker-end="url(#a3)"/>
-<rect x="24" y="80" width="224" height="32" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="36" y="101" class="svg-t">find Q1</text>
-<rect x="24" y="130" width="224" height="32" rx="16" fill="var(--rej-bg)" stroke="var(--rule)"/><text x="38" y="151" class="svg-t">a more specific question?</text>
-<rect x="24" y="180" width="224" height="32" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="36" y="201" class="svg-t">Qmax</text>
-<rect x="24" y="230" width="224" height="32" rx="16" fill="var(--rej-bg)" stroke="var(--rule)"/><text x="38" y="251" class="svg-t">can the source answer it?</text>
-<rect x="24" y="280" width="108" height="32" rx="4" fill="var(--ok-bg)" stroke="var(--ok)"/><text x="36" y="301" class="svg-t">yes &#8594; replace</text>
-<rect x="140" y="280" width="108" height="32" rx="4" fill="var(--dis-bg)" stroke="var(--dis)"/><text x="152" y="301" class="svg-t">no &#8594; delete</text>
-<line x1="136" y1="312" x2="136" y2="326" stroke="var(--muted)" marker-end="url(#a3)"/>
-<rect x="24" y="332" width="224" height="32" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="36" y="353" class="svg-t">repair grammar you broke</text>
-<line x1="136" y1="364" x2="136" y2="378" stroke="var(--muted)" marker-end="url(#a3)"/>
-<rect x="24" y="384" width="224" height="32" rx="4" fill="var(--mark)" stroke="var(--mark-line)"/><text x="36" y="405" class="svg-t">lost anything salvageable?</text>
-<line x1="310" y1="28" x2="310" y2="412" stroke="var(--rule)"/>
-<text x="340" y="18" class="svg-lab">THE SAME ITEM, AT EVERY STAGE</text>
-<text x="340" y="56" class="svg-cap">0</text>
-<text x="372" y="56" class="svg-t">Lennon was born in <tspan class="svg-k" fill="var(--dis)">Germany</tspan></text>
-<text x="340" y="102" class="svg-cap">1</text>
-<text x="372" y="102" class="svg-t">Q1 &#8220;Where was Lennon born?&#8221; &#8212; then narrow to</text>
-<text x="372" y="122" class="svg-t">Qmax &#8220;In which country was Lennon born?&#8221;</text>
-<text x="340" y="168" class="svg-cap">2</text>
-<text x="372" y="168" class="svg-t">the source answers Qmax &#8594; <tspan class="svg-k" fill="var(--ok)">England</tspan></text>
-<text x="340" y="214" class="svg-cap">3</text>
-<text x="372" y="214" class="svg-t">Lennon was born in <tspan class="svg-k" fill="var(--ok)">England</tspan></text>
-<text x="340" y="260" class="svg-cap">4</text>
-<text x="372" y="260" class="svg-t">grammar &#8212; nothing broken, nothing to repair</text>
-<text x="340" y="306" class="svg-cap">5</text>
-<text x="372" y="306" class="svg-t">&#8220;born in Europe&#8221; is still implied &#8212; nothing lost</text>
-<rect x="364" y="330" width="460" height="58" rx="4" fill="var(--ok-bg)" stroke="var(--ok)"/>
-<text x="378" y="353" class="svg-t">The author&#8217;s intent is preserved as much as possible.</text>
-<text x="378" y="375" class="svg-cap">How many words changed is not what matters.</text>
+<rect x="120" y="30" width="200" height="30" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="220.0" y="50.0" class="svg-t" text-anchor="middle">a marked span</text><line x1="220" y1="60" x2="220" y2="76" stroke="var(--muted)" marker-end="url(#a3)"/><rect x="70" y="78" width="300" height="30" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="220.0" y="98.0" class="svg-t" text-anchor="middle">make it a complete statement H</text><line x1="220" y1="108" x2="220" y2="124" stroke="var(--muted)" marker-end="url(#a3)"/><rect x="70" y="126" width="300" height="50" rx="25" fill="var(--rej-bg)" stroke="var(--rule)"/><text x="220" y="148" class="svg-t" text-anchor="middle">is there a question Q1 that</text><text x="220" y="166" class="svg-t" text-anchor="middle">both H and the source answer?</text><line x1="150" y1="176" x2="115" y2="194" stroke="var(--muted)"/><line x1="115" y1="194" x2="115" y2="198" stroke="var(--muted)" marker-end="url(#a3)"/><line x1="290" y1="176" x2="330" y2="194" stroke="var(--muted)"/><line x1="330" y1="194" x2="330" y2="242" stroke="var(--muted)" marker-end="url(#a3)"/><text x="86" y="196" class="svg-cap" fill="var(--ok)">yes</text><text x="344" y="196" class="svg-cap" fill="var(--dis)">no</text><rect x="10" y="200" width="210" height="30" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="115.0" y="220.0" class="svg-t" text-anchor="middle">narrow it to Qmax</text><line x1="115" y1="230" x2="115" y2="244" stroke="var(--muted)" marker-end="url(#a3)"/><rect x="10" y="246" width="210" height="30" rx="4" fill="var(--ok-bg)" stroke="var(--ok)"/><text x="115.0" y="266.0" class="svg-t" text-anchor="middle">replace the span</text><rect x="235" y="246" width="190" height="30" rx="4" fill="var(--dis-bg)" stroke="var(--dis)"/><text x="330.0" y="266.0" class="svg-t" text-anchor="middle">delete the span</text><line x1="115" y1="276" x2="115" y2="294" stroke="var(--muted)"/><line x1="330" y1="276" x2="330" y2="294" stroke="var(--muted)"/><line x1="115" y1="294" x2="330" y2="294" stroke="var(--muted)"/><line x1="220" y1="294" x2="220" y2="312" stroke="var(--muted)" marker-end="url(#a3)"/><rect x="70" y="314" width="300" height="30" rx="4" fill="var(--paper)" stroke="var(--rule)"/><text x="220.0" y="334.0" class="svg-t" text-anchor="middle">repair grammar your edit broke</text><line x1="220" y1="344" x2="220" y2="360" stroke="var(--muted)" marker-end="url(#a3)"/><rect x="70" y="362" width="300" height="32" rx="4" fill="var(--mark)" stroke="var(--mark-line)"/><text x="220.0" y="383.0" class="svg-t" text-anchor="middle">lost anything salvageable?</text>
+<line x1="452" y1="28" x2="452" y2="396" stroke="var(--rule)"/>
+<text x="482" y="18" class="svg-lab">THE SAME ITEM, AT EVERY STAGE</text>
+<text x="482" y="56" class="svg-cap">0</text>
+<text x="514" y="56" class="svg-t">Lennon was born in <tspan class="svg-k" fill="var(--dis)">Germany</tspan></text>
+<text x="482" y="102" class="svg-cap">1</text>
+<text x="514" y="102" class="svg-t">H = &#8220;Lennon was born in Germany&#8221;</text>
+<text x="482" y="148" class="svg-cap">2</text>
+<text x="514" y="148" class="svg-t">Q1 &#8220;Where was Lennon born?&#8221; &#8212; both answer it,</text>
+<text x="514" y="168" class="svg-t">so narrow: Qmax &#8220;In which country was Lennon born?&#8221;</text>
+<text x="482" y="214" class="svg-cap">3</text>
+<text x="514" y="214" class="svg-t">the source answers Qmax &#8594; <tspan class="svg-k" fill="var(--ok)">Lennon was born in England</tspan></text>
+<text x="482" y="260" class="svg-cap">4</text>
+<text x="514" y="260" class="svg-t">Lennon was born in <tspan class="svg-k" fill="var(--ok)">England</tspan></text>
+<text x="482" y="306" class="svg-cap">5</text>
+<text x="514" y="306" class="svg-t">grammar &#8212; nothing broken, nothing to repair</text>
+<rect x="502" y="330" width="560" height="58" rx="4" fill="var(--ok-bg)" stroke="var(--ok)"/>
+<text x="516" y="353" class="svg-t">The author&#8217;s intent is preserved as much as possible.</text>
+<text x="516" y="375" class="svg-cap">How many words changed is not what matters.</text>
 </svg><figcaption>The whole procedure, with one item carried through it.</figcaption></figure></div></section><section class="sec lvl4" id="preliminaries" data-sec="preliminaries"><div class="card wide"><h4>Preliminaries</h4><div class="body"><ol>
 <li value="1">As noted above, the marked spans may not be perfectly aligned, in which case we should adjust the span to be minimal and only later revise.</li>
 <ol>
