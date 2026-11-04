@@ -37,8 +37,8 @@ body{background:var(--paper);color:var(--ink);font-family:var(--body);
   font-size:16px;line-height:1.6;margin:0;padding-block:44px 80px;
   padding-left:max(16px,env(safe-area-inset-left,0px));
   padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:1120px;margin:0 auto}
-header{max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;
+.wrap{max-width:1320px;margin:0 auto}
+header{max-width:1320px;margin:0 auto;display:flex;align-items:flex-start;
   justify-content:space-between;gap:24px}
 .themetoggle{flex:none;margin-top:10px;font:inherit;font-size:13px;color:var(--muted);
   background:transparent;border:1px solid var(--rule);border-radius:999px;
@@ -49,23 +49,25 @@ h1{font-family:var(--display);font-size:clamp(30px,5vw,44px);font-weight:600;mar
   line-height:1.1;text-wrap:balance;letter-spacing:-.015em}
 h1 .sub{display:block;font-size:.46em;font-weight:400;color:var(--muted);
   letter-spacing:0;margin-top:.5em}
-.rule{height:1px;background:var(--rule);border:0;margin:34px auto;max-width:1200px}
+.rule{height:1px;background:var(--rule);border:0;margin:34px 0;max-width:1320px}
 
-/* Bordered cards, as the 2 Nov page had -- but each card is itself two columns: prose
-   held at a readable measure on the left, small figures in a right-hand column beside
-   the text they explain. The card border is what keeps the right column from reading
-   as dead space in the sections that have no figure. The three big diagrams sit below
-   their card at the full page width, where a lattice and a flowchart need the room. */
+/* Bordered cards, flush to a common left edge. A card that HAS a figure widens into a
+   second column to hold it beside the text; a card that has none stays at the width of
+   the prose itself, so it never shows an empty gutter. Deliberately NOT letting the
+   text span the full width instead: at 1250px a line runs to about 120 characters,
+   roughly double the comfortable measure, and these are read-once instructions people
+   are then tested on. The ragged right edge is the cheaper cost. */
 .sec{margin:0 0 20px}
-.card{max-width:1200px;margin:0 auto;background:var(--raised);
-  border:1px solid var(--rule);border-radius:10px;padding:22px 32px 24px;
-  display:grid;grid-template-columns:minmax(0,690px) minmax(0,400px);
-  gap:0 46px;align-items:start}
-.card > h2,.card > h3,.card > h4{grid-column:1 / -1;margin-top:4px}
-.card > .body{grid-column:1}
-.card > .marginfig{grid-column:2;position:sticky;top:20px}
+.card{max-width:786px;margin:0 auto 0 0;background:var(--raised);
+  border:1px solid var(--rule);border-radius:10px;padding:22px 32px 24px}
+.card.wide{max-width:1320px;display:grid;
+  grid-template-columns:minmax(0,690px) minmax(0,500px);gap:0 48px;align-items:start}
+.card.wide > h2,.card.wide > h3,.card.wide > h4{grid-column:1 / -1}
+.card.wide > .body{grid-column:1}
+.card.wide > .marginfig{grid-column:2;position:sticky;top:20px}
+.card > h2,.card > h3,.card > h4{margin-top:4px}
 .marginfig{margin:6px 0 0}
-.fullfig{max-width:1200px;margin:16px auto 30px}
+.fullfig{max-width:1320px;margin:16px 0 30px}
 h2,h3,h4{font-family:var(--display);font-weight:600;margin:26px 0 6px;
   line-height:1.2;scroll-margin-top:20px}
 h2{font-size:25px} h3{font-size:21px} h4{font-size:18.5px}
@@ -103,12 +105,11 @@ svg{display:block;height:auto}
 .cta a{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;
   font-weight:600;padding:13px 26px;border-radius:4px;font-size:16px}
 a{color:var(--accent)}
-@media (max-width:1160px){
-  .card{grid-template-columns:minmax(0,1fr)}
-  .card > .body,.card > .marginfig{grid-column:1}
-  .card > .marginfig{position:static;max-width:470px;margin:12px 0 18px}
+@media (max-width:1380px){
+  .card.wide{display:block;max-width:786px}
+  .card.wide > .marginfig{position:static;max-width:500px;margin:14px 0 4px}
   .fullfig{overflow-x:auto}
-  .fullfig svg{min-width:760px}
+  .fullfig svg{min-width:820px}
 }
 @media (max-width:820px){
   .card{padding:18px 20px 20px;border-radius:8px}
@@ -122,7 +123,7 @@ a{color:var(--accent)}
     <button type="button" id="theme" class="themetoggle"></button>
   </header>
   <hr class="rule">
-  <section class="sec lvl2" id="terminology" data-sec="terminology"><div class="card"><h2><span class="n">1</span>Terminology</h2><div class="body"><p><strong>Target text:</strong> The text we scan for hallucinations. Could be LLM generated or human written. We attempt to find and correct all non factual details (with respect to the source text) within this text.</p>
+  <section class="sec lvl2" id="terminology" data-sec="terminology"><div class="card wide"><h2><span class="n">1</span>Terminology</h2><div class="body"><p><strong>Target text:</strong> The text we scan for hallucinations. Could be LLM generated or human written. We attempt to find and correct all non factual details (with respect to the source text) within this text.</p>
 <p><strong>Source:</strong> The reference text that the target text is intended to reflect. It serves as our ground truth and provides the factual evidence against which the target text is compared to detect hallucinated statements.</p>
 <p><strong>Statement:</strong> The different propositions or units of information the target text consists of. Each statement may be entailed or contradicted by the source, or neither (“neutral”). A statement is a hallucination to revise when it is contradicted or merely neutral (i.e. not entailed neither contradicted) — both are non-faithful; only entailed statements are left untouched.</p>
 <ul>
@@ -162,7 +163,7 @@ a{color:var(--accent)}
 </ul>
 <li>The intent we aim to keep is the <strong>informational intent</strong> (defined below) of the original text, that is, the information the author tried to give when they wrote the target text.</li>
 </ul>
-<p>Please note that while mostly correct, certain detected hallucinated statements might be <strong>non-accurately marked;</strong> so if you feel like the marked hallucination is faithful to the source text - or that only part of it is hallucinated - please mark that and continue to the next hallucination. In addition, do revise only the part of the originally marked span you believe is actually not-faithful to the source text.</p></div></div></section><section class="sec lvl3" id="intent" data-sec="intent"><div class="card"><h3>Informational intent</h3><div class="body"><p>A good revision is judged on two things, and the procedure in the sections that follow exists to satisfy both:</p>
+<p>Please note that while mostly correct, certain detected hallucinated statements might be <strong>non-accurately marked;</strong> so if you feel like the marked hallucination is faithful to the source text - or that only part of it is hallucinated - please mark that and continue to the next hallucination. In addition, do revise only the part of the originally marked span you believe is actually not-faithful to the source text.</p></div></div></section><section class="sec lvl3" id="intent" data-sec="intent"><div class="card wide"><h3>Informational intent</h3><div class="body"><p>A good revision is judged on two things, and the procedure in the sections that follow exists to satisfy both:</p>
 <ol>
 <li value="1"><strong>Minimal information loss.</strong> Every source-faithful fact the hallucinated statement entails should also survive the revision. If both the hallucination and the source imply some fact, the revision must still imply it.</li>
 <li value="2"><strong>Minimal specificity change.</strong> Answer in the same <strong>facet</strong> the author was writing about, at as close a level of detail as the source allows.</li>
@@ -287,7 +288,7 @@ a{color:var(--accent)}
 <text x="560" y="152" class="svg-cap">answers <tspan class="svg-k">from which place were they rescued?</tspan></text>
 <text x="560" y="172" class="svg-cap">&#8212; the same facet, and the source can answer it.</text>
 <text x="8" y="212" class="svg-cap">The source cannot name a river, so the question drops from <tspan class="svg-k">which river</tspan> to <tspan class="svg-k">which place</tspan>. The facet never changes.</text>
-</svg><figcaption>One intent, answered in two different facets.</figcaption></figure></div></section><section class="sec lvl4" id="deletion" data-sec="deletion"><div class="card"><h4>Deletion</h4><div class="body"><p>If we can not find a meaningful question answerable by both the target and the source, there is no valid intent-preserving replacement for the hallucinated content.</p>
+</svg><figcaption>One intent, answered in two different facets.</figcaption></figure></div></section><section class="sec lvl4" id="deletion" data-sec="deletion"><div class="card wide"><h4>Deletion</h4><div class="body"><p>If we can not find a meaningful question answerable by both the target and the source, there is no valid intent-preserving replacement for the hallucinated content.</p>
 <p>In this case - we delete the hallucinated clause completely, while, if needed, making sure to revise the target phrasing to keep it grammatical and fluent.</p>
 <ul>
 <li>However, make sure to avoid adding any new information from the source text not present in the original target text. Constrain yourself to grammatical and phrasing adjustments.</li>
