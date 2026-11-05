@@ -1184,7 +1184,7 @@ window.TOOL_HOOKS = {
   // ---- the two aids ------------------------------------------------------------
   var proc = document.getElementById("procpanel"), procBtn = document.getElementById("procbtn");
   var glm = document.getElementById("glmodal"), glBtn = document.getElementById("glbtn");
-  var glf = document.getElementById("glframe");
+  var glf = document.getElementById("glframe"), glScroll = 0;
 
   function syncFrameTheme() {
     try {
@@ -1200,6 +1200,7 @@ window.TOOL_HOOKS = {
       proc.hidden = true; procBtn.setAttribute("aria-expanded", "false");
       document.body.classList.remove("procopen"); fitAll();
     } else {
+      try { glScroll = glf.contentWindow.scrollY; } catch (e) {}
       glm.hidden = true; glBtn.setAttribute("aria-expanded", "false"); glBtn.focus();
     }
   }
@@ -1220,6 +1221,12 @@ window.TOOL_HOOKS = {
     }
     syncFrameTheme();
     glm.hidden = false; glBtn.setAttribute("aria-expanded", "true");
+    // Explicitly, rather than trusting the browser to keep a hidden frame's scroll: a tester
+    // in Chrome saw it come back at the top. "instant", because the guidelines page scrolls
+    // smoothly and the reader should not watch it travel.
+    if (glScroll) {
+      try { glf.contentWindow.scrollTo({top: glScroll, behavior: "instant"}); } catch (e) {}
+    }
     helpOpen("guidelines");
     document.getElementById("glclose").focus();
   });
