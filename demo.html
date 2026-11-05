@@ -372,6 +372,7 @@ function report(api, partial) {
     procedure_s: each(function (x) { return sec(x.help.procedure.ms); }),
     guidelines_opens: each(function (x) { return x.help.guidelines.opens; }),
     guidelines_s: each(function (x) { return sec(x.help.guidelines.ms); }),
+    field_ms: each(function (x) { return api.fieldTimes(x); }),
     intro_help: {procedure_opens: st.introHelp.procedure.opens,
                  procedure_s: sec(st.introHelp.procedure.ms),
                  guidelines_opens: st.introHelp.guidelines.opens,
@@ -459,7 +460,7 @@ window.TOOL_HOOKS = {
       }),
       rev: "", revTouched: false, revBase: "", gram: "", gramTouched: false, gramBase: "",
       lost: "", ms: 0, review_ms: 0, visits: 0, pastes: {}, keys: 0, done: false, note: "",
-      help: blankHelp()
+      help: blankHelp(), fieldMs: {}
     };
   }
   function spanText(item, s) { return item.summary.slice(s.start, s.end); }
@@ -471,6 +472,8 @@ window.TOOL_HOOKS = {
     st = {v: 2, at: HOOKS.intro ? -1 : 0, started: Date.now(), finished: false, intro_ms: 0,
           introHelp: blankHelp(), items: ITEMS.map(freshItem)};
   }
+  // Someone part-way through when this was added has a saved state without it.
+  st.items.forEach(function (x) { if (!x.fieldMs) x.fieldMs = {}; });
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
     var el = document.getElementById("saved");
@@ -515,7 +518,30 @@ window.TOOL_HOOKS = {
   }
   function helpClose(k) { helpTick(k); HELP[k].open = false; HELP[k].since = 0; save(); }
 
+  // Time with the cursor in each field, summed per item. The browser moves focus off the
+  // box when the window or the tab loses it, and a re-render removes the box, so all three
+  // stop this clock.
+  var fieldNow = null, fieldSince = 0;
+  function fieldTick() {
+    if (fieldNow && fieldSince) {
+      var now = Date.now(), c = st.items[st.at];
+      if (c) c.fieldMs[fieldNow] = (c.fieldMs[fieldNow] || 0) + (now - fieldSince);
+      fieldSince = now;
+    }
+  }
+  function fieldStop() { fieldTick(); fieldNow = null; fieldSince = 0; }
+  function fieldTimes(cur) {
+    var o = {};
+    Object.keys(cur.fieldMs).forEach(function (k) { o[k] = Math.round(cur.fieldMs[k]); });
+    return o;
+  }
+
   document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      fieldTick(); fieldSince = 0;
+    } else if (fieldNow) {
+      fieldSince = Date.now();
+    }
     if (document.hidden) {
       tick(); parked = clockAdd; clockAdd = null;
       ["procedure", "guidelines"].forEach(function (k) {
@@ -781,6 +807,7 @@ window.TOOL_HOOKS = {
   }
 
   function render() {
+    fieldStop();
     var keepY = window.scrollY;
     var bar = document.getElementById("count");
     document.getElementById("fill").style.width =
@@ -976,6 +1003,15 @@ window.TOOL_HOOKS = {
     save(); render();
   }
 
+  root.addEventListener("focusin", function (e) {
+    if (st.at < 0 || st.finished) return;
+    fieldTick();
+    var el = e.target;
+    fieldNow = el.dataset.f || (el.id === "rev" || el.id === "gram" ? el.id : null);
+    fieldSince = fieldNow ? Date.now() : 0;
+  });
+  root.addEventListener("focusout", fieldStop);
+
   root.addEventListener("input", function (e) {
     if (st.at < 0 || st.finished) return;
     var t = e.target, item = curItem(), cur = curState();
@@ -1109,6 +1145,7 @@ window.TOOL_HOOKS = {
   // The last gate: the diff beside the original, and the one question that cannot be
   // answered without looking at both. A tick box would be clicked without reading.
   function showGate(item, cur) {
+    fieldStop();
     var ops = wordDiff(item.summary, finalText(cur));
     var changed = diffChanged(ops);
     var bg = document.createElement("div");
@@ -1149,7 +1186,7 @@ window.TOOL_HOOKS = {
 
   // ---- moving between items ----------------------------------------------------
   function goTo(k) {
-    tick();
+    tick(); fieldStop();
     helpTick("procedure"); helpTick("guidelines");
     st.at = k;
     var cur = st.items[k];
@@ -1225,7 +1262,7 @@ window.TOOL_HOOKS = {
   }
 
   addEventListener("pagehide", function () {
-    tick(); helpTick("procedure"); helpTick("guidelines"); save();
+    tick(); fieldTick(); helpTick("procedure"); helpTick("guidelines"); save();
     if (!st.finished && HOOKS.partial) HOOKS.partial(api);
   });
 
@@ -1304,6 +1341,7 @@ window.TOOL_HOOKS = {
   var api = {st: st, PRO: PRO, esc: esc, save: save, render: render, advance: advance,
              send: send, withIds: withIds, wordDiff: wordDiff, diffHtml: diffHtml,
              spanRecord: spanRecord, spanText: spanText, finalText: finalText,
+             fieldTimes: fieldTimes,
              startReview: function (cur) { clockFor(cur); }};
   window.toolApi = api;     // test_tool.py drives the diff through this
 
