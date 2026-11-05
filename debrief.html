@@ -159,7 +159,7 @@
       <textarea id="other" placeholder="Optional"></textarea>
     </div>
 
-    <footer><button class="btn" id="go">Submit my feedback</button><p class="fnote">Your Prolific completion link will be shown here once the study is live. If you reached this page during testing, your answers are still recorded.</p></footer>
+    <footer><a class="btn" id="go" href="https://app.prolific.com/submissions/complete?cc=CYM3FTPO">Submit and return to Prolific</a></footer>
   </div>
 
   <div id="thanks" class="done hidden">
@@ -176,8 +176,8 @@
    closed the tab should not lose it.                                                   */
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec";
 const TOOL_VERSION = "debrief-v2";
-const COMPLETION_CODE = "REPLACE_ME";
-const LIVE = false;
+const COMPLETION_CODE = "CYM3FTPO";
+const LIVE = true;
 const QS = new URLSearchParams(location.search);
 const PROLIFIC = {
   pid: QS.get("PROLIFIC_PID") || "",
