@@ -230,9 +230,13 @@ $("go").addEventListener("click", (e) => {
   e.preventDefault();
   $("form").classList.add("hidden");
   $("thanks").classList.remove("hidden");
-  $("thanksbody").textContent =
-    "Your Prolific completion code is " + COMPLETION_CODE + ". Paste it into Prolific to "
-    + "finish, or close this tab if you were testing the page.";
+  // Before the study exists there is no code to give, and printing the placeholder
+  // reads to a tester as a bug in the page rather than a step not taken yet.
+  $("thanksbody").textContent = COMPLETION_CODE === "REPLACE_ME"
+    ? "Your feedback is recorded. This page has no completion code yet -- it is minted "
+      + "when the study is created. Close this tab if you were testing the page."
+    : "Your Prolific completion code is " + COMPLETION_CODE + ". Paste it into Prolific "
+      + "to finish, or close this tab if you were testing the page.";
   scrollTo(0, 0);
 });
 </script>
