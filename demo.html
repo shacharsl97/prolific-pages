@@ -922,6 +922,7 @@ window.TOOL_HOOKS = {
       var s = cur.spans[+d.i];
       s.act = s.act === d.act ? "" : d.act;
       s.splitOpen = false;
+      cur.note = "";
       save(); render();
     } else if (d.adjust) {
       var sa = cur.spans[+d.adjust], wasOpen = sa.adjOpen || !!sa.adj;
@@ -1186,6 +1187,7 @@ window.TOOL_HOOKS = {
 
   // ---- moving between items ----------------------------------------------------
   function goTo(k) {
+    if (st.items[st.at]) st.items[st.at].note = "";
     tick(); fieldStop();
     helpTick("procedure"); helpTick("guidelines");
     st.at = k;

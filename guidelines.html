@@ -137,6 +137,7 @@ a{color:var(--accent)}
     <button type="button" id="theme" class="themetoggle"></button>
   </header>
   <hr class="rule">
+  <div class="llmnote" id="devnote" hidden>This study needs a desktop or laptop computer and cannot be done on a phone or tablet. Please open it on a computer, or return the study on Prolific.</div>
   <section class="card overview" id="overview">
     <h2>What this study involves</h2>
     <ol><li><b>Read these guidelines, carefully.</b> Everything that follows depends on them. You can reopen them at any point during the practice and qualification rounds.</li><li><b>Practice round: 6 items.</b> You try each one yourself, then see a worked solution to compare with your answer.</li><li><b>Qualification round: 8 items.</b> Follow the guidelines as closely as you can. Some of your annotations will be compared with reference annotations, and the others assessed by automatic and qualitative measures. Annotators above a certain threshold may be invited to a follow-up study with more annotations. Your payment for this study does not depend on that assessment, provided you work in good faith.</li><li><b>Feedback.</b> A short form asking what you think of the guidelines, the practice round and the tool, and whether anything is missing.</li><li><b>Completion.</b> Your Prolific completion link comes after the feedback form.</li></ol>
@@ -450,6 +451,13 @@ var SOURCE_SHA = '914cf8d7ec81c1f5';
   // Inside the tools' popup: it is not a reading of the guidelines in the sense this page
   // measures, and the tools time the popup themselves.
   var EMBED = q.get("embed") === "1";
+  // An iPad reports itself as a Mac, so touch is what gives it away.
+  var AGENT = navigator.userAgent || "";
+  var devNote = document.getElementById("devnote");
+  if (devNote && !EMBED && (/Mobi|Android|iPhone|iPad|Tablet/i.test(AGENT)
+      || (navigator.maxTouchPoints > 1 && /Macintosh/.test(AGENT)))) {
+    devNote.hidden = false;
+  }
   if (EMBED) {
     addEventListener("keydown", function (e) {
       if (e.key === "Escape") parent.postMessage("gl-close", location.origin);
@@ -520,6 +528,7 @@ var SOURCE_SHA = '914cf8d7ec81c1f5';
       scrolls: T.scrolls,
       max_jump_px: Math.round(T.maxJump),
       depth: Math.round(T.depth * 100) / 100,
+      ua: AGENT,
       viewport_w: innerWidth,
       viewport_h: innerHeight,
       dpr: devicePixelRatio || 1,
