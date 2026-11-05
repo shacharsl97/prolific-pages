@@ -474,8 +474,40 @@ window.TOOL_HOOKS = {
   }
   // Someone part-way through when this was added has a saved state without it.
   st.items.forEach(function (x) { if (!x.fieldMs) x.fieldMs = {}; });
+  // Two tabs on one id used to overwrite each other, last save winning: with a forgotten tab
+  // open, closing the working tab first put the participant back on item 1 with their answers
+  // gone (reproduced 5 Nov, after a stray row in a tester's run). The saved copy now carries a
+  // counter, and a tab that finds someone else has moved it on stops and asks to be reloaded.
+  var REV = KEY + ":rev", rev = 0, stale = false;
+  try { rev = +localStorage.getItem(REV) || 0; } catch (e) {}
+  function staleTab() {
+    if (stale) return;
+    stale = true;
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    bg.style.zIndex = 60;
+    bg.innerHTML = '<div class="modal" id="staletab"><h2>This study is open in another tab</h2>'
+      + '<p class="sub">Your work is being saved from the other tab. Please close this one, or '
+      + "reload it to carry on here from where you got to.</p>"
+      + '<div class="row"><button type="button" class="cta" id="staleReload">Reload this page'
+      + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("staleReload").addEventListener("click", function () {
+      location.reload();
+    });
+  }
+  addEventListener("storage", function (e) {
+    if (e.key === REV && +e.newValue > rev) staleTab();
+  });
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
+    if (stale) return;
+    try {
+      var stored = +localStorage.getItem(REV) || 0;
+      if (stored > rev) { staleTab(); return; }
+      rev = stored + 1;
+      localStorage.setItem(KEY, JSON.stringify(st));
+      localStorage.setItem(REV, String(rev));
+    } catch (e) {}
     var el = document.getElementById("saved");
     if (el) { el.textContent = "saved"; setTimeout(function () { el.textContent = ""; }, 1400); }
   }
@@ -1265,7 +1297,7 @@ window.TOOL_HOOKS = {
 
   addEventListener("pagehide", function () {
     tick(); fieldTick(); helpTick("procedure"); helpTick("guidelines"); save();
-    if (!st.finished && HOOKS.partial) HOOKS.partial(api);
+    if (!stale && !st.finished && HOOKS.partial) HOOKS.partial(api);
   });
 
   // ---- the two aids ------------------------------------------------------------
