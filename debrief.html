@@ -73,22 +73,32 @@
   <div id="form">
     <div class="intro">
       <h2>That's the annotation done &mdash; thank you</h2>
-      <p>Before you go, we would like to know where the <strong>guidelines</strong> let you
-         down. You have just applied them to eight real cases, which puts you in a better
-         position to see their gaps than we are in.</p>
-      <p>Everything below is optional and there are no wrong answers. We are not checking
-         your work here; we are checking ours. Blunt is more useful than polite.</p>
+      <p>Before you go, we would like to hear your opinion on the guidelines, the practice
+         round and the tool. Please take a little time to tell us where the gaps are and what
+         could be improved.</p>
+      <p>Everything below is optional. Be direct: your answers will only be used to improve
+         our system, and not to evaluate you as an annotator.</p>
+    </div>
+
+    <div class="q">
+      <h3>What exactly would you improve?</h3>
+      <p class="hint">Be as specific as you can, and leave blank anything you have no view
+         on.</p>
+      <label class="sl" for="improve_guidelines">The guidelines</label>
+      <textarea id="improve_guidelines" placeholder="Optional"></textarea>
+      <label class="sl" for="improve_demo">The practice round</label>
+      <textarea id="improve_demo" placeholder="Optional"></textarea>
+      <label class="sl" for="improve_tool">The annotation tool</label>
+      <textarea id="improve_tool" placeholder="Optional"></textarea>
     </div>
 
     <div class="q">
       <h3>Was anything in the guidelines unclear, or hard to apply?</h3>
-      <p class="hint">Point at the part it was about, if you can, and say what went wrong.
-         "I could not tell whether X counted as common knowledge" is exactly the kind of
-         thing we need.</p>
-      <div class="pair"><select id="unclear_sec"><option value="">— choose the part this is about —</option><option value="terminology">1. Terminology</option><option value="revision">2. Revision guidelines</option><option value="intent">3. Informational intent</option><option value="specificity-test">4. The question specificity test</option><option value="answerability">5. Answerability</option><option value="specificity">6. Specificity</option><option value="horses">7. The horses example</option><option value="deletion">8. Deletion</option><option value="workflow">9. Annotation workflow</option><option value="additional">10. Additional points</option><option value="none">None in particular / something else</option></select></div>
+      <p class="hint">Point at the part it was about, if you can, and say what went wrong.</p>
+      <div class="pair"><select id="unclear_sec"><option value="">— choose the part this is about —</option><option value="terminology">Terminology</option><option value="revision">Revision guidelines</option><option value="intent">Informational intent</option><option value="common-knowledge">Common knowledge</option><option value="answerability">Answerability</option><option value="specificity">Specificity</option><option value="deletion">Deletion</option><option value="preliminaries">Preliminaries: adjusting and splitting spans</option><option value="workflow-main">Workflow</option><option value="additional">Additional points</option><option value="none">None in particular / something else</option></select></div>
       <textarea id="unclear" placeholder="What was unclear, and what did you do about it?"></textarea>
       <label class="sl">Anything else unclear, in a different part?</label>
-      <div class="pair"><select id="unclear2_sec"><option value="">— choose the part this is about —</option><option value="terminology">1. Terminology</option><option value="revision">2. Revision guidelines</option><option value="intent">3. Informational intent</option><option value="specificity-test">4. The question specificity test</option><option value="answerability">5. Answerability</option><option value="specificity">6. Specificity</option><option value="horses">7. The horses example</option><option value="deletion">8. Deletion</option><option value="workflow">9. Annotation workflow</option><option value="additional">10. Additional points</option><option value="none">None in particular / something else</option></select></div>
+      <div class="pair"><select id="unclear2_sec"><option value="">— choose the part this is about —</option><option value="terminology">Terminology</option><option value="revision">Revision guidelines</option><option value="intent">Informational intent</option><option value="common-knowledge">Common knowledge</option><option value="answerability">Answerability</option><option value="specificity">Specificity</option><option value="deletion">Deletion</option><option value="preliminaries">Preliminaries: adjusting and splitting spans</option><option value="workflow-main">Workflow</option><option value="additional">Additional points</option><option value="none">None in particular / something else</option></select></div>
       <textarea id="unclear2" placeholder="Optional"></textarea>
     </div>
 
@@ -104,14 +114,15 @@
       <p class="hint">A rule that produced a revision you thought was worse than the
          obvious alternative, or advice that worked against itself. Disagreeing with us is
          useful; we would rather hear it now.</p>
-      <div class="pair"><select id="wrong_sec"><option value="">— choose the part this is about —</option><option value="terminology">1. Terminology</option><option value="revision">2. Revision guidelines</option><option value="intent">3. Informational intent</option><option value="specificity-test">4. The question specificity test</option><option value="answerability">5. Answerability</option><option value="specificity">6. Specificity</option><option value="horses">7. The horses example</option><option value="deletion">8. Deletion</option><option value="workflow">9. Annotation workflow</option><option value="additional">10. Additional points</option><option value="none">None in particular / something else</option></select></div>
+      <div class="pair"><select id="wrong_sec"><option value="">— choose the part this is about —</option><option value="terminology">Terminology</option><option value="revision">Revision guidelines</option><option value="intent">Informational intent</option><option value="common-knowledge">Common knowledge</option><option value="answerability">Answerability</option><option value="specificity">Specificity</option><option value="deletion">Deletion</option><option value="preliminaries">Preliminaries: adjusting and splitting spans</option><option value="workflow-main">Workflow</option><option value="additional">Additional points</option><option value="none">None in particular / something else</option></select></div>
       <textarea id="wrong" placeholder="Which rule, and what did it make you do?"></textarea>
     </div>
 
     <div class="q">
       <h3>Which item was the hardest, and what made it hard?</h3>
-      <p class="hint">The items were numbered 1 to 8 in the order you saw them.</p>
-      <div class="pair"><select id="hard_item"><option value="">— choose an item —</option><option value="p1">Item 1</option><option value="p2">Item 2</option><option value="p3">Item 3</option><option value="p4">Item 4</option><option value="p5">Item 5</option><option value="p6">Item 6</option><option value="p7">Item 7</option><option value="p8">Item 8</option><option value="none">None stood out</option></select></div>
+      <p class="hint">Each item is listed with its topic and the statements that were marked
+         in it.</p>
+      <div class="pair"><select id="hard_item"><option value="">— choose an item —</option><option value="p1">Item 1: arrests over slavery offences (“26 men”)</option><option value="p2">Item 2: a football team leaving for France (“Wales”, “Euro 2016”)</option><option value="p3">Item 3: a police appeal over an acid attack (“CCTV images”, “in east London”)</option><option value="p4">Item 4: a band&#x27;s later records (“heavier”)</option><option value="p5">Item 5: activists released from custody (“feminist activists”)</option><option value="p6">Item 6: illness on a cruise ship (“has a history of sanitation issues”)</option><option value="p7">Item 7: a rugby league match (“Widnes Vikings secured a victory over...”)</option><option value="p8">Item 8: a British Paralympian (“Sarah Storey”)</option><option value="none">None stood out</option></select></div>
       <textarea id="hard" placeholder="What made it hard?"></textarea>
     </div>
 
@@ -153,7 +164,7 @@
    instead of clicking through -- someone who wrote a page of useful criticism and then
    closed the tab should not lose it.                                                   */
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec";
-const TOOL_VERSION = "debrief-v1";
+const TOOL_VERSION = "debrief-v2";
 const COMPLETION_CODE = "REPLACE_ME";
 const LIVE = false;
 const QS = new URLSearchParams(location.search);
@@ -165,7 +176,7 @@ const PROLIFIC = {
 const SKEY = "revdebrief:" + TOOL_VERSION + ":" + (PROLIFIC.pid || "anon");
 const started = Date.now();
 
-const FIELDS = ["unclear_sec", "unclear", "unclear2_sec", "unclear2", "uncovered",
+const FIELDS = ["improve_guidelines", "improve_demo", "improve_tool", "unclear_sec", "unclear", "unclear2_sec", "unclear2", "uncovered",
                 "wrong_sec", "wrong", "hard_item", "hard", "other"];
 const $ = (id) => document.getElementById(id);
 
@@ -203,7 +214,8 @@ function payload(partial) {
   const c = document.querySelector('input[name="conf"]:checked');
   d.conf = c ? Number(c.value) : null;
   // how much they actually wrote, so a row with nothing in it is obvious at a glance
-  d.chars = ["unclear", "unclear2", "uncovered", "wrong", "hard", "other"]
+  d.chars = ["improve_guidelines", "improve_demo", "improve_tool", "unclear", "unclear2",
+             "uncovered", "wrong", "hard", "other"]
     .reduce((n, f) => n + d[f].length, 0);
   return d;
 }

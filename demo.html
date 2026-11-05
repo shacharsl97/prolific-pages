@@ -1,1086 +1,1309 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Revision Annotation — Training</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Minimal revision &mdash; practice</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-  :root{--bg:#f6f8fb;--panel:#ffffff;--ink:#eef2f7;--line:#d7dee7;--text:#1b2733;--dim:#5c6b7a;
-        --accent:#2f6fb0;--good:#1f8a54;--bad:#c0392b;--warn:#a5680a;--mark:#ffd9d9;--markfg:#7a1f1f}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.55;padding:0 0 96px}
-  .wrap{max-width:940px;margin:0 auto;padding:0 18px}
-  header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0}
-  header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  h1{font-size:16px}.sub{font-size:12px;color:var(--dim)}.spacer{flex:1}
-  .dots{display:flex;gap:6px;align-items:center;flex:0 0 auto}
-  .dot{flex:0 0 9px;width:9px;height:9px;min-width:9px;max-width:9px;min-height:9px;max-height:9px;
-       border-radius:50%;background:#c3ccd6}
-  .dot.on{background:var(--accent)}.dot.done{background:var(--good)}
-  .btn{background:#eef2f7;color:var(--text);border:1px solid var(--line);border-radius:7px;padding:8px 14px;font-size:13px;cursor:pointer}
-  .btn:hover{border-color:var(--accent)}
-  .btn.primary{background:var(--accent);border-color:var(--accent);color:#ffffff;font-weight:700}
-  .btn:disabled{opacity:.4;cursor:not-allowed}
-  .btn.ghost{font-size:12px;padding:5px 10px}
-  .lab{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim);font-weight:700;margin:16px 0 5px}
-  .lab .opt{text-transform:none;letter-spacing:0;font-weight:400;color:#5c6b7a}
-  .box{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:11px 13px;font-size:13.6px;white-space:pre-wrap}
-  #source{max-height:250px;overflow:auto;color:#33424f;font-size:12.8px;line-height:1.7}
-  #target{font-size:15.5px;line-height:1.95}
-  mark{background:var(--mark);color:var(--markfg);border-radius:3px;padding:1px 4px;font-style:normal}
-  textarea,input[type=text]{width:100%;background:var(--ink);color:var(--text);border:1px solid var(--line);
-      border-radius:8px;padding:9px 11px;font-size:13.6px;font-family:inherit;resize:vertical}
-  textarea:focus,input:focus{outline:none;border-color:var(--accent)}
-  textarea.sm{min-height:46px}textarea.rev{min-height:78px}
-  .radios{display:flex;gap:9px;flex-wrap:wrap}
-  .radios label{display:flex;align-items:center;gap:7px;background:var(--ink);border:1px solid var(--line);
-      border-radius:8px;padding:8px 13px;cursor:pointer;font-size:13.4px}
-  .radios label:hover{border-color:var(--accent)}.radios input{accent-color:var(--accent)}
-  .hidden{display:none}
-  /* a required field left empty, flagged on submit — same idiom as the pilot-2 tool */
-  .needs{border-color:var(--bad) !important;background:#fdecea !important}
-  .radios.needs{background:transparent !important;border:none !important}
-  .radios.needs label{border-color:var(--bad);background:#fdecea}
-  .fielderr{display:none;font-size:12px;color:var(--bad);margin-top:4px}
-  .fielderr.on{display:block}
-  .spanblk{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin:14px 0}
-  .spanhd{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:2px}
-  .spanhd .n{font-size:11px;font-weight:800;padding:2px 8px;border-radius:9px;background:var(--mark);color:var(--markfg)}
-  .spanhd .q{font-size:13.5px;font-weight:600;background:var(--mark);color:var(--markfg);padding:1px 6px;border-radius:4px}
-  .flagline{display:flex;align-items:center;gap:8px;margin:12px 0 2px;font-size:13.3px;cursor:pointer}
-  .flagline input{accent-color:var(--accent);width:15px;height:15px}
-  .perex{border-top:1px dashed var(--line);margin-top:20px;padding-top:4px}
-  .autonote{font-size:12px;color:var(--dim);margin-top:6px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .intro{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:22px 24px;margin:22px 0}
-  .intro h2{font-size:17px;margin-bottom:8px}
-  .intro p{font-size:13.6px;color:#33424f;margin-bottom:9px}
-  .llmnote{background:var(--ink);border-left:3px solid var(--warn);border-radius:6px;padding:9px 13px;font-size:12.6px;color:#5c6b7a;margin:12px 0}
-  /* reference card — open on every item, which the pilot-2 demo had no equivalent of */
-  #refcard{background:#f0f5fa;border:1px solid #c3d6e8;border-radius:10px;margin:14px 0;overflow:hidden}
-  #refcard > summary{cursor:pointer;padding:10px 14px;font-size:12.5px;font-weight:700;color:#24527c;list-style:none}
-  #refcard > summary::-webkit-details-marker{display:none}
-  #refcard > summary::before{content:"\25B8  ";}
-  #refcard[open] > summary::before{content:"\25BE  ";}
-  #refcard .body{padding:2px 16px 14px;font-size:12.9px;color:#2c3e4f}
-  #refcard ol{margin:6px 0 0 20px}#refcard ol li{margin-bottom:5px}
-  #refcard b{color:#1b2733}
-  /* teach panel */
-  #teach{margin-top:20px;border-radius:11px;border:1px solid #bfe3cf;background:#eaf7ef;padding:18px 20px}
-  #teach h3{font-size:15px;color:var(--good);margin:18px 0 4px}
-  #teach .note{font-size:12.5px;color:#4a6b5c;margin-bottom:14px}
-  .ladder{margin:10px 0}
-  .ladder-cap{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:#5c7488;font-weight:700;margin:0 0 6px 2px}
-  .rung{display:flex;gap:11px;align-items:flex-start;padding:9px 12px;border-radius:8px;background:#f1f4f8;
-        border-left:3px solid #7891a8;margin-bottom:7px}
-  .rung.settled{border-left-color:var(--good);background:#eaf7ef}
-  .rung.rejected{border-left-color:var(--bad);background:#fbebea}
-  .rung.surpassed{border-left-color:var(--accent);background:#eaf2fa}
-  .rung.available{border-left-color:var(--warn);background:#fdf3e3}
-  .rung .qn{font-size:10px;font-weight:800;color:#fff;background:#7c93a8;border-radius:9px;padding:2px 8px;white-space:nowrap;margin-top:2px}
-  .rung.settled .qn{background:var(--good)}
-  .rung.rejected .qn{background:var(--bad)}
-  .rung.surpassed .qn{background:var(--accent)}
-  .rung.available .qn{background:var(--warn)}
-  .rung .qt{font-size:13.3px}
-  .rung .src{display:block;font-size:12.3px;color:#55677a;margin-top:3px}
-  .ans{background:#f3faf6;border:1px solid #bfe3cf;border-radius:8px;padding:11px 13px;margin:4px 0 12px;font-size:14px}
-  .ans .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim);font-weight:700;display:block;margin-bottom:3px}
-  .traps{margin-top:14px}
-  .trap{display:flex;gap:10px;padding:9px 12px;border-radius:8px;background:#fdecea;border-left:3px solid var(--bad);margin-bottom:7px}
-  .trap.partial{background:#fdf3e3;border-left-color:var(--warn)}
-  .trap.partial .x{color:var(--warn)}
-  .trap .x{color:var(--bad);font-weight:800}
-  .trap .tt{font-size:13.1px}
-  .trap .tw{display:block;font-size:12.3px;color:#7a4a48;margin-top:2px}
-  .yours{background:#eef4fa;border:1px dashed var(--line);border-radius:8px;padding:10px 12px;margin:0 0 14px;font-size:13.2px}
-  .yours .k{display:block;color:var(--dim);font-weight:700;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
-  .yours .v{display:block;margin-bottom:9px}
-  .yours .v:last-child{margin-bottom:0}
-  /* word diff in the worked solution: what the revision drops, and what it puts in */
-  ins{text-decoration:none;background:#c9ecd9;color:#14532d;border-radius:3px;padding:0 2px}
-  del{background:#f8d5d1;color:#7a1f1f;border-radius:3px;padding:0 2px}
-  .difflegend{font-size:11.5px;color:var(--dim);margin-top:9px;font-weight:400;text-transform:none;letter-spacing:0}
-  footer{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--line);padding:11px 0;z-index:20}
-  footer .wrap{display:flex;align-items:center;gap:12px}
-  .finishcard{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:26px;margin:24px 0}
-  .score{font-size:30px;font-weight:800;color:var(--accent)}
-  .code{font-family:ui-monospace,Consolas,monospace;font-size:15px;background:var(--ink);border:1px solid var(--line);
-        border-radius:7px;padding:7px 12px;display:inline-block;letter-spacing:.06em}
-  .warnbox{background:#fdf3e3;border:1px solid #e6cf9f;border-left:3px solid var(--warn);border-radius:8px;padding:12px 14px;font-size:13px;margin:12px 0}
+:root {
+  --paper:#fbfaf8; --raised:#ffffff; --ink:#1c1b19; --muted:#6a6660; --rule:#e2ded7;
+  --accent:#1f4e79; --acc-bg:#eaf2fa;
+  --mark:#fde8c8; --mark-line:#d9a441;
+  --ok:#2f6b45; --ok-bg:#eaf4ee;
+  --dis:#9c2b2b; --dis-bg:#fdf1f0;
+  --rej-bg:#f1f3f2;
+  --on-accent:#ffffff;
+  --note:#fdf3dd; --note-line:#d9a441;
+  --display:'Newsreader',Georgia,serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"] {
+  --paper:#15171a; --raised:#1c1f23; --ink:#e8e6e2; --muted:#9a968f; --rule:#2e3237;
+  --accent:#7fb2e0; --acc-bg:#18222c;
+  --mark:#4a3a1c; --mark-line:#c89a3f;
+  --ok:#7fc79b; --ok-bg:#18261e;
+  --dis:#e98f8a; --dis-bg:#2a1c1c;
+  --rej-bg:#2b323a;
+  --on-accent:#10243a;
+  --note:#33291a; --note-line:#c89a3f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;
+  line-height:1.6;margin:0;padding:0 0 90px}
+.bar{position:sticky;top:0;z-index:20;background:var(--raised);
+  border-bottom:1px solid var(--rule);padding:10px max(16px,env(safe-area-inset-left,0px))}
+.barin{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;font-size:13px}
+.prog{flex:1;min-width:80px;height:5px;background:var(--rule);border-radius:3px;
+  overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.count b{color:var(--ink)}
+.barbtn{font:inherit;font-size:12.5px;border:1px solid var(--rule);background:transparent;
+  color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer;white-space:nowrap}
+.barbtn:hover{border-color:var(--accent);color:var(--accent)}
+.barbtn[aria-expanded="true"]{background:var(--acc-bg);border-color:var(--accent)}
+.wrap{max-width:1400px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-left,0px))}
+h1{font-family:var(--display);font-size:27px;font-weight:600;margin:0 0 6px}
+h2{font-family:var(--display);font-size:20px;font-weight:600;margin:0 0 10px}
+.lab{display:block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin:0 0 7px}
+.lab .opt{text-transform:none;letter-spacing:0;font-weight:400}
+.sub{color:var(--muted);margin:0 0 16px;max-width:75ch}
+
+/* Source left, target right. One source, never two. */
+.panes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;
+  align-items:start}
+.pane{background:var(--raised);border:1px solid var(--rule);border-radius:10px;
+  padding:18px 20px}
+.pane.src{position:sticky;top:64px;max-height:calc(100vh - 92px);overflow:auto}
+.doc{white-space:pre-wrap;font-size:15.5px;line-height:1.72}
+mark.sp{background:var(--mark);border-bottom:2px solid var(--mark-line);padding:1px 0;
+  cursor:pointer;border-radius:2px;color:var(--ink)}
+/* The browser's own stylesheet puts color:black on <mark>, which it does not
+   adapt for a dark page. Every highlight -- the amber one most of all -- was
+   black text on a dark ground until this line. */
+mark.sp.done{background:var(--ok-bg);border-bottom-color:var(--ok)}
+mark.sp.off{background:var(--rej-bg);border-bottom-color:var(--muted)}
+mark.sp sup{font-size:10px;font-weight:700;color:var(--muted);margin-left:1px;line-height:0}
+
+.span{border:1px solid var(--rule);border-left:3px solid var(--mark-line);
+  border-radius:0 6px 6px 0;background:var(--paper);padding:14px 16px;margin:0 0 14px}
+.span.done{border-left-color:var(--ok)}
+.span.off{border-left-color:var(--muted)}
+.span.flash{outline:2px solid var(--accent);outline-offset:1px}
+.spanhead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+.spantext{font-weight:600;margin:0;flex:1 1 240px;min-width:0}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.choice{font:inherit;font-size:13px;border:1px solid var(--rule);background:transparent;
+  color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer}
+.choice:hover{border-color:var(--accent)}
+.choice[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
+  color:var(--on-accent);font-weight:600}
+.choice.small{font-size:12px;padding:3px 10px}
+label.fl{display:block;font-size:12.5px;font-weight:600;margin:12px 0 4px}
+label.fl .opt{font-weight:400;color:var(--muted)}
+input[type=text],textarea{font:inherit;font-size:15px;width:100%;color:var(--ink);
+  background:var(--raised);border:1px solid var(--rule);border-radius:6px;padding:8px 11px}
+textarea{resize:vertical;line-height:1.6;overflow:hidden;display:block}
+textarea.sm{min-height:40px}
+textarea.rev{min-height:110px;line-height:1.7}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.needs{border-color:var(--dis)!important;background:var(--dis-bg)!important}
+.fielderr{display:none;font-size:12.5px;color:var(--dis);margin-top:4px}
+.fielderr.on{display:block}
+.soft{font-size:12.5px;color:var(--muted);margin:4px 0 0}
+.err{color:var(--dis);background:var(--dis-bg);border:1px solid var(--dis);
+  border-radius:6px;font-size:13.5px;font-weight:600;padding:8px 12px;margin:0;
+  flex-basis:100%}
+.err:empty{display:none}
+.notice{background:var(--note);border-left:3px solid var(--note-line);
+  border-radius:0 4px 4px 0;padding:9px 12px;margin:0 0 12px;font-size:13.5px}
+.warnbox{background:var(--note);border:1px solid var(--note-line);border-radius:8px;
+  padding:12px 14px;font-size:13.5px;margin:0 0 16px}
+.hint{color:var(--muted);font-size:12.5px;margin:0 0 10px}
+.sidepanel{margin:10px 0 0;padding:11px 13px;background:var(--mark);
+  border-left:3px solid var(--mark-line);border-radius:0 4px 4px 0}
+.sidepanel p{margin:0 0 9px;font-size:13px}
+.sidepanel label.fl{margin-top:0}
+.word{font:inherit;font-size:14px;border:1px solid var(--mark-line);background:var(--raised);
+  color:var(--ink);border-radius:4px;padding:3px 9px;margin:0 5px 5px 0;cursor:pointer}
+.word:hover{background:var(--mark-line)}
+.autonote{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 0;
+  font-size:12.5px;color:var(--muted)}
+.autonote .stale{color:var(--dis);font-weight:600}
+.revsecond{margin-top:18px}
+.cta{display:inline-block;background:var(--accent);color:var(--on-accent);text-decoration:none;
+  border:0;font:inherit;font-weight:600;padding:12px 26px;border-radius:6px;cursor:pointer;
+  font-size:16px}
+.ghost{font:inherit;background:transparent;color:var(--accent);border:1px solid var(--rule);
+  padding:11px 18px;border-radius:6px;cursor:pointer;font-size:15px}
+.ghost:hover{border-color:var(--accent)}
+.foot{display:flex;gap:12px;align-items:center;margin:22px 0 0;flex-wrap:wrap}
+.diff{background:var(--raised);border:1px solid var(--rule);border-radius:8px;
+  padding:14px 16px;margin:0 0 14px;font-size:15px;line-height:1.7}
+del{background:var(--dis-bg);color:var(--dis);text-decoration:line-through;padding:1px 2px}
+ins{background:var(--ok-bg);color:var(--ok);text-decoration:none;padding:1px 2px}
+.modalbg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;
+  align-items:center;justify-content:center;padding:20px;z-index:40}
+.modal{background:var(--paper);border-radius:12px;max-width:720px;width:100%;
+  max-height:88vh;overflow:auto;padding:24px 26px}
+.llm{border:1px solid var(--dis);background:var(--dis-bg);border-radius:6px;
+  padding:12px 15px;margin:18px 0 0;font-size:14px}
+.saved{font-size:12px;color:var(--muted)}
+
+/* The revision procedure is meant to be read against the item, so on a laptop or wider the
+   page moves over to make room rather than the panel covering the fields being filled in.
+   The full guidelines are too long for that and get the whole window. */
+.procpanel{position:fixed;top:56px;right:max(16px,env(safe-area-inset-right,0px));z-index:30;
+  width:min(460px,calc(100vw - 32px));max-height:calc(100vh - 76px);overflow:auto;
+  background:var(--raised);border:1px solid var(--rule);border-radius:10px;
+  padding:16px 20px;box-shadow:0 8px 28px rgba(0,0,0,.22);font-size:14px}
+.procpanel ol{margin:8px 0 0;padding-left:20px}
+.procpanel li{margin-bottom:7px}
+.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panelhead h2{margin:0;font-size:18px}
+@media (min-width:1100px){
+  body.procopen .wrap{max-width:none;margin:0 484px 0 0}
+  body.procopen .panes{gap:16px}
+}
+.glmodal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);padding:2vh 2vw;
+  display:flex;flex-direction:column}
+.glmodal .panelhead{background:var(--raised);padding:10px 16px;border-radius:10px 10px 0 0;
+  border:1px solid var(--rule);border-bottom:0}
+.glmodal iframe{flex:1;width:100%;border:1px solid var(--rule);border-radius:0 0 10px 10px;
+  background:var(--paper)}
+
+/* the worked solution, practice round only */
+#teach{margin-top:24px;border-radius:10px;border:1px solid var(--ok);background:var(--raised);
+  padding:20px 22px}
+#teach h3{font-family:var(--display);font-size:20px;font-weight:600;margin:18px 0 4px}
+#teach .note{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:85ch}
+.cap{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);
+  font-weight:600;margin:0 0 6px}
+.rung{display:flex;gap:11px;align-items:flex-start;padding:9px 12px;border-radius:6px;
+  background:var(--rej-bg);border-left:3px solid var(--muted);margin-bottom:7px;font-size:14px}
+.rung.settled{border-left-color:var(--ok);background:var(--ok-bg)}
+.rung.rejected{border-left-color:var(--dis);background:var(--dis-bg)}
+.rung.surpassed{border-left-color:var(--accent);background:var(--acc-bg)}
+.rung.available{border-left-color:var(--note-line);background:var(--note)}
+.rung .qn{font-size:10px;font-weight:700;color:var(--on-accent);background:var(--muted);
+  border-radius:9px;padding:2px 8px;white-space:nowrap;margin-top:2px}
+.rung.settled .qn{background:var(--ok)}
+.rung.rejected .qn{background:var(--dis)}
+.rung.surpassed .qn{background:var(--accent)}
+.rung.available .qn{background:var(--note-line);color:#1c1b19}
+.rung .src{display:block;font-size:13px;color:var(--muted);margin-top:3px}
+.ans{background:var(--ok-bg);border:1px solid var(--ok);border-radius:8px;padding:12px 14px;
+  margin:4px 0 14px;font-size:14.5px}
+.k{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);font-weight:600;margin:8px 0 2px}
+.k:first-child{margin-top:0}
+.worked{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
+.trap{display:flex;gap:10px;padding:9px 12px;border-radius:6px;background:var(--dis-bg);
+  border-left:3px solid var(--dis);margin-bottom:7px;font-size:14px}
+.trap.partial{background:var(--note);border-left-color:var(--note-line)}
+.trap .x{color:var(--dis);font-weight:700}
+.trap .tw{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.yours{background:var(--paper);border:1px dashed var(--rule);border-radius:8px;
+  padding:12px 14px;margin:0 0 16px;font-size:14px}
+.intro{background:var(--raised);border:1px solid var(--rule);border-radius:10px;
+  padding:22px 24px;max-width:860px}
+.intro p{margin:0 0 10px}
+.intro .llm{margin:14px 0 16px}
+
+@media (max-width:560px){
+  .bar{padding:7px max(12px,env(safe-area-inset-left,0px))}
+  .barin{gap:7px;font-size:12px}
+  .barbtn{padding:4px 9px;font-size:11.5px}
+  .prog{order:9;flex-basis:100%}
+  .wrap{padding:16px max(14px,env(safe-area-inset-left,0px))}
+  h1{font-size:23px}
+}
+@media (max-width:900px){
+  .panes{grid-template-columns:minmax(0,1fr)}
+  .pane.src{position:static;max-height:420px}
+}
 </style>
 </head>
 <body>
+<div class="bar"><div class="barin">
+  <span class="count" id="count"></span>
+  <span class="prog"><i id="fill"></i></span>
+  <button type="button" class="barbtn" id="procbtn" aria-expanded="false">Revision procedure</button>
+  <button type="button" class="barbtn" id="glbtn" aria-expanded="false">Full guidelines</button>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></div>
+<aside class="procpanel" id="procpanel" hidden aria-label="The revision procedure">
+  <div class="panelhead"><h2>The revision procedure</h2>
+    <button type="button" class="barbtn" id="procclose">Close &times;</button></div>
+  
+<ol>
+  <li><b>Check the mark.</b> If the marked statement is faithful, choose <b>Not a
+    hallucination</b> and say what supports it. If the mark covers more or fewer words than
+    the true hallucinated statement, use <b>Adjust span</b> so that the span is minimal. If it
+    holds several hallucinated details, use <b>Split span</b>.</li>
+  <li>Convert the span into a <b>complete statement H</b>.</li>
+  <li>Find <b>Q1</b>, a question answerable from both H and the source: the hallucination
+    answers it falsely, the source answers it faithfully. The answer to it should be exactly
+    H.</li>
+  <li>Narrow it: keep finding more and more specific questions, until you reach <b>Qmax</b>,
+    the <b>most specific question answerable by both</b>.</li>
+  <li>The question must be one the <b>source</b> can actually answer. Do not keep a
+    presupposition the source does not support, or add a specific value just to match the
+    original text's specificity.</li>
+  <li>Answer Qmax from the source as a complete sentence: that is <b>R</b>. Replace the marked
+    span with only the part of R that fits the span's slot, leaving the rest of the sentence
+    intact. Where the source supports more than one answer, take the one <b>closest in
+    specificity</b> to what the marked statement claimed, neither vaguer nor more detailed.
+    Where the source provides wording that fits the slot, use the source's wording
+    <b>verbatim</b> rather than paraphrasing.</li>
+  <li>If no meaningful question exists, <b>delete</b> the span completely. Rule of thumb: if
+    the answer you found could be dropped from the revision without any loss of information,
+    it is vacuous, so delete instead of inserting it.</li>
+  <li>After replacing or deleting, make the necessary <b>grammar or lexical adjustment</b>, in
+    places where your own edits broke the text, <b>without adding any new information</b>.
+    That goes in the grammar box, after the revision.</li>
+  <li>Validate: is the replacement the same <b>type</b> and same <b>specificity level</b> as H?
+    Did the author really intend to answer the chosen question?</li>
+  <li>Before you submit, check the revision against the marked statement again: did you lose
+    any <b>salvageable faithful information</b>? If possible, keep all faithful information
+    the marked statement entailed, by looking for a question whose answer preserves it, if one
+    exists.</li>
+</ol>
 
-<header><div class="wrap">
-  <h1>Training <span class="sub" id="pos"></span></h1>
-  <span class="spacer"></span>
-  <div class="dots" id="dots"></div>
-</div></header>
-
-<main class="wrap">
-
-  <div id="intro" class="intro">
-    <h2>Six practice examples</h2>
-    <p>These six examples are practice: you answer, submit, and are then shown a worked solution — the
-       sequence of questions that reaches it, and several mistakes that are easy to make. Nothing here is
-       sent to us and nothing here is scored by us — this practice is for you. Work as you would on real
-       data, because the rounds that follow it have no worked solutions.</p>
-    <p>Each marked statement gets one card. It opens with the one question that can end the card early —
-       whether the statement is hallucinated at all — and then asks for the <b>operation</b> and the
-       <b>final question</b> that both the source and the hallucinated statement answer. What it asks for
-       next depends on the operation: a replace needs <b>R</b>, the value you replace the hallucination
-       with, and the <b>source attribution</b> it is copied from; a deletion needs the <b>explanation</b>
-       of which questions were not answerable, and why deletion was chosen. The <b>revision</b> is written
-       once for the whole summary, with every span
-       correction applied; it is filled in for you as you answer, and you can edit it. Grammar and fluency
-       are applied after the factual revision, in their own box.</p>
-    <p>Five of these six have one marked statement; the sixth has two that must be repaired. In the
-       production annotation a summary can carry up to four. Three of the six are harder than they look, and
-       on one of them the right answer is to change nothing.</p>
-    <div class="llmnote">Do not use ChatGPT, Claude, Gemini or any other language model, here or in the
-       production batch. We are studying how people write faithful minimal revisions, so we need your own
-       answers.</div>
-    <button class="btn primary" id="startBtn">Begin</button>
-  </div>
-
-  <div id="ex" class="hidden">
-
-    <details id="refcard">
-      <summary>The revision procedure</summary>
-      <div class="body">
-        <ol>
-          <li>Find a question that <b>both the marked statement and the source answer</b> — the marked
-            statement answers it falsely, the source answers it faithfully.</li>
-          <li>Narrow it: ask a more and more specific question while the source can still answer, until you
-            reach the <b>most specific question both of them answer</b>.</li>
-          <li>The question has to be one the <b>source</b> can actually answer. Do not keep a presupposition
-            the source does not support, and do not add a specific value just to match the original's
-            specificity.</li>
-          <li>Replace the unfaithful part with the source's answer to that question, leaving the rest of the
-            sentence intact. Where the source supports more than one answer, take the one
-            <b>closest in specificity to the value the marked statement claimed</b> — neither vaguer nor
-            more detailed than what it attempted. Where the source has wording that fits the slot, use the
-            <b>source's wording verbatim</b> rather than paraphrasing.</li>
-          <li>If no meaningful question exists, <b>delete</b> the unfaithful part. Rule of thumb: if the
-            answer you found could be dropped from the revision with no loss of information, it is vacuous
-            — delete instead of inserting it.</li>
-          <li>Then make the grammar or lexical adjustment that renders the text coherent, <b>without adding
-            any new information</b>. That goes in the grammar box, after the revision.</li>
-          <li>Before you submit, check the revision against the marked statement: is there anything faithful
-            the marked statement implied that the revision has lost? Keep <b>all faithful information</b>
-            the marked statement entailed.</li>
-          <li>If the marked statement is faithful, tick <b>This isn't hallucinated</b> and say what
-            supports it. If only part of it is unfaithful, copy the true hallucinated statement into
-            <b>Span adjustment</b> and revise only that part.</li>
-        </ol>
-      </div>
-    </details>
-
-    <div class="lab">Source</div>
-    <div class="box" id="source"></div>
-    <div class="lab">Summary <span class="opt">— the marked statements are highlighted</span></div>
-    <div class="box" id="target"></div>
-
-    <div id="form"></div>
-
-    <div class="perex">
-      <div class="lab">Revision
-        <span class="opt">— written ONCE for the whole summary, with every span correction applied</span></div>
-      <textarea id="f_rev" class="rev"></textarea>
-      <div class="fielderr" id="f_rev_err">Required — write the revised summary.</div>
-      <div class="autonote">
-        <span id="autostate">Filled in from your answers above as you type.</span>
-        <button class="btn ghost" id="copyBtn" type="button">Rebuild from my answers</button>
-      </div>
-
-      <div class="lab">Revision after grammar fixes
-        <span class="opt">— only the fluency pass, applied on top of the revision above; leave empty if nothing needs fixing</span></div>
-      <textarea id="f_rev_grammar" class="rev"></textarea>
-    </div>
-
-    <div id="teach" class="hidden"></div>
-  </div>
-
-  <div id="finish" class="finishcard hidden"></div>
-</main>
-
-<footer class="hidden"><div class="wrap">
-  <button class="btn" id="prevBtn">&larr; Prev</button>
-  <span class="spacer"></span>
-  <span class="sub" id="hint"></span>
-  <button class="btn primary" id="checkBtn">Submit answer &amp; see the solution</button>
-  <button class="btn primary hidden" id="nextBtn">Next example &rarr;</button>
-</div></footer>
-
+</aside>
+<div class="glmodal" id="glmodal" hidden role="dialog" aria-modal="true" aria-label="The full guidelines">
+  <div class="panelhead"><h2>The full guidelines</h2>
+    <button type="button" class="barbtn" id="glclose">Close &times;</button></div>
+  <iframe id="glframe" title="The full guidelines"></iframe>
+</div>
+<div class="wrap">
+  <h1 id="task-h1">Practice round</h1>
+  <p class="sub" id="task-intro">The same tool as the qualification round, with a worked
+    solution after each example.</p>
+  <div class="warnbox" id="nopid" hidden>This page was opened without a Prolific ID. The practice itself does not need one, but the link at the end carries it into the qualification round, where your submission does depend on it. If you came from Prolific, go back and use the study link there rather than a copied address.</div>
+  <div id="app"></div>
+  <div id="below"></div>
+  <div class="llm" id="llm-note">Please do not use ChatGPT, Claude, Gemini or any other language model, here or in the qualification round. We are studying how people write faithful minimal revisions, so we need your own answers.</div>
+</div>
 <script>
-"use strict";
+var CFG = {"storeKey": "demo-v6", "version": "demo-v6", "endpoint": "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", "nextPage": "annotate.html", "guidelines": "guidelines.html", "noun": "example", "introCount": "practice round", "doneCount": "practice complete"};
+var ITEMS = [{"id": "p1", "source": "British Army soldiers were deployed to support flood relief efforts across the region on Wednesday. A Ministry of Defence spokesperson confirmed troops from the Mercian Regiment arrived to help with sandbagging and evacuations, working alongside local emergency services throughout the week.", "summary": "Soldiers from the Yorkshire Regiment have been deployed to help with flood relief.", "spans": ["the Yorkshire Regiment"], "revision": "Soldiers from the Mercian Regiment have been deployed to help with flood relief.", "revision_grammar": "", "worked": [{"span": "the Yorkshire Regiment", "act": "replace", "h": "Soldiers from the Yorkshire Regiment have been deployed to help with flood relief.", "q": "Which regiment were the soldiers from?", "r": "The soldiers were from the Mercian Regiment.", "rep": "the Mercian Regiment", "attr": "troops from the Mercian Regiment"}], "teach": {"title": "Do not stop at the first question the source and the summary both answer — match the marked statement's own level of detail", "note": "The coarser question here genuinely works. But “the Yorkshire Regiment” names a regiment, not merely an army, and the source can answer at that level too, so settling for “the British Army” gives up precision the source supports.", "ladder": [{"q": "Which armed force were the soldiers from?", "status": "surpassed", "src": "Both answer this. “The Yorkshire Regiment” entails the British Army — a regiment is part of an army — and the source says it outright: “British Army soldiers were deployed.” So “the British Army” would fill the slot. The claim named a regiment, though, so try the finer question before settling here."}, {"q": "Which regiment were the soldiers from?", "status": "settled", "src": "Answered by both, at the level the claim attempted: “troops from the Mercian Regiment.”"}], "op": "Replace", "traps": [{"t": "“Soldiers from the British Army have been deployed…”", "severity": "partial", "w": "True, and the source supports it — but the claim named a particular regiment and the source names the actual one. Stopping here gives up specificity the source can match."}, {"t": "“Soldiers from the Yorkshire Regiment…” (keeping it)", "w": "Not stated in the source. The regiment this article names is the Mercian Regiment."}, {"t": "Deleting the regiment — “Soldiers have been deployed to help with flood relief.”", "w": "More than the fix needs: the source names a regiment, so a faithful replacement exists."}]}}, {"id": "p2", "source": "A £100,000 reward is on offer for information leading to the conviction of the killers of 14-year-old Charlene Downes or the recovery of her body. An appeal will be made on the big screen and inside programmes during the team's match against Brighton at Bloomfield Road on Saturday. Charlene disappeared near Blackpool's North Pier on 1 November 2003. Police believe she was one of a number of girls who were groomed for sex. Lancashire Police and Crime Commissioner Clive Grunshaw said: “Someone out there knows something about what happened to Charlene. ”Detectives believe the answer lies in Blackpool - and it could lie at Bloomfield Road on Saturday.“ Det Supt Andy Webster said: ”We have never given up our search for information about Charlene, who we believe was murdered more than a decade ago. “We appreciate that a considerable amount of time has passed since Charlene went missing, but we would still encourage anyone with information at all to come forward and speak to us.” In 2008, a judge ordered a man to be cleared of Charlene's murder, after “grave doubts” were raised around evidence during his second trial. The jury in his first trial failed to reach a verdict. The following year, the Independent Police Complaints Commission (IPCC) said police errors in gathering evidence had contributed to the collapse of the retrial. The IPCC investigation concluded the investigating team was guilty of a strategic and tactical failure in the management of the material and several officers were disciplined, with one being forced to resign in 2011. The resignation order was overturned by a Police Arbitration Tribunal in 2012.", "summary": "A fresh appeal for information about the murder of a teenage girl in Blackpool 10 years ago is to be made at the town's football ground.", "spans": ["10"], "revision": "A fresh appeal for information about the murder of a teenage girl in Blackpool more than 10 years ago is to be made at the town's football ground.", "revision_grammar": "", "worked": [{"span": "10", "act": "replace", "h": "The girl was murdered 10 years ago.", "q": "How long ago was the girl murdered?", "r": "The girl was murdered more than 10 years ago.", "rep": "more than 10", "attr": "who we believe was murdered more than a decade ago"}], "teach": {"title": "The source cannot answer at the claim's level, but it does answer — generalise, do not delete", "note": "A number in the summary does not mean the source has a number. Here the source gives a bound — police believe she was “murdered more than a decade ago” — and that is the most specific thing it supports about how long ago. Writing “more than a decade ago” instead is the source's own wording, is semantically the same, and is equally accepted.", "ladder": [{"q": "Exactly how many years ago was the girl murdered?", "status": "rejected", "src": "Not answerable. The source gives one date — she disappeared on 1 November 2003 — but we cannot know when the article was written, so the elapsed time cannot be worked out from it."}, {"q": "How long ago was the girl murdered?", "status": "settled", "src": "Answered by both. Two answers fit the source: “some years ago” and “more than a decade ago”. Take the more specific of the two, which is also the one closer to what the summary claimed: Det Supt Webster says she was “murdered more than a decade ago”."}], "op": "Replace", "traps": [{"t": "“…in Blackpool years ago…” (deleting the span)", "severity": "partial", "w": "This is what an annotator of a previous dataset wrote. It is faithful, and still suboptimal for this task. The summary claimed a definite number of years, so we stay as close to that level as the source allows: “more than 10 years ago” is a bound the source states in its own words, and it is more specific than a bare “years ago”. The bound is worth keeping precisely because the summary was specific."}, {"t": "“…in Blackpool in 2003…”", "severity": "partial", "w": "Uses a real date from the source and answers a “when” question — but 1 November 2003 is when Charlene disappeared, and the source says only that she was murdered more than a decade ago. Close, and still a different claim from the one the source makes."}]}}, {"id": "p3", "source": "Solly Msimanga, from the opposition Democratic Alliance (DA), said the vehicles would instead be given to a police anti-hijack unit. However, he will continue to use the luxury car used by the previous mayor. The DA took control of Tshwane, a metropolitan area including the capital Pretoria, from the African National Congress (ANC) in local elections. Mr Msimanga said no more luxury cars would be bought under his leadership. He took over from the governing ANC, which lost control of the capital for the first time since 1994, last month. More on this and other African stories . Four things from South Africa election . The ANC bought 10 new BMW 3 series vehicles, which are yet to be delivered, for 5 million rand ($356,000; £266,000), local reports say. The cars were meant for members of the mayoral council, with the ANC said to be confident it would retain control of the municipality in the elections. He will still use a BMW 5 series car he inherited from the previous mayor, reports the IOL website. Mr Msimanga's spokesman Matthew Gerstner told the BBC that this vehicle could not “be dispensed with because it's been bought and paid for already and treasury regulations prohibit that”. He added: “But, as soon as he can replace it, he will, with a sensible, low-cost vehicle”. Mr Msimango says the DA-led coalition government wanted to embark on cost-cutting measures. He said in a statement: “No new luxury cars will be bought or leased for politicians, and if vehicles currently owned by Tshwane require replacement, sensible and low-cost vehicles will be procured. I will not allow public money to be spent on luxury cars, while our people struggle for services, houses and jobs. A Hyundai i20 or Toyota Corolla can do the same job for a politician as an expensive sedan.” The ANC national government has been criticised for wasteful expenditure, so South Africans will be closely watching what the opposition do differently in the key urban areas they won in the August elections, says the BBC's Pumza Fihlani in Johannesburg. South Africans will be keen to see if the opposition, which has until now only run one province, will be able to make good on its ambitious election promises, our correspondent says.", "summary": "The new mayor of South Africa's capital, Tshwane, says he will stop using 10 new BMW cars bought by the governing party.", "spans": ["stop using"], "revision": "The new mayor of South Africa's capital, Tshwane, says he will not use 10 new BMW cars bought by the governing party.", "revision_grammar": "", "worked": [{"span": "stop using", "act": "replace", "h": "The mayor says he will stop using 10 new BMW cars.", "q": "What will the mayor do about his own use of the 10 new BMW cars?", "r": "The mayor will not use the 10 new BMW cars.", "rep": "not use", "attr": "the vehicles would instead be given to a police anti-hijack unit"}], "teach": {"title": "The presupposition fails, and the source states the reverse — replace, do not delete", "note": "“Stop using” assumes he has been using the cars, and the source says they are “yet to be delivered”. But the source is not silent about whether he will use them, and silence and contradiction call for different operations: a source that states the reverse is still answering the question.", "ladder": [{"q": "When will the mayor stop using the 10 new BMW cars?", "status": "rejected", "src": "This keeps an assumption the source does not support — that he has been using them. The cars are “yet to be delivered”, and he “will continue to use the luxury car used by the previous mayor.”"}, {"q": "What will the mayor do with the 10 new BMW cars?", "status": "available", "src": "The source does answer this: the vehicles “would instead be given to a police anti-hijack unit”. The answer is real and it is in the source — it is simply a more specific answer than the summary's own. The summary said he would stop using the cars, so the level to match is his own use of them, not what becomes of them."}, {"q": "What will the mayor do about his own use of the 10 new BMW cars?", "status": "settled", "src": "Answered by both, at the claim's own level, and the answer drops straight into the slot: he will not use them. The cars are going to a police unit instead, and he will keep the car he inherited. What you write into the revision is the answer to your question, so a question answerable with yes or no is no use here — “Will the mayor use the cars?” leaves you nothing to insert."}], "op": "Replace", "traps": [{"t": "“…says he will give 10 new BMW cars to a police anti-hijack unit.”", "severity": "partial", "w": "True, and in the source — but it answers at a level of detail the summary never attempted, and it is a much larger edit than the fix needs."}, {"t": "“…says he will not buy 10 new BMW cars bought by the governing party.”", "w": "The source's line about buying is about future luxury cars in general. These ten were already bought by the ANC, so this answers a different question."}]}}, {"id": "p4", "source": "Media playback is not supported on this device . A statement from F1's governing body the FIA said the man gained “unauthorised access” to the circuit. The FIA said: “We are awaiting a full report from the clerk of the course in order to determine the circumstances surrounding this incident.” Race winner Sebastian Vettel said: “Fortunately nothing happened to us or him. It's not what you want to see.” It is the second time this year someone has gained access to a track during a grand prix weekend, with a spectator running across the circuit during practice at the Chinese Grand Prix in April. Media playback is not supported on this device . It is also the third time in recent history that a track invader has disrupted a grand prix. In 2003, a man wearing a kilt ran across the track during the British Grand Prix. And a disaffected former Mercedes employee invaded the track during the 2000 race in Germany. Vettel, who drives for Ferrari, made a joke about this incident, which has been reported to involve an English tourist. “When I was watching F1 there was a scene in Hockenheim and then a couple of years later in Silverstone,” he said. “This guy was fairly boring. He could have dressed a little funny or something. Now we are joking about it, but it is fairly serious.” Red Bull's Daniel Ricciardo, who finished second, added: “He was on his phone taking pictures, probably for Instagram or something. I hope he got some more followers because it's got to be worth a night in prison.”", "summary": "A man ran on to the track during the Austrian Grand Prix.", "spans": ["Austrian"], "revision": "A man ran on to the track during the Grand Prix.", "revision_grammar": "A man ran on to the track during a Grand Prix.", "worked": [{"span": "Austrian", "act": "delete", "h": "The man ran on to the track during the Austrian Grand Prix.", "expl": "“Which Grand Prix did the man run on to the track during?” and “In which country was the race held?” are both unanswerable: the source never names this race, and the races it does name are separate incidents. No question about “Austrian” has an answer the source supports, so there is nothing to insert."}], "teach": {"title": "No question reaches the claim — delete, and let the grammar pass tidy what is left", "note": "We try to find which Grand Prix it was, and the source will not tell us — not the race, not the country. No question about the marked word gets a meaningful answer out of the source, so there is nothing to put in the slot. Once “Austrian” is gone, “the Grand Prix” reads better as “a Grand Prix”: that is the grammar pass, written after the revision.", "ladder": [{"q": "Which Grand Prix did the man run on to the track during?", "status": "rejected", "src": "Not answerable about this incident. The source names three others — the Chinese Grand Prix in April, the British Grand Prix in 2003, Germany in 2000 — and marks each as a separate event: this is “the second time this year” and “the third time in recent history”. The race being reported is never named."}, {"q": "In which country was the race held?", "status": "rejected", "src": "Also not answerable. Silverstone and Hockenheim appear only inside Vettel's recollection of past incidents, and the tourist being English says nothing about where this race was held."}], "close": "No question we can ask about “Austrian” has an answer the source supports, so there is nothing to insert and we delete the marked word.", "op": "Delete", "traps": [{"t": "“…during the British Grand Prix.”", "severity": "partial", "w": "This is what a past annotator wrote. “British Grand Prix” is in the source — but it belongs to the 2003 incident, a different man in a kilt."}, {"t": "“…during the Chinese Grand Prix.”", "w": "The same error, and the source rules it out explicitly: that was the first of the two this year, during practice, and this is the second."}, {"t": "“…during the Austrian Grand Prix.” (keeping it)", "w": "Not in the source at any point."}]}}, {"id": "p5", "source": "The International Committee of the Red Cross (ICRC) has had to halt deliveries to the Red Sea port of Hudaydah. It said this was partly because it had not received security guarantees. The port has also been targeted by warplanes from a Saudi-led coalition which is backing Yemen's government in its war with the rebel Houthi movement. UN attempts to bring in five cranes to replace those damaged in the attacks have not been successful. The ICRC's Middle East regional director Robert Mardini warned that Yemen, which depends on imports for 90% of its food supplies, was now living on its “reserves” and that the “day will come very soon” when they run out. He said that despite the focus on the damage and casualties caused by the fighting, thousands of people were dying “silently” of complications due to malnutrition, or of minor illnesses or injuries which were not being treated at the 45% of health facilities that are still functioning. The conflict, which escalated in March 2015, has left at least 7,500 people dead and 40,000 injured, according to the United Nations. But almost 19 million people are in need of some form of humanitarian assistance. Seven million people do not know where their next meal is coming from and more than three million, including 2.1 million children, are suffering from acute malnutrition. The UN's emergency relief co-ordinator, Stephen O'Brien, called on the warring parties to guarantee more access to ports to let in food, fuel and medicine imports on Monday. He told the BBC the situation was “very desperate”, and that he had seen children so “severely malnourished” that he feared they would not survive another day. Earlier this month, the UN appealed for $2.1bn (£1.7bn) to provide life-saving assistance to 12 million people in Yemen over the next year. But it has so far received only $43m. On Tuesday, Mr O'Brien was forced to cancel a visit to the city of Taiz, which is besieged by rebel fighters, reportedly after his convoy came under fire. In a separate development on Tuesday, UN human rights officials said they had evidence of the recruitment of child soldiers in Yemen, mostly by groups affiliated with the Houthis. In all, the UN managed to verify the recruitment of 1,476 children, all boys, between March 2015 and the end of January 2017. However, it said the numbers were likely to be much higher.", "summary": "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.", "spans": ["Millions"], "revision": "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.", "revision_grammar": "", "worked": [{"span": "Millions", "act": "not", "why": "The source puts it in the millions several times over: “Seven million people do not know where their next meal is coming from”, and “more than three million, including 2.1 million children, are suffering from acute malnutrition.”"}], "teach": {"title": "A marked statement can be supported — then you change nothing", "note": "Spans are marked by a previous annotator, and a previous annotator can be wrong. When a marked statement is actually supported, choose “Not a hallucination” and change nothing in it. If more than the span is part of the hallucination, or only a part of it is, copy the true hallucinated statement into Span adjustment and revise that part according to the guidelines.", "ladder": [{"q": "How many people in Yemen are at risk of starving?", "status": "settled", "src": "Answered by both, at the same level. The source puts it in the millions several times over: “almost 19 million people are in need of some form of humanitarian assistance”, “Seven million people do not know where their next meal is coming from”, “more than three million, including 2.1 million children, are suffering from acute malnutrition.” “Millions” is entailed, so the marked word is already faithful."}, {"q": "Exactly how many — seven million? three million?", "status": "available", "src": "The source would answer this, but the statement only claimed “millions”, and we do not need to touch a statement the source already supports."}], "op": "Not hallucinated — left as is", "traps": [{"t": "“Thousands of people in war-torn Yemen…”", "w": "This is what an annotator of a previous dataset wrote, reading “thousands of people were dying silently” as the answer. That sentence answers a different question — how many are dying of malnutrition complications and untreated illness — not how many are at risk of starving."}, {"t": "“Seven million people in war-torn Yemen…”", "severity": "partial", "w": "True and supported, but more specific than the claim. The original summary was already supported by the source."}, {"t": "Deleting “Millions”", "w": "Discards a quantity the source supports."}]}}, {"id": "p6", "source": "The scandal, known as “uranium-gate”, resulted from a 2011 transaction between French nuclear giant Areva and companies both in Niger and abroad. There is also a French investigation into some of Areva's business dealings, with aspects related to this deal. Areva has not commented on the legal case in Niger, but says it is cooperating in the French enquiry. Niger is one of the biggest uranium producers in the world and the metal is the country's largest export. Many people turned up on Friday morning outside the court in the capital, Niamey, as representatives of civil society movements arrived to register the court action, the BBC's Himadou Hamadou said. Their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud. The legal action centres on the allegation that Areva in 2011 bought a stock of uranium from Niger at a discounted price. Niger has two significant uranium mines that provides 7.5% of the world mining output from Africa's highest-grade uranium ores, according to the World Nuclear Association, the international organisation that represents the global nuclear industry. Niger's first commercial uranium mine began operating in 1971, with a strong government support for expanding uranium mining.", "summary": "A court in Niger has opened a criminal investigation into alleged corruption in the country's uranium industry.", "spans": ["opened", "investigation into"], "revision": "A court in Niger has received a criminal complaint about alleged corruption in the country's uranium industry.", "revision_grammar": "", "worked": [{"span": "opened", "act": "replace", "h": "A court in Niger has opened a criminal investigation.", "q": "What happened at the court in Niger?", "r": "A court in Niger has received a criminal complaint.", "rep": "received", "attr": "arrived to register the court action"}, {"span": "investigation into", "act": "replace", "h": "A court in Niger has opened a criminal investigation into alleged corruption.", "q": "What happened at the court in Niger?", "r": "A court in Niger has received a criminal complaint about alleged corruption.", "rep": "complaint about", "attr": "Their complaint alleges embezzlement of public funds"}], "teach": {"title": "Two marked statements, one claim", "note": "These two spans are not independent. “Opened” and “investigation into” combine into a single claim about what stage the case has reached, so both have to be repaired before the claim is faithful. Here one final question covers both, and neither span answers it on its own: “received” and “complaint about” answer it together, read as a single phrase. That is not the rule. In many summaries each marked statement makes a claim of its own and deserves its own question, so ask whether two spans really stand or fall together before you treat them as one.", "ladder": [{"q": "What was opened by the court in Niger?", "status": "rejected", "src": "Nothing in the source says the court opened anything. The only investigation it mentions is a separate French one into Areva's business dealings."}, {"q": "What did the court in Niger do about the criminal investigation?", "status": "rejected", "src": "Still not answerable, because the premise is wrong: there is no criminal investigation in Niger in this source. What it describes is a filing."}, {"q": "What happened at the court in Niger?", "status": "settled", "src": "Answered by both. Representatives of civil society movements “arrived to register the court action”, and “their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud.” The court has been presented with a complaint."}], "op": "Replace, both spans", "traps": [{"t": "“A court in Niger has received a criminal investigation into…”", "severity": "partial", "w": "Fixing one span and leaving the other. “Investigation” is still unsupported — what the source describes is a complaint being registered — so the revision keeps a hallucination. A half-repair is not a smaller edit; it is an unfaithful one."}, {"t": "“A court in Niger has opened a criminal investigation…” (keeping it)", "w": "The source attributes an investigation only to the French authorities, and only into Areva's business dealings."}]}}];
+var INTRO_HTML = "<div class=\"intro\">\n<h2>Six practice examples<\/h2>\n<p>These six examples are practice: you answer, submit, and are then shown a worked solution\n   &mdash; the sequence of questions that reaches it, and several mistakes that are easy to\n   make. Your answers here are not sent to us. Work as you would on real data, because the\n   round that follows has no worked solutions.<\/p>\n<p>This is the same tool you will use in the qualification round. Each marked statement gets\n   one card. Choose <b>Replace<\/b>, <b>Delete<\/b> or <b>Not a hallucination<\/b>, and the fields\n   follow your choice. A replace asks for <b>H<\/b>, the hallucinated statement as a complete\n   sentence; the <b>final question<\/b> that both the source and the hallucinated statement\n   answer; <b>R<\/b>, the source&rsquo;s answer as a complete sentence; the <b>replacement<\/b>,\n   the part of R that takes the place of the marked span; and the <b>source attribution<\/b> it\n   comes from. A deletion asks for H and an <b>explanation<\/b> of which questions were not\n   answerable, and why deletion was chosen. Not a hallucination asks why the statement is\n   faithful.<\/p>\n<p>If a mark covers more or fewer words than the true hallucinated statement, use\n   <b>Adjust span<\/b>. If it holds several hallucinated details, use <b>Split span<\/b>.<\/p>\n<p>The <b>revision<\/b> is written once for the whole summary, with every span correction\n   applied. It is filled in for you as you answer, and you can edit it. Grammar fixes are made\n   after the factual revision, in their own box.<\/p>\n<p>Five of these six have one marked statement; the sixth has two that must be repaired. Three\n   of the six are harder than they look, and on one of them the right answer is to change\n   nothing.<\/p>\n<p>The revision procedure and the full guidelines are at the top of the page whenever you want\n   them.<\/p>\n<p style=\"margin:16px 0 0\"><button type=\"button\" class=\"cta\" id=\"begin\">Begin<\/button><\/p>\n<\/div>";
 
-/* ─────────────────────────── deployment constants ───────────────────────────
-   NEXT_URL  where the candidate goes when the training is finished: the demo round
-             (5 items) now, the qualification round (10 items) later. Prolific's three
-             identifiers are carried across on the query string, so the training and
-             the annotation that follows it can be joined up afterwards.
-   ENDPOINT  the Apps Script web-app URL from qualification/apps_script/Code.gs, the
-             same one the annotation tool posts to.
+var TAG = {settled: "RIGHT SPECIFICITY", rejected: "NOT ANSWERABLE",
+           surpassed: "TOO COARSE", available: "TOO SPECIFIC"};
+var ACT = {replace: "Replace", delete: "Delete", not: "Not a hallucination"};
+var LABEL = {h: "H", q: "Final question", r: "R", rep: "Replacement",
+             attr: "Source attribution", expl: "Explanation", why: "Why it is faithful"};
 
-   NO ANSWERS ARE POSTED FROM THIS PAGE. The six practice items are training, not data
-   (Shachar, 28 Oct): the revisions, questions and attributions stay in the browser and
-   are never sent. What IS posted is the timing (Shachar, 28 Oct), because a URL
-   parameter is something a browser, an extension or a copied link can drop, and the
-   whole point of measuring is to have the number for certain. The payload is the three
-   Prolific ids, the clocks, and the score -- no answer text of any kind.
+function kv(esc, label, value) {
+  return value ? '<span class="k">' + label + "</span>" + esc(value) : "";
+}
+function fieldsOf(esc, o) {
+  return ["h", "q", "r", "rep", "attr", "expl", "why"].map(function (f) {
+    return kv(esc, LABEL[f], o[f]);
+  }).join("");
+}
 
-   The post happens twice over, by design: once at the finish screen, and once from
-   pagehide if the candidate leaves before finishing, flagged `partial`. That second
-   one is what gives us the people who abandon halfway, who are invisible to a link.
+// Order matters: what the annotator wrote, then the correct solution, then the explanation
+// of it, then the questions that reach it, then the wrong answers. Nothing is marked right
+// or wrong automatically: the comparison is the annotator's to make, and a different wording
+// can be just as correct.
+function teach(api, item, cur) {
+  var esc = api.esc, t = item.teach;
+  var h = '<div id="teach"><div class="yours"><p class="cap">Your answer</p>'
+    + kv(esc, "Revision", cur.rev)
+    + (cur.gram.trim() !== cur.rev.trim() ? kv(esc, "After grammar fixes", cur.gram) : "");
+  cur.spans.forEach(function (s) {
+    h += '<div class="worked"><span class="k">&ldquo;' + esc(api.spanText(item, s))
+      + "&rdquo; &mdash; " + esc(ACT[s.act] || "") + "</span>";
+    if (s.act === "replace") {
+      h += fieldsOf(esc, {h: s.h, q: s.q, r: s.r, rep: s.rep, attr: s.attr});
+    } else if (s.act === "delete") {
+      h += fieldsOf(esc, {h: s.h, q: s.q, expl: s.expl});
+    } else {
+      h += fieldsOf(esc, {why: s.why});
+    }
+    h += "</div>";
+  });
+  h += "</div>";
 
-   THE CANDIDATE IS NOT SHOWN THEIR TIMES and the page does not tell them it is timing
-   them (Shachar, 28 Oct). Watching a clock changes the thing being measured.
+  var changed = item.revision !== item.summary;
+  h += '<p class="cap">Correct solution example</p><div class="ans">'
+    + '<span class="k">Revision</span>'
+    + api.diffHtml(api.wordDiff(item.summary, item.revision))
+    + (item.revision_grammar
+        ? '<span class="k">After grammar fixes</span>'
+          + api.diffHtml(api.wordDiff(item.revision, item.revision_grammar))
+        : "")
+    + '<span class="k">Operation</span>' + esc(t.op);
+  item.worked.forEach(function (w) {
+    h += '<div class="worked"><span class="k">&ldquo;' + esc(w.span) + "&rdquo; &mdash; "
+      + esc(ACT[w.act]) + "</span>" + fieldsOf(esc, w) + "</div>";
+  });
+  if (changed) {
+    h += '<p class="hint" style="margin:10px 0 0"><del>Struck out</del> is what the revision '
+      + "takes out of the summary, <ins>highlighted</ins> is what it puts in; everything else "
+      + "is unchanged.</p>";
+  }
+  h += "</div><h3>" + esc(t.title) + '</h3><p class="note">' + esc(t.note) + "</p>";
 
-   Leave NEXT_URL empty while the next page does not exist: the finish screen then
-   says the link is coming instead of offering a dead button. Leave ENDPOINT empty and
-   the page simply does not post -- it never shows the candidate an error, because
-   from their side nothing was supposed to happen.                                 */
-const NEXT_URL = "annotate.html";
-const ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec";
-const TOOL_VERSION = "demo-v5";
+  h += '<p class="cap" style="margin-top:16px">The questions, in order</p>';
+  t.ladder.forEach(function (r) {
+    h += '<div class="rung ' + esc(r.status) + '"><span class="qn">'
+      + esc(TAG[r.status] || r.status.toUpperCase()) + "</span><span>" + esc(r.q)
+      + '<span class="src">' + esc(r.src) + "</span></span></div>";
+  });
+  if (t.close) h += '<p class="note" style="margin:6px 0 12px">' + esc(t.close) + "</p>";
 
-const QS = new URLSearchParams(location.search);
-const PROLIFIC = {
-  pid: QS.get("PROLIFIC_PID") || "",
-  study: QS.get("STUDY_ID") || "",
-  session: QS.get("SESSION_ID") || ""
+  h += '<p class="cap" style="margin-top:16px">Wrong answers, and why</p>';
+  t.traps.forEach(function (x) {
+    var part = x.severity === "partial";
+    h += '<div class="trap' + (part ? " partial" : "") + '"><span class="x">'
+      + (part ? "~" : "&#10007;") + "</span><span>" + esc(x.t)
+      + '<span class="tw">' + esc(x.w) + "</span></span></div>";
+  });
+  return h + "</div>";
+}
+
+var posted = false;
+function report(api, partial) {
+  if (posted || !CFG.endpoint) return;
+  if (!partial) posted = true;
+  var st = api.st;
+  function sec(ms) { return Math.round((ms || 0) / 1000); }
+  function each(fn) { return st.items.map(fn); }
+  api.send(JSON.stringify({
+    tool: CFG.version, stage: "training", partial: !!partial, prolific: api.PRO,
+    finished_items: st.items.filter(function (x) { return x.done; }).length,
+    intro_s: sec(st.intro_ms),
+    answer_s: each(function (x) { return sec(x.ms); }),
+    review_s: each(function (x) { return sec(x.review_ms); }),
+    visits: each(function (x) { return x.visits; }),
+    procedure_opens: each(function (x) { return x.help.procedure.opens; }),
+    procedure_s: each(function (x) { return sec(x.help.procedure.ms); }),
+    guidelines_opens: each(function (x) { return x.help.guidelines.opens; }),
+    guidelines_s: each(function (x) { return sec(x.help.guidelines.ms); }),
+    intro_help: {procedure_opens: st.introHelp.procedure.opens,
+                 procedure_s: sec(st.introHelp.procedure.ms),
+                 guidelines_opens: st.introHelp.guidelines.opens,
+                 guidelines_s: sec(st.introHelp.guidelines.ms)},
+    wall_s: Math.round((Date.now() - st.started) / 1000),
+    submitted_at: new Date().toISOString()
+  }));
+}
+
+window.TOOL_HOOKS = {
+  intro: INTRO_HTML,
+  reviewing: function (cur) { return cur.done; },
+  mainButton: function (cur, last) {
+    return cur.done ? {onward: last ? "Finish &rarr;" : "Next example &rarr;"}
+                    : {label: "Submit answer &amp; see the solution"};
+  },
+  below: function (api, item, cur) { return cur.done ? teach(api, item, cur) : ""; },
+  passed: function (api, item, cur) {
+    api.startReview(cur);
+    api.render();
+    var el = document.getElementById("teach");
+    if (el) el.scrollIntoView({behavior: "smooth", block: "start"});
+  },
+  finish: function (api) { report(api, false); },
+  closing: function (api) {
+    return '<div class="pane" id="finish"><h2>Practice complete</h2>'
+      + '<p class="sub">Please carry the lessons from the worked solutions into the '
+      + "annotations that follow. There are no worked solutions from here on.</p>"
+      + '<a class="cta" id="nextStage" href="' + api.esc(api.withIds(CFG.nextPage)) + '">'
+      + "Start the qualification round &rarr;</a></div>";
+  },
+  partial: function (api) { report(api, true); }
 };
 
-/* ─────────────────────────────── the six cases ───────────────────────────────
-   One slot per move on the specificity ladder, so no two teach the same thing:
 
-   P1 regiment      a coarse question works but is TOO COARSE; the matching one settles.
-                    Go finer when the source allows. Synthetic, and the one case carried over
-                    from the pilot-2 demo.
-   P2 defacto-2421  the mirror image, and the commoner one: the source CANNOT answer at the
-                    claim's level but gives a bound in its own words ("more than a decade
-                    ago" against a claimed "10 years ago"), so the fix generalises. The past
-                    annotator's answer deletes the number and loses the bound.
-   P3 defacto-113   the question's presupposition fails AND the source states the reverse ->
-                    replace with the source's own answer, do not delete. One trap answers at
-                    a level of detail the summary never attempted.
-   P4 defacto-627   no question reaches the claim -> delete, and let the grammar pass turn
-                    "the Grand Prix" into "a Grand Prix". The headline trap is the value a
-                    past annotator wrote: a real Grand Prix from a different incident.
-   P5 defacto-1109  the marked span is SUPPORTED -> change nothing. Never taught in pilot 2,
-                    and pilot 2's tool had no button for it.
-   P6 defacto-328   two marked statements forming one claim -> one joint repair, one revision.
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  var PRO = {pid: q.get("PROLIFIC_PID") || "", study: q.get("STUDY_ID") || "",
+             session: q.get("SESSION_ID") || ""};
+  var HOOKS = window.TOOL_HOOKS;
+  var KEY = CFG.storeKey + ":" + (PRO.pid || "anon");
+  var root = document.getElementById("app");
 
-   WHICH ITEMS MAY BE TAUGHT HERE is worked out in qualification/README.md, deliberately not
-   in this file. This page is served to candidates and View Source is one keystroke away, so
-   the ruled-out item ids, the reason each is ruled out, and anything about what the later
-   rounds are scored against stay in the README, which lives in the private repo.
-
-   WORDING RULE FOR THE TEACHING TEXT. Everything here has to be sayable in the vocabulary of
-   the guidelines the candidate has just read: question, specificity, answerable, informational
-   intent, presupposition, delete, verbatim wording. "Axiom", "same kind of value" and the
-   named ladder rungs are this demo's inventions and do not appear.                        */
-const EX = [
-{
-  id: "P1-regiment",
-  item: "synthetic",
-  source: "British Army soldiers were deployed to support flood relief efforts across the region on Wednesday. A Ministry of Defence spokesperson confirmed troops from the Mercian Regiment arrived to help with sandbagging and evacuations, working alongside local emergency services throughout the week.",
-  target: "Soldiers from the Yorkshire Regiment have been deployed to help with flood relief.",
-  spans: ["the Yorkshire Regiment"],
-  key: [{op:"replace", accept:["the mercian regiment","mercian regiment","mercian"]}],
-  revision: "Soldiers from the Mercian Regiment have been deployed to help with flood relief.",
-  teach: {
-    title: "Do not stop at the first question the source and the summary both answer — match the marked statement's own level of detail",
-    note: "The coarser question here genuinely works. But “the Yorkshire Regiment” names a regiment, not merely an army, and the source can answer at that level too, so settling for “the British Army” gives up precision the source supports.",
-    ladder: [
-      {q:"Which armed force were the soldiers from?", status:"surpassed",
-       src:"Both answer this. “The Yorkshire Regiment” entails the British Army — a regiment is part of an army — and the source says it outright: “British Army soldiers were deployed.” So “the British Army” would fill the slot. The claim named a regiment, though, so try the finer question before settling here."},
-      {q:"Which regiment were the soldiers from?", status:"settled",
-       src:"Answered by both, at the level the claim attempted: “troops from the Mercian Regiment.”"}
-    ],
-    op:"Replace",
-    traps:[
-      {t:"“Soldiers from the British Army have been deployed…”", severity:"partial",
-       w:"True, and the source supports it — but the claim named a particular regiment and the source names the actual one. Stopping here gives up specificity the source can match."},
-      {t:"“Soldiers from the Yorkshire Regiment…” (keeping it)",
-       w:"Not stated in the source. The regiment this article names is the Mercian Regiment."},
-      {t:"Deleting the regiment — “Soldiers have been deployed to help with flood relief.”",
-       w:"More than the fix needs: the source names a regiment, so a faithful replacement exists."}
-    ]
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
-},
-{
-  id: "P2-defacto-2421",
-  item: "defacto-2421@test",
-  source: "A Â£100,000 reward is on offer for information leading to the conviction of the killers of 14-year-old Charlene Downes or the recovery of her body. An appeal will be made on the big screen and inside programmes during the team's match against Brighton at Bloomfield Road on Saturday. Charlene disappeared near Blackpool's North Pier on 1 November 2003. Police believe she was one of a number of girls who were groomed for sex. Lancashire Police and Crime Commissioner Clive Grunshaw said: “Someone out there knows something about what happened to Charlene. ”Detectives believe the answer lies in Blackpool - and it could lie at Bloomfield Road on Saturday.“ Det Supt Andy Webster said: ”We have never given up our search for information about Charlene, who we believe was murdered more than a decade ago. “We appreciate that a considerable amount of time has passed since Charlene went missing, but we would still encourage anyone with information at all to come forward and speak to us.” In 2008, a judge ordered a man to be cleared of Charlene's murder, after “grave doubts” were raised around evidence during his second trial. The jury in his first trial failed to reach a verdict. The following year, the Independent Police Complaints Commission (IPCC) said police errors in gathering evidence had contributed to the collapse of the retrial. The IPCC investigation concluded the investigating team was guilty of a strategic and tactical failure in the management of the material and several officers were disciplined, with one being forced to resign in 2011. The resignation order was overturned by a Police Arbitration Tribunal in 2012.",
-  target: "A fresh appeal for information about the murder of a teenage girl in Blackpool 10 years ago is to be made at the town's football ground.",
-  spans: ["10"],
-  key: [{op:"replace", accept:["more than 10","more than ten","over 10","over ten","at least 10",
-                               "at least ten","more than 10 years","more than ten years","10+",
-                               "more than a decade","over a decade"]}],
-  revision: "A fresh appeal for information about the murder of a teenage girl in Blackpool more than 10 years ago is to be made at the town's football ground.",
-  teach: {
-    title: "The source cannot answer at the claim's level, but it does answer — generalise, do not delete",
-    note: "A number in the summary does not mean the source has a number. Here the source gives a bound — police believe she was “murdered more than a decade ago” — and that is the most specific thing it supports about how long ago. Writing “more than a decade ago” instead is the source's own wording, is semantically the same, and is equally accepted.",
-    ladder: [
-      {q:"Exactly how many years ago was the girl murdered?", status:"rejected",
-       src:"Not answerable. The source gives one date — she disappeared on 1 November 2003 — but we cannot know when the article was written, so the elapsed time cannot be worked out from it."},
-      {q:"How long ago was the girl murdered?", status:"settled",
-       src:"Answered by both. Two answers fit the source: “some years ago” and “more than a decade ago”. Take the more specific of the two, which is also the one closer to what the summary claimed: Det Supt Webster says she was “murdered more than a decade ago”."}
-    ],
-    op:"Replace",
-    traps:[
-      {t:"“…in Blackpool years ago…” (deleting the span)", severity:"partial",
-       w:"This is what an annotator of a previous dataset wrote. It is faithful, and still suboptimal for this task. The summary claimed a definite number of years, so we stay as close to that level as the source allows: “more than 10 years ago” is a bound the source states in its own words, and it is more specific than a bare “years ago”. The bound is worth keeping precisely because the summary was specific."},
-      {t:"“…in Blackpool in 2003…”", severity:"partial",
-       w:"Uses a real date from the source and answers a “when” question — but 1 November 2003 is when Charlene disappeared, and the source says only that she was murdered more than a decade ago. Close, and still a different claim from the one the source makes."}
-    ]
+
+  // ---- spans ---------------------------------------------------------------
+  function isWordAt(text, at, len) {
+    var w = /[\p{L}\p{N}]/u, b = text.charAt(at - 1), a = text.charAt(at + len);
+    return !(b && w.test(b)) && !(a && w.test(a));
   }
-},
-{
-  id: "P3-defacto-113",
-  item: "defacto-113",
-  source: "Solly Msimanga, from the opposition Democratic Alliance (DA), said the vehicles would instead be given to a police anti-hijack unit. However, he will continue to use the luxury car used by the previous mayor. The DA took control of Tshwane, a metropolitan area including the capital Pretoria, from the African National Congress (ANC) in local elections. Mr Msimanga said no more luxury cars would be bought under his leadership. He took over from the governing ANC, which lost control of the capital for the first time since 1994, last month. More on this and other African stories . Four things from South Africa election . The ANC bought 10 new BMW 3 series vehicles, which are yet to be delivered, for 5 million rand ($356,000; £266,000), local reports say. The cars were meant for members of the mayoral council, with the ANC said to be confident it would retain control of the municipality in the elections. He will still use a BMW 5 series car he inherited from the previous mayor, reports the IOL website. Mr Msimanga's spokesman Matthew Gerstner told the BBC that this vehicle could not “be dispensed with because it's been bought and paid for already and treasury regulations prohibit that”. He added: “But, as soon as he can replace it, he will, with a sensible, low-cost vehicle”. Mr Msimango says the DA-led coalition government wanted to embark on cost-cutting measures. He said in a statement: “No new luxury cars will be bought or leased for politicians, and if vehicles currently owned by Tshwane require replacement, sensible and low-cost vehicles will be procured. I will not allow public money to be spent on luxury cars, while our people struggle for services, houses and jobs. A Hyundai i20 or Toyota Corolla can do the same job for a politician as an expensive sedan.” The ANC national government has been criticised for wasteful expenditure, so South Africans will be closely watching what the opposition do differently in the key urban areas they won in the August elections, says the BBC's Pumza Fihlani in Johannesburg. South Africans will be keen to see if the opposition, which has until now only run one province, will be able to make good on its ambitious election promises, our correspondent says.",
-  target: "The new mayor of South Africa's capital, Tshwane, says he will stop using 10 new BMW cars bought by the governing party.",
-  spans: ["stop using"],
-  key: [{op:"replace", accept:["not use","will not use","not be using","never use","not using"]}],
-  revision: "The new mayor of South Africa's capital, Tshwane, says he will not use 10 new BMW cars bought by the governing party.",
-  teach: {
-    title: "The presupposition fails, and the source states the reverse — replace, do not delete",
-    note: "“Stop using” assumes he has been using the cars, and the source says they are “yet to be delivered”. But the source is not silent about whether he will use them, and silence and contradiction call for different operations: a source that states the reverse is still answering the question.",
-    ladder: [
-      {q:"When will the mayor stop using the 10 new BMW cars?", status:"rejected",
-       src:"This keeps an assumption the source does not support — that he has been using them. The cars are “yet to be delivered”, and he “will continue to use the luxury car used by the previous mayor.”"},
-      {q:"What will the mayor do with the 10 new BMW cars?", status:"available",
-       src:"The source does answer this: the vehicles “would instead be given to a police anti-hijack unit”. The answer is real and it is in the source — it is simply a more specific answer than the summary's own. The summary said he would stop using the cars, so the level to match is his own use of them, not what becomes of them."},
-      {q:"What will the mayor do about his own use of the 10 new BMW cars?", status:"settled",
-       src:"Answered by both, at the claim's own level, and the answer drops straight into the slot: he will not use them. The cars are going to a police unit instead, and he will keep the car he inherited. What you write into the revision is the answer to your question, so a question answerable with yes or no is no use here — “Will the mayor use the cars?” leaves you nothing to insert."}
-    ],
-    op:"Replace",
-    traps:[
-      {t:"“…says he will give 10 new BMW cars to a police anti-hijack unit.”", severity:"partial",
-       w:"True, and in the source — but it answers at a level of detail the summary never attempted, and it is a much larger edit than the fix needs."},
-      {t:"“…says he will not buy 10 new BMW cars bought by the governing party.”",
-       w:"The source's line about buying is about future luxury cars in general. These ten were already bought by the ANC, so this answers a different question."}
-    ]
+  // Left to right, whole words first: a span "10" must not land inside "2010".
+  function locate(text, list) {
+    var taken = [];
+    return list.map(function (t, n) {
+      var best = -1, from = 0, at;
+      while ((at = text.indexOf(t, from)) !== -1) {
+        var clash = taken.some(function (h) { return at < h[1] && at + t.length > h[0]; });
+        if (!clash) {
+          if (best === -1) best = at;
+          if (isWordAt(text, at, t.length)) { best = at; break; }
+        }
+        from = at + 1;
+      }
+      taken.push([best, best + t.length]);
+      return {n: n, start: best, end: best + t.length};
+    }).sort(function (a, b) { return a.start - b.start; });
   }
-},
-{
-  id: "P4-defacto-627",
-  item: "defacto-627",
-  source: "Media playback is not supported on this device . A statement from F1's governing body the FIA said the man gained “unauthorised access” to the circuit. The FIA said: “We are awaiting a full report from the clerk of the course in order to determine the circumstances surrounding this incident.” Race winner Sebastian Vettel said: “Fortunately nothing happened to us or him. It's not what you want to see.” It is the second time this year someone has gained access to a track during a grand prix weekend, with a spectator running across the circuit during practice at the Chinese Grand Prix in April. Media playback is not supported on this device . It is also the third time in recent history that a track invader has disrupted a grand prix. In 2003, a man wearing a kilt ran across the track during the British Grand Prix. And a disaffected former Mercedes employee invaded the track during the 2000 race in Germany. Vettel, who drives for Ferrari, made a joke about this incident, which has been reported to involve an English tourist. “When I was watching F1 there was a scene in Hockenheim and then a couple of years later in Silverstone,” he said. “This guy was fairly boring. He could have dressed a little funny or something. Now we are joking about it, but it is fairly serious.” Red Bull's Daniel Ricciardo, who finished second, added: “He was on his phone taking pictures, probably for Instagram or something. I hope he got some more followers because it's got to be worth a night in prison.”",
-  target: "A man ran on to the track during the Austrian Grand Prix.",
-  spans: ["Austrian"],
-  key: [{op:"delete", accept:[]}],
-  revision: "A man ran on to the track during the Grand Prix.",
-  revision_grammar: "A man ran on to the track during a Grand Prix.",
-  teach: {
-    title: "No question reaches the claim — delete, and let the grammar pass tidy what is left",
-    note: "We try to find which Grand Prix it was, and the source will not tell us — not the race, not the country. No question about the marked word gets a meaningful answer out of the source, so there is nothing to put in the slot. Once “Austrian” is gone, “the Grand Prix” reads better as “a Grand Prix”: that is the grammar pass, written after the revision.",
-    ladder: [
-      {q:"Which Grand Prix did the man run on to the track during?", status:"rejected",
-       src:"Not answerable about this incident. The source names three others — the Chinese Grand Prix in April, the British Grand Prix in 2003, Germany in 2000 — and marks each as a separate event: this is “the second time this year” and “the third time in recent history”. The race being reported is never named."},
-      {q:"In which country was the race held?", status:"rejected",
-       src:"Also not answerable. Silverstone and Hockenheim appear only inside Vettel's recollection of past incidents, and the tourist being English says nothing about where this race was held."},
-    ],
-    close: "No question we can ask about “Austrian” has an answer the source supports, so there is nothing to insert and we delete the marked word.",
-    op:"Delete",
-    traps:[
-      {t:"“…during the British Grand Prix.”", severity:"partial",
-       w:"This is what a past annotator wrote. “British Grand Prix” is in the source — but it belongs to the 2003 incident, a different man in a kilt."},
-      {t:"“…during the Chinese Grand Prix.”",
-       w:"The same error, and the source rules it out explicitly: that was the first of the two this year, during practice, and this is the second."},
-      {t:"“…during the Austrian Grand Prix.” (keeping it)", w:"Not in the source at any point."}
-    ]
+  function blankSpan(sid, start, end) {
+    return {sid: sid, start: start, end: end, baseStart: start, baseEnd: end, adj: "",
+            adjOpen: false, adjBad: false, splitOpen: false, act: "", h: "", q: "", r: "",
+            rep: "", attr: "", expl: "", why: "", from: null, parent: null};
   }
-},
-{
-  id: "P5-defacto-1109",
-  item: "defacto-1109",
-  source: "The International Committee of the Red Cross (ICRC) has had to halt deliveries to the Red Sea port of Hudaydah. It said this was partly because it had not received security guarantees. The port has also been targeted by warplanes from a Saudi-led coalition which is backing Yemen's government in its war with the rebel Houthi movement. UN attempts to bring in five cranes to replace those damaged in the attacks have not been successful. The ICRC's Middle East regional director Robert Mardini warned that Yemen, which depends on imports for 90% of its food supplies, was now living on its “reserves” and that the “day will come very soon” when they run out. He said that despite the focus on the damage and casualties caused by the fighting, thousands of people were dying “silently” of complications due to malnutrition, or of minor illnesses or injuries which were not being treated at the 45% of health facilities that are still functioning. The conflict, which escalated in March 2015, has left at least 7,500 people dead and 40,000 injured, according to the United Nations. But almost 19 million people are in need of some form of humanitarian assistance. Seven million people do not know where their next meal is coming from and more than three million, including 2.1 million children, are suffering from acute malnutrition. The UN's emergency relief co-ordinator, Stephen O'Brien, called on the warring parties to guarantee more access to ports to let in food, fuel and medicine imports on Monday. He told the BBC the situation was “very desperate”, and that he had seen children so “severely malnourished” that he feared they would not survive another day. Earlier this month, the UN appealed for $2.1bn (£1.7bn) to provide life-saving assistance to 12 million people in Yemen over the next year. But it has so far received only $43m. On Tuesday, Mr O'Brien was forced to cancel a visit to the city of Taiz, which is besieged by rebel fighters, reportedly after his convoy came under fire. In a separate development on Tuesday, UN human rights officials said they had evidence of the recruitment of child soldiers in Yemen, mostly by groups affiliated with the Houthis. In all, the UN managed to verify the recruitment of 1,476 children, all boys, between March 2015 and the end of January 2017. However, it said the numbers were likely to be much higher.",
-  target: "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.",
-  spans: ["Millions"],
-  key: [{op:"keep", accept:[]}],
-  revision: "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.",
-  teach: {
-    title: "A marked statement can be supported — then you change nothing",
-    note: "Spans are marked by a previous annotator, and a previous annotator can be wrong. When a marked statement is actually supported, tick “This isn’t hallucinated” and change nothing in it. If more than the span is part of the hallucination, or only a part of it is, copy the true hallucinated statement into Span adjustment and revise that part according to the guidelines.",
-    ladder: [
-      {q:"How many people in Yemen are at risk of starving?", status:"settled",
-       src:"Answered by both, at the same level. The source puts it in the millions several times over: “almost 19 million people are in need of some form of humanitarian assistance”, “Seven million people do not know where their next meal is coming from”, “more than three million, including 2.1 million children, are suffering from acute malnutrition.” “Millions” is entailed, so the marked word is already faithful."},
-      {q:"Exactly how many — seven million? three million?", status:"available",
-       src:"The source would answer this, but the statement only claimed “millions”, and we do not need to touch a statement the source already supports."}
-    ],
-    op:"Not hallucinated — left as is",
-    traps:[
-      {t:"“Thousands of people in war-torn Yemen…”",
-       w:"This is what an annotator of a previous dataset wrote, reading “thousands of people were dying silently” as the answer. That sentence answers a different question — how many are dying of malnutrition complications and untreated illness — not how many are at risk of starving."},
-      {t:"“Seven million people in war-torn Yemen…”", severity:"partial",
-       w:"True and supported, but more specific than the claim. The original summary was already supported by the source."},
-      {t:"Deleting “Millions”", w:"Discards a quantity the source supports."}
-    ]
+  function blankHelp() {
+    return {procedure: {opens: 0, ms: 0}, guidelines: {opens: 0, ms: 0}};
   }
-},
-{
-  id: "P6-defacto-328",
-  item: "defacto-328",
-  source: "The scandal, known as “uranium-gate”, resulted from a 2011 transaction between French nuclear giant Areva and companies both in Niger and abroad. There is also a French investigation into some of Areva's business dealings, with aspects related to this deal. Areva has not commented on the legal case in Niger, but says it is cooperating in the French enquiry. Niger is one of the biggest uranium producers in the world and the metal is the country's largest export. Many people turned up on Friday morning outside the court in the capital, Niamey, as representatives of civil society movements arrived to register the court action, the BBC's Himadou Hamadou said. Their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud. The legal action centres on the allegation that Areva in 2011 bought a stock of uranium from Niger at a discounted price. Niger has two significant uranium mines that provides 7.5% of the world mining output from Africa's highest-grade uranium ores, according to the World Nuclear Association, the international organisation that represents the global nuclear industry. Niger's first commercial uranium mine began operating in 1971, with a strong government support for expanding uranium mining.",
-  target: "A court in Niger has opened a criminal investigation into alleged corruption in the country's uranium industry.",
-  spans: ["opened", "investigation into"],
-  key: [
-    {op:"replace", accept:["received","heard","registered","been presented with","taken delivery of",
-                            "has received","been given"]},
-    // "criminal" sits OUTSIDE this span, so an accepted value must not repeat it: the summary
-    // reads "a criminal <investigation into>", and the replacement fills only the marked part
-    {op:"replace", accept:["complaint about","complaint of","complaint regarding","complaint"]}
-  ],
-  revision: "A court in Niger has received a criminal complaint about alleged corruption in the country's uranium industry.",
-  teach: {
-    title: "Two marked statements, one claim",
-    note: "These two spans are not independent. “Opened” and “investigation into” combine into a single claim about what stage the case has reached, so both have to be repaired before the claim is faithful. Here one final question covers both, and neither span answers it on its own: “received” and “complaint about” answer it together, read as a single phrase. That is not the rule. In many summaries each marked statement makes a claim of its own and deserves its own question, so ask whether two spans really stand or fall together before you treat them as one.",
-    ladder: [
-      {q:"What was opened by the court in Niger?", status:"rejected",
-       src:"Nothing in the source says the court opened anything. The only investigation it mentions is a separate French one into Areva's business dealings."},
-      {q:"What did the court in Niger do about the criminal investigation?", status:"rejected",
-       src:"Still not answerable, because the premise is wrong: there is no criminal investigation in Niger in this source. What it describes is a filing."},
-      {q:"What happened at the court in Niger?", status:"settled",
-       src:"Answered by both. Representatives of civil society movements “arrived to register the court action”, and “their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud.” The court has been presented with a complaint."}
-    ],
-    op:"Replace, both spans",
-    traps:[
-      {t:"“A court in Niger has received a criminal investigation into…”", severity:"partial",
-       w:"Fixing one span and leaving the other. “Investigation” is still unsupported — what the source describes is a complaint being registered — so the revision keeps a hallucination. A half-repair is not a smaller edit; it is an unfaithful one."},
-      {t:"“A court in Niger has opened a criminal investigation…” (keeping it)",
-       w:"The source attributes an investigation only to the French authorities, and only into Areva's business dealings."}
-    ]
+  function freshItem(it) {
+    return {
+      id: it.id,
+      spans: locate(it.summary, it.spans).map(function (h) {
+        return blankSpan(it.id + "-s" + h.n, h.start, h.end);
+      }),
+      rev: "", revTouched: false, revBase: "", gram: "", gramTouched: false, gramBase: "",
+      lost: "", ms: 0, review_ms: 0, visits: 0, pastes: {}, keys: 0, done: false, note: "",
+      help: blankHelp()
+    };
   }
-}
-];
+  function spanText(item, s) { return item.summary.slice(s.start, s.end); }
 
-/* ───────────────────────────────── state ───────────────────────────────── */
-let i = 0;
-let revDirty = false;          // the annotator has edited the revision box by hand
-const ans = EX.map(() => null);
-const SKEY = "revdemo:" + TOOL_VERSION + ":" + (PROLIFIC.pid || "anon");
+  // ---- state ---------------------------------------------------------------
+  var st = null;
+  try { st = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+  if (!st || st.v !== 2 || st.items.length !== ITEMS.length) {
+    st = {v: 2, at: HOOKS.intro ? -1 : 0, started: Date.now(), finished: false, intro_ms: 0,
+          introHelp: blankHelp(), items: ITEMS.map(freshItem)};
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
+    var el = document.getElementById("saved");
+    if (el) { el.textContent = "saved"; setTimeout(function () { el.textContent = ""; }, 1400); }
+  }
 
-/* ──────────────────────────── how long this takes ───────────────────────────
-   Prolific prices a study from the estimate WE supply: reward divided by estimated
-   minutes is the hourly rate the study is held to, and if the real median runs longer
-   the effective rate drops and the study is flagged as underpaying. Pilot 2 gives us a
-   measured 13.3 min/item for annotation. For the training there is no measurement at
-   all, so its line in the budget is a guess. This is where the number comes from.
+  // ---- clocks --------------------------------------------------------------
+  // Three kinds, kept apart because they do not all recur. The answer clock is the one
+  // that predicts what a production item costs. All of them stop while the tab is hidden,
+  // so a coffee break does not become data.
+  var clockAdd = null, clockSince = 0, parked = null;
+  function tick() {
+    if (!clockAdd) return;
+    var now = Date.now();
+    clockAdd(now - clockSince);
+    clockSince = now;
+  }
+  function clockTo(add) { tick(); clockAdd = add; clockSince = Date.now(); }
+  function clockFor(cur) {
+    if (!cur) return clockTo(function (ms) { st.intro_ms += ms; });
+    if (HOOKS.reviewing && HOOKS.reviewing(cur)) {
+      return clockTo(function (ms) { cur.review_ms += ms; });
+    }
+    clockTo(function (ms) { cur.ms += ms; });
+  }
 
-   Three clocks, because they do not all recur:
-     intro_ms   the instructions page, before Begin. Paid once per worker.
-     answer_ms  card open -> submit. THIS is the one that predicts production, and it
-                is the one to compare against the pilot's 13.3 min/item.
-     review_ms  submit -> leaving the item: reading the worked solution. Training only.
-                The annotation rounds show no solutions, so this time does not carry
-                over and must be kept out of the per-item production estimate.
-   Revisits accumulate rather than overwrite, and `visits` records how often an item was
-   returned to, because an item people come back to is an item the guidelines left open.
-   The clock stops while the tab is hidden, so a coffee break does not become data.
+  // How often each aid was opened on this item, and how long it stayed open. A panel left
+  // open across an item keeps counting time on the next one without counting a new open.
+  var HELP = {procedure: {open: false, since: 0}, guidelines: {open: false, since: 0}};
+  function helpBucket() { var c = st.items[st.at]; return c ? c.help : st.introHelp; }
+  function helpTick(k) {
+    var h = HELP[k];
+    if (h.open && h.since) {
+      var now = Date.now();
+      helpBucket()[k].ms += now - h.since;
+      h.since = now;
+    }
+  }
+  function helpOpen(k) {
+    HELP[k].open = true; HELP[k].since = Date.now();
+    helpBucket()[k].opens += 1; save();
+  }
+  function helpClose(k) { helpTick(k); HELP[k].open = false; HELP[k].since = 0; save(); }
 
-   NOT MEASURED HERE: reading the guidelines Doc, which happens before this page loads
-   and is a real cost. It needs its own estimate in the budget.                       */
-const TIME = {
-  started: Date.now(),
-  intro_ms: 0,
-  items: EX.map(() => ({answer_ms: 0, review_ms: 0, visits: 0}))
-};
-let clockAdd = null, clockSince = 0, parked = null;
-
-function tick() {
-  if (!clockAdd) return;
-  const now = Date.now();
-  clockAdd(now - clockSince);
-  clockSince = now;
-}
-function clockTo(add) { tick(); clockAdd = add; clockSince = Date.now(); }
-const introClock = () => clockTo((ms) => { TIME.intro_ms += ms; });
-const answerClock = (k) => clockTo((ms) => { TIME.items[k].answer_ms += ms; });
-const reviewClock = (k) => clockTo((ms) => { TIME.items[k].review_ms += ms; });
-
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) { tick(); parked = clockAdd; clockAdd = null; }
-  else if (parked) { clockAdd = parked; parked = null; clockSince = Date.now(); }
-});
-
-try {
-  const s = JSON.parse(localStorage.getItem(SKEY) || "null");
-  if (s && Array.isArray(s.ans) && s.ans.length === EX.length) {
-    s.ans.forEach((a, k) => { ans[k] = a; });
-    i = Math.min(s.i || 0, EX.length - 1);
-    // a reload must not reset the clocks, or a page refresh becomes free annotator time
-    const t = s.time;
-    if (t && Array.isArray(t.items) && t.items.length === EX.length) {
-      TIME.started = t.started || TIME.started;
-      TIME.intro_ms = t.intro_ms || 0;
-      t.items.forEach((x, k) => {
-        TIME.items[k] = {answer_ms: x.answer_ms || 0, review_ms: x.review_ms || 0,
-                         visits: x.visits || 0};
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) {
+      tick(); parked = clockAdd; clockAdd = null;
+      ["procedure", "guidelines"].forEach(function (k) {
+        helpTick(k); HELP[k].since = 0;
+      });
+    } else {
+      if (parked) { clockAdd = parked; parked = null; clockSince = Date.now(); }
+      ["procedure", "guidelines"].forEach(function (k) {
+        if (HELP[k].open) HELP[k].since = Date.now();
       });
     }
-  }
-} catch (e) { /* private window, blocked storage: start clean */ }
-
-function save() {
-  tick();
-  try { localStorage.setItem(SKEY, JSON.stringify({ans: ans, i: i, time: TIME})); } catch (e) {}
-}
-
-/* seconds per clock, rounded, for the finish screen and the link onward */
-function timings() {
-  tick();
-  return {
-    intro_s: Math.round(TIME.intro_ms / 1000),
-    answer_s: TIME.items.map((t) => Math.round(t.answer_ms / 1000)),
-    review_s: TIME.items.map((t) => Math.round(t.review_ms / 1000)),
-    visits: TIME.items.map((t) => t.visits),
-    wall_s: Math.round((Date.now() - TIME.started) / 1000)
-  };
-}
-
-const $ = (id) => document.getElementById(id);
-const esc = (s) => String(s == null ? "" : s)
-  .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-function norm(s) {
-  return String(s || "").toLowerCase()
-    .replace(/[‘’“”]/g, "'")
-    .replace(/[^a-z0-9' ]+/g, " ").replace(/\s+/g, " ").trim();
-}
-
-/* highlight every marked span in the summary */
-function markup(target, spans) {
-  let out = "", rest = target;
-  spans.forEach((sp) => {
-    const k = rest.indexOf(sp);
-    if (k < 0) return;
-    out += esc(rest.slice(0, k)) + "<mark>" + esc(sp) + "</mark>";
-    rest = rest.slice(k + sp.length);
   });
-  return out + esc(rest);
-}
 
-/* ───────────────────────── the per-span card ─────────────────────────
-   FIELD NAMES AND ORDER ARE pilot_study/pilot2/tool_A.html's, deliberately. The production
-   tool will be built from this demo, so where the two could differ they do not: the
-   not-hallucinated checkbox rather than a third operation, "Span adjustment" rather than
-   anything shorter, and the tool's order of checkbox, span adjustment, operation, question, then
-   what the operation needs. Two labels are spelled out further than tool_A spells them, on Shachar's
-   instruction of 28 Oct: R says "the value you replace the hallucination with" rather than "the value
-   you inserted", and the attribution says "(copied verbatim from the source)" in the label itself.
-
-   NOT HERE, AND NOT YET DECIDED FOR PRODUCTION. tool_A also collects four meta fields --
-   broader question, specificity, informational type, and coherence-after-deletion. They are
-   research instrumentation rather than part of the revision, and each one costs annotator
-   time on every span in a round costed at 13-15 min/item, so whether production keeps them
-   is an open question. Training does not need them either way, so the demo leaves them out.
-   If they come back, they belong between the question and R, where tool_A puts them.      */
-function card(n, spanText, total) {
-  const head = total > 1 ? "HALLUCINATION " + n : "HALLUCINATION";
-  return '' +
-  '<div class="spanblk">' +
-    '<div class="spanhd"><span class="n">' + head + '</span>' +
-      '<span class="q">' + esc(spanText) + '</span></div>' +
-    '<label class="flagline"><input type="checkbox" data-f="nh" data-n="' + n + '"> ' +
-      'This isn’t hallucinated — it is faithful to the source</label>' +
-    '<div class="hidden" data-w="nhreason" data-n="' + n + '">' +
-      '<div class="lab">Why is this faithful? <span class="opt">— what in the source supports it, or why it counts as reasonable common-knowledge inference</span></div>' +
-      '<textarea class="sm" data-f="nhreason" data-n="' + n + '"></textarea>' +
-      '<div class="fielderr" data-e="nhreason" data-n="' + n + '">Required — please explain why this is faithful to the source.</div>' +
-    '</div>' +
-    '<div data-w="body" data-n="' + n + '">' +
-      '<div class="lab">Span adjustment <span class="opt">(optional) — if the mark covers more / fewer words than the true hallucinated statement, copy the true hallucinated statement here VERBATIM from the summary above</span></div>' +
-      '<input type="text" data-f="scope" data-n="' + n + '">' +
-      '<div class="fielderr" data-e="scope" data-n="' + n + '">This must be an exact quote from the summary above — please copy it verbatim rather than paraphrasing.</div>' +
-      '<div class="lab">Operation</div>' +
-      '<div class="radios" data-f="op" data-n="' + n + '">' +
-        '<label><input type="radio" name="op' + n + '" value="replace"> Replace</label>' +
-        '<label><input type="radio" name="op' + n + '" value="delete"> Delete</label>' +
-      '</div>' +
-      '<div class="fielderr" data-e="op" data-n="' + n + '">Required — please select an operation.</div>' +
-      '<div class="lab">Final question ' +
-        '<span class="opt" data-w="qhint" data-n="' + n + '">— the most specific question answerable by both the source and the hallucinated statement</span>' +
-        '<span class="opt hidden" data-w="qhintdel" data-n="' + n + '">— optional for a deletion: you are deleting precisely because no question works. Write one only if you want to show us the closest you got; the Explanation below is where the reasoning goes</span>' +
-      '</div>' +
-      '<textarea class="sm" data-f="q" data-n="' + n + '"></textarea>' +
-      '<div class="fielderr" data-e="q" data-n="' + n + '">Required — please answer this before continuing.</div>' +
-      '<div class="hidden" data-w="r" data-n="' + n + '">' +
-        '<div class="lab">R — the source-supported value you replace the hallucination with</div>' +
-        '<input type="text" data-f="r" data-n="' + n + '">' +
-        '<div class="fielderr" data-e="r" data-n="' + n + '">Required for a replace — please enter the value you replace the hallucination with.</div>' +
-      '</div>' +
-      '<div class="hidden" data-w="attr" data-n="' + n + '">' +
-        '<div class="lab">Source attribution (copied verbatim from the source) <span class="opt">— the exact sentence or phrase in the SOURCE above that your answer comes from</span></div>' +
-        '<textarea class="sm" data-f="attr" data-n="' + n + '"></textarea>' +
-        '<div class="fielderr" data-e="attr" data-n="' + n + '">Required — copy the exact sentence or phrase from the source above, verbatim.</div>' +
-      '</div>' +
-      '<div class="hidden" data-w="expl" data-n="' + n + '">' +
-        '<div class="lab">Explanation <span class="opt">— shown only for deletions. Which questions did you consider that the source could not answer, and why did you choose to delete?</span></div>' +
-        '<textarea class="sm" data-f="expl" data-n="' + n + '"></textarea>' +
-        '<div class="fielderr" data-e="expl" data-n="' + n + '">Required for a deletion — please say which questions were not answerable, and why you deleted.</div>' +
-      '</div>' +
-    '</div>' +
-  '</div>';
-}
-
-/* which conditional blocks each operation needs */
-const NEEDS = {replace: ["r", "attr"], delete: ["expl"]};
-
-function nh(n) {
-  const el = document.querySelector('[data-f="nh"][data-n="' + n + '"]');
-  return !!(el && el.checked);
-}
-
-/* The operation a span ends up with. A ticked checkbox IS "keep": the answer key and the
-   score are written in operations, and nothing downstream should have to know that this
-   one arrives as a checkbox rather than a radio. */
-function opOf(n) {
-  if (nh(n)) return "keep";
-  return (document.querySelector('input[name="op' + n + '"]:checked') || {}).value || "";
-}
-
-function syncOps() {
-  EX[i].spans.forEach((_, k) => {
-    const n = k + 1;
-    const faithful = nh(n);
-    const body = document.querySelector('[data-w="body"][data-n="' + n + '"]');
-    const why = document.querySelector('[data-w="nhreason"][data-n="' + n + '"]');
-    if (body) body.classList.toggle("hidden", faithful);
-    if (why) why.classList.toggle("hidden", !faithful);
-    const op = faithful ? "" : opOf(n);
-    ["r", "attr", "expl"].forEach((f) => {
-      const w = document.querySelector('[data-w="' + f + '"][data-n="' + n + '"]');
-      if (w) w.classList.toggle("hidden", !(NEEDS[op] || []).includes(f));
-    });
-    // the final question is required for a replace and optional for a deletion: a deletion
-    // happens BECAUSE no question works, so demanding one invites an invented question
-    const qh = document.querySelector('[data-w="qhint"][data-n="' + n + '"]');
-    const qd = document.querySelector('[data-w="qhintdel"][data-n="' + n + '"]');
-    if (qh) qh.classList.toggle("hidden", op === "delete");
-    if (qd) qd.classList.toggle("hidden", op !== "delete");
-  });
-}
-
-/* ───────────────────── the revision, built from the answers ─────────────────────
-   The annotation tool composes the revision from the per-span operations, so the demo
-   does the same: every span is applied to the summary in order. The box stays editable,
-   and once it is edited by hand nothing overwrites it until Rebuild is pressed.      */
-function autoRevision() {
-  const e = EX[i];
-  let out = e.target;
-  e.spans.forEach((sp, k) => {
-    const n = k + 1;
-    const op = opOf(n);
-    if (op === "replace") {
-      const r = getVal("r", n);
-      if (r) out = out.replace(sp, r);
-    } else if (op === "delete") {
-      out = out.replace(sp, "");
-    }
-  });
-  return out.replace(/\s{2,}/g, " ").replace(/\s+([,.;:])/g, "$1").trim();
-}
-
-function refreshRevision() {
-  if (revDirty) return;
-  const v = autoRevision();
-  if (v !== EX[i].target || anyAnswered()) $("f_rev").value = v;
-}
-
-function anyAnswered() {
-  return EX[i].spans.some((_, k) => !!opOf(k + 1));
-}
-
-/* ───────────────────────────────── render ───────────────────────────────── */
-function dots() {
-  $("dots").innerHTML = EX.map((_, k) =>
-    '<span class="dot' + (k === i ? " on" : (ans[k] && ans[k].checked ? " done" : "")) + '"></span>'
-  ).join("");
-}
-
-function render() {
-  const e = EX[i];
-  $("pos").textContent = "— example " + (i + 1) + " of " + EX.length;
-  dots();
-  $("source").textContent = e.source;
-  $("target").innerHTML = markup(e.target, e.spans);
-  $("form").innerHTML = e.spans.map((sp, k) => card(k + 1, sp, e.spans.length)).join("");
-  $("f_rev").value = "";
-  $("f_rev_grammar").value = "";
-  revDirty = false;
-  $("teach").classList.add("hidden");
-  $("teach").innerHTML = "";
-  $("checkBtn").classList.remove("hidden");
-  $("nextBtn").classList.add("hidden");
-  $("prevBtn").disabled = (i === 0);
-  $("nextBtn").textContent = (i === EX.length - 1) ? "Finish →" : "Next example →";
-  $("hint").textContent = "";
-  clearErrors();
-
-  // restore
-  const a = ans[i];
-  if (a) {
-    a.spans.forEach((s, k) => {
-      setVal("q", k + 1, s.q); setVal("r", k + 1, s.r);
-      setVal("attr", k + 1, s.attr); setVal("expl", k + 1, s.expl);
-      setVal("scope", k + 1, s.scope); setVal("nhreason", k + 1, s.nhreason);
-      if (s.op === "keep") {
-        const box = document.querySelector('[data-f="nh"][data-n="' + (k + 1) + '"]');
-        if (box) box.checked = true;
-      } else if (s.op) {
-        const el = document.querySelector('input[name="op' + (k + 1) + '"][value="' + s.op + '"]');
-        if (el) el.checked = true;
+  // ---- the revision --------------------------------------------------------
+  // Right to left, so an edit never moves an offset still to come. A deletion also tidies
+  // its own join and nothing else: no double space, and no full stop left stranded where a
+  // whole sentence used to be. Any other repair is the annotator's grammar pass.
+  function assemble(item, cur) {
+    var text = item.summary;
+    cur.spans.slice().sort(function (a, b) { return b.start - a.start; }).forEach(function (s) {
+      var L = text.slice(0, s.start), R = text.slice(s.end);
+      if (s.act === "replace" && s.rep.trim()) {
+        text = L + s.rep.trim().replace(/\s+/g, " ") + R;
+      } else if (s.act === "delete") {
+        L = L.replace(/[ \t]+$/, "");
+        var r = R.replace(/^[ \t]+/, "");
+        if (/^[,.;:!?]/.test(r) && (!L.trim() || /[.!?;:,]\s*$/.test(L))) {
+          r = r.replace(/^[,.;:!?]+\s*/, "");
+        }
+        if (L.trim() && r && !/^[,.;:!?]/.test(r) && !/[\s(\["“‘]$/.test(L)) {
+          r = " " + r;
+        }
+        text = (L.trim() ? L : "") + r;
       }
     });
-    $("f_rev").value = a.revision || "";
-    $("f_rev_grammar").value = a.revision_grammar || "";
-    revDirty = true;
+    return text;
   }
-  syncOps();
-  wireCard();
-  TIME.items[i].visits += 1;
-  // an item already submitted reopens on its worked solution, so that is review time
-  if (a && a.checked) { teach(); reviewClock(i); } else { answerClock(i); }
-  window.scrollTo(0, 0);
-}
+  function finalText(cur) { return cur.gram.trim() || cur.rev.trim(); }
+  function sync(item, cur) {
+    if (!cur.revTouched) cur.rev = assemble(item, cur);
+    if (!cur.gramTouched) cur.gram = cur.rev;
+  }
 
-function wireCard() {
-  document.querySelectorAll('#form input[type=radio]').forEach((el) => {
-    el.addEventListener("change", () => {
-      syncOps();
-      clearError("op", el.name.replace("op", ""));
-      refreshRevision();
+  // ---- the diff ------------------------------------------------------------
+  function tokens(s) {
+    s = String(s);
+    var re = /[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*|['’]\p{L}+|\S/gu, out = [], m;
+    while ((m = re.exec(s))) out.push({t: m[0], at: m.index, end: re.lastIndex, ws: ""});
+    out.forEach(function (k, n) {
+      var nx = out[n + 1];
+      k.ws = s.slice(k.end, nx ? nx.at : s.length);
     });
-  });
-  document.querySelectorAll('#form [data-f="nh"]').forEach((el) => {
-    el.addEventListener("change", () => {
-      syncOps();
-      clearError("op", el.dataset.n);
-      clearError("nhreason", el.dataset.n);
-      refreshRevision();
+    return out;
+  }
+  // Longest common subsequence over words and punctuation.
+  function wordDiff(a, b) {
+    var A = tokens(a), B = tokens(b), ops = [], x, y;
+    var p = 0;
+    while (p < A.length && p < B.length && A[p].t === B[p].t) p++;
+    var ea = A.length, eb = B.length;
+    while (ea > p && eb > p && A[ea - 1].t === B[eb - 1].t) { ea--; eb--; }
+    var m = ea - p, n = eb - p, L = [];
+    for (x = 0; x <= m; x++) L.push(new Array(n + 1).fill(0));
+    for (x = m - 1; x >= 0; x--) {
+      for (y = n - 1; y >= 0; y--) {
+        L[x][y] = A[p + x].t === B[p + y].t ? L[x + 1][y + 1] + 1
+                                            : Math.max(L[x + 1][y], L[x][y + 1]);
+      }
+    }
+    for (x = 0; x < p; x++) ops.push({k: "=", a: A[x], b: B[x]});
+    x = 0; y = 0;
+    while (x < m || y < n) {
+      if (x < m && y < n && A[p + x].t === B[p + y].t) {
+        ops.push({k: "=", a: A[p + x], b: B[p + y]}); x++; y++;
+      } else if (y >= n || (x < m && L[x + 1][y] >= L[x][y + 1])) {
+        ops.push({k: "-", a: A[p + x]}); x++;
+      } else {
+        ops.push({k: "+", b: B[p + y]}); y++;
+      }
+    }
+    for (x = ea; x < A.length; x++) ops.push({k: "=", a: A[x], b: B[eb + x - ea]});
+    return ops;
+  }
+  function joined(list) {
+    return list.map(function (k, n) {
+      return k.t + (n < list.length - 1 ? k.ws : "");
+    }).join("");
+  }
+  // A changed region reads as everything removed, then everything added.
+  function diffHtml(ops) {
+    var out = "", i = 0;
+    while (i < ops.length) {
+      if (ops[i].k === "=") {
+        out += esc(ops[i].a.t) + esc(ops[i].a.ws || ops[i].b.ws);
+        i++;
+        continue;
+      }
+      var dels = [], adds = [];
+      while (i < ops.length && ops[i].k !== "=") {
+        if (ops[i].k === "-") dels.push(ops[i].a); else adds.push(ops[i].b);
+        i++;
+      }
+      if (dels.length) out += "<del>" + esc(joined(dels)) + "</del>";
+      if (dels.length && adds.length) out += " ";
+      if (adds.length) out += "<ins>" + esc(joined(adds)) + "</ins>";
+      var ld = dels[dels.length - 1], la = adds[adds.length - 1];
+      out += esc((la && la.ws) || (ld && ld.ws) || "");
+    }
+    return out;
+  }
+  function diffChanged(ops) { return ops.some(function (o) { return o.k !== "="; }); }
+
+  // ---- render --------------------------------------------------------------
+  function markup(item, cur) {
+    var text = item.summary, out = "", pos = 0, many = cur.spans.length > 1;
+    var order = cur.spans.map(function (s, i) { return i; }).sort(function (a, b) {
+      return cur.spans[a].start - cur.spans[b].start;
     });
-  });
-  document.querySelectorAll('#form [data-f]').forEach((el) => {
-    if (el.type === "checkbox" || el.type === "radio") return;
-    el.addEventListener("input", () => {
-      clearError(el.dataset.f, el.dataset.n);
-      if (el.dataset.f === "r") refreshRevision();
+    order.forEach(function (i) {
+      var s = cur.spans[i];
+      var cls = s.act === "not" ? "off" : (s.act ? "done" : "");
+      out += esc(text.slice(pos, s.start))
+        + '<mark class="sp ' + cls + '" data-i="' + i + '">' + esc(text.slice(s.start, s.end))
+        + (many ? "<sup>" + (i + 1) + "</sup>" : "") + "</mark>";
+      pos = s.end;
     });
-  });
-}
+    return out + esc(text.slice(pos));
+  }
 
-function setVal(f, n, v) {
-  const el = document.querySelector('[data-f="' + f + '"][data-n="' + n + '"]');
-  if (el) el.value = v || "";
-}
-function getVal(f, n) {
-  const el = document.querySelector('[data-f="' + f + '"][data-n="' + n + '"]');
-  return el ? el.value.trim() : "";
-}
+  function field(i, f, value, label, hint, err, kind) {
+    var id = "f_" + f + i;
+    var ctl = kind === "input"
+      ? '<input type="text" id="' + id + '" data-f="' + f + '" data-i="' + i + '" value="'
+        + esc(value) + '" autocomplete="off">'
+      : '<textarea id="' + id + '" class="sm" rows="1" data-f="' + f + '" data-i="' + i + '">'
+        + esc(value) + "</textarea>";
+    return '<label class="fl" for="' + id + '">' + label
+      + (hint ? ' <span class="opt">' + hint + "</span>" : "") + "</label>" + ctl
+      + '<div class="fielderr" data-e="' + f + '" data-i="' + i + '">' + err + "</div>";
+  }
+  function choice(i, act, label, cursel) {
+    return '<button type="button" class="choice" data-act="' + act + '" data-i="' + i
+      + '" aria-pressed="' + (cursel === act) + '">' + label + "</button>";
+  }
 
-/* ─────────────────────── required fields, flagged in place ─────────────────────── */
-function flag(f, n) {
-  const el = document.querySelector('[data-f="' + f + '"][data-n="' + n + '"]');
-  const err = document.querySelector('[data-e="' + f + '"][data-n="' + n + '"]');
-  if (el) el.classList.add("needs");
-  if (err) err.classList.add("on");
-}
-function clearError(f, n) {
-  const el = document.querySelector('[data-f="' + f + '"][data-n="' + n + '"]');
-  const err = document.querySelector('[data-e="' + f + '"][data-n="' + n + '"]');
-  if (el) el.classList.remove("needs");
-  if (err) err.classList.remove("on");
-}
-function clearErrors() {
-  document.querySelectorAll(".needs").forEach((el) => el.classList.remove("needs"));
-  document.querySelectorAll(".fielderr.on").forEach((el) => el.classList.remove("on"));
-}
+  function card(item, cur, s, i) {
+    var text = spanText(item, s), n = cur.spans.length;
+    var words = text.trim().split(/\s+/).length;
+    var next = cur.spans[i + 1];
+    var tools = "";
+    if (s.act !== "not") {
+      tools += '<button type="button" class="choice small" data-adjust="' + i + '"'
+        + ' aria-pressed="' + !!(s.adjOpen || s.adj) + '">Adjust span</button>';
+      if (words > 1) {
+        tools += '<button type="button" class="choice small" data-split="' + i + '"'
+          + ' aria-pressed="' + !!s.splitOpen + '">Split span</button>';
+      }
+    }
+    if (s.from && next && next.from === s.from) {
+      tools += '<button type="button" class="choice small" data-merge="' + i
+        + '">Undo this split</button>';
+    }
+    var cls = s.act === "not" ? " off" : (s.act ? " done" : "");
+    var h = '<div class="span' + cls + '" data-i="' + i + '" id="card' + i + '">'
+      + '<p class="lab">Marked statement ' + (i + 1) + " of " + n + "</p>"
+      + '<div class="spanhead"><p class="spantext" id="text' + i + '">&ldquo;' + esc(text)
+      + "&rdquo;</p>" + (tools ? '<div class="tools">' + tools + "</div>" : "") + "</div>";
+    if (s.act !== "not" && (s.adjOpen || s.adj)) {
+      h += '<div class="sidepanel">'
+        + field(i, "adj", s.adj, "Span adjustment", "if the mark covers more or fewer words "
+          + "than the true hallucinated statement, copy the true hallucinated statement here "
+          + "verbatim from the target text",
+          "This must be an exact quote from the target text, and must not overlap another "
+          + "marked statement. Please copy it verbatim rather than paraphrasing.", "input")
+        + "</div>";
+    }
+    if (s.act !== "not" && s.splitOpen) h += splitUI(item, i, s);
+    h += '<div class="row" data-group="act' + i + '" style="margin-top:10px">'
+      + choice(i, "replace", "Replace", s.act) + choice(i, "delete", "Delete", s.act)
+      + choice(i, "not", "Not a hallucination", s.act) + "</div>"
+      + '<div class="fielderr" data-e="act" data-i="' + i + '">Required: please select an '
+      + "operation.</div>";
+    var H = field(i, "h", s.h, "H", "the hallucinated statement, as a complete sentence",
+      "Required: please write the hallucinated statement as a complete sentence.");
+    if (s.act === "replace") {
+      h += H
+        + field(i, "q", s.q, "Final question (Qmax)", "the most specific question answerable "
+          + "by both the source and the hallucinated statement",
+          "Required for a replace: please write the final question.")
+        + field(i, "r", s.r, "R", "the source&rsquo;s answer to Qmax, as a complete sentence",
+          "Required for a replace: please write the answer as a complete sentence.")
+        + field(i, "rep", s.rep, "Replacement", "the part of R that takes the place of the "
+          + "marked span in the text",
+          "Required for a replace: please enter the part of R that replaces the span.",
+          "input")
+        + '<p class="soft" id="soft_rep' + i + '"' + (repInR(s) ? " hidden" : "")
+        + ">This is not word for word in R above. It should be the part of R that fits the "
+        + "slot.</p>"
+        + field(i, "attr", s.attr, "Source attribution (copied verbatim from the source)",
+          "the exact sentence or phrase in the source that your answer comes from",
+          "Required: copy the exact sentence or phrase from the source, verbatim.");
+    } else if (s.act === "delete") {
+      h += H
+        + field(i, "q", s.q, "Final question", "optional for a deletion: you are deleting "
+          + "precisely because no question works. Write one only if you want to show us the "
+          + "closest you got; the Explanation below is where the reasoning goes", "")
+        + field(i, "expl", s.expl, "Explanation", "which questions did you consider that the "
+          + "source could not answer, and why did you choose to delete?",
+          "Required for a deletion: please say which questions were not answerable, and why "
+          + "you deleted.");
+    } else if (s.act === "not") {
+      h += field(i, "why", s.why, "Why is this faithful?", "what in the source supports it, "
+        + "or why it counts as reasonable common-knowledge inference",
+        "Required: please explain why this is faithful to the source.");
+    }
+    return h + "</div>";
+  }
 
-function validate() {
-  clearErrors();
-  let bad = 0;
-  EX[i].spans.forEach((_, k) => {
-    const n = k + 1;
-    // a span adjustment has to be a quote from the summary, not a paraphrase of one
-    const adj = getVal("scope", n);
-    if (adj && EX[i].target.indexOf(adj) < 0) { flag("scope", n); bad++; }
-    if (nh(n)) {
-      if (!getVal("nhreason", n)) { flag("nhreason", n); bad++; }
+  function splitUI(item, i, s) {
+    var w = wordsOf(spanText(item, s)), b = "";
+    // Only the words either side of the cut. Printing the whole phrase on every button
+    // made a long clause into a dozen near-identical lines with the boundary buried.
+    for (var k = 1; k < w.length; k++) {
+      var L = w.slice(0, k).map(function (x) { return x[2]; });
+      var R = w.slice(k).map(function (x) { return x[2]; });
+      b += '<button type="button" class="word" data-cut="' + i + ":" + k + '">'
+        + (L.length > 3 ? "&hellip; " : "") + esc(L.slice(-3).join(" "))
+        + " <b>|</b> " + esc(R.slice(0, 3).join(" ")) + (R.length > 3 ? " &hellip;" : "")
+        + "</button>";
+    }
+    return '<div class="sidepanel"><p>If this statement holds more than one hallucinated '
+      + "detail, choose where to divide it. Each part then gets its own answers.</p>" + b
+      + '<p style="margin:8px 0 0"><button type="button" class="choice small" data-cut="'
+      + i + ':0">Cancel</button></p></div>';
+  }
+  function wordsOf(text) {
+    var re = /\S+/g, m, o = [];
+    while ((m = re.exec(text))) o.push([m.index, re.lastIndex, m[0]]);
+    return o;
+  }
+
+  function revState(cur, item) {
+    if (!cur.revTouched) return "Filled in from your answers above as you type.";
+    if (assemble(item, cur) !== cur.revBase) {
+      return '<span class="stale">Your answers have changed since you edited this box. It '
+        + "has not been overwritten; Rebuild applies them and replaces your edits.</span>";
+    }
+    return "You have edited this yourself, so your answers no longer change it.";
+  }
+  function gramState(cur) {
+    if (!cur.gramTouched) return "Follows the revision above. Leave it as it is if nothing "
+      + "needs fixing.";
+    if (cur.gramBase !== cur.rev) {
+      return '<span class="stale">The revision above has changed since you edited this box. '
+        + "Copy it down to start again from it.</span>";
+    }
+    return "You have edited this yourself, so the revision above no longer changes it.";
+  }
+  function paintStates(item, cur) {
+    var a = document.getElementById("revstate"), b = document.getElementById("gramstate");
+    if (a) a.innerHTML = revState(cur, item);
+    if (b) b.innerHTML = gramState(cur);
+    var r = document.getElementById("rebuild"), c = document.getElementById("copyrev");
+    if (r) r.hidden = !cur.revTouched;
+    if (c) c.hidden = !cur.gramTouched;
+  }
+
+  function render() {
+    var keepY = window.scrollY;
+    var bar = document.getElementById("count");
+    document.getElementById("fill").style.width =
+      (Math.max(st.at, 0) / ITEMS.length * 100).toFixed(1) + "%";
+    if (st.finished) { closing(); return; }
+    if (st.at < 0) {
+      bar.innerHTML = CFG.introCount;
+      root.innerHTML = HOOKS.intro;
+      document.getElementById("below").innerHTML = "";
+      var begin = document.getElementById("begin");
+      begin.addEventListener("click", function () { goTo(0); });
       return;
     }
-    const op = opOf(n);
-    if (!op) { flag("op", n); bad++; }
-    if (op !== "delete" && !getVal("q", n)) { flag("q", n); bad++; }
-    (NEEDS[op] || []).forEach((f) => { if (!getVal(f, n)) { flag(f, n); bad++; } });
-  });
-  if (!$("f_rev").value.trim()) {
-    $("f_rev").classList.add("needs"); $("f_rev_err").classList.add("on"); bad++;
+    var item = ITEMS[st.at], cur = st.items[st.at];
+    bar.innerHTML = CFG.noun + " <b>" + (st.at + 1) + "</b> of " + ITEMS.length;
+    sync(item, cur);
+    var last = st.at === ITEMS.length - 1;
+    var cards = cur.spans.map(function (s, i) { return card(item, cur, s, i); }).join("");
+    var main = HOOKS.mainButton(cur, last);
+    root.innerHTML =
+      '<div class="panes">'
+      + '<div class="pane src"><p class="lab">Source &mdash; the ground truth</p>'
+      + '<div class="doc">' + esc(item.source) + "</div></div>"
+      + '<div><div class="pane"><p class="lab">Target text &mdash; marked statements '
+      + 'highlighted; click one to jump to it</p><div class="doc" id="tgt">'
+      + markup(item, cur) + "</div></div>"
+      + '<div style="margin-top:18px">'
+      + (cur.note ? '<p class="notice">' + esc(cur.note) + "</p>" : "") + cards + "</div>"
+      + '<div class="pane" style="margin-top:4px">'
+      + '<label class="lab" for="rev">Revision <span class="opt">&mdash; written once for the '
+      + "whole summary, with every span correction applied</span></label>"
+      + '<textarea id="rev" class="rev">' + esc(cur.rev) + "</textarea>"
+      + '<div class="fielderr" id="rev_err">Required: write the revised summary.</div>'
+      + '<div class="autonote"><span id="revstate"></span>'
+      + '<button type="button" class="choice small" id="rebuild">Rebuild from my answers'
+      + "</button></div>"
+      + '<div class="revsecond"><label class="lab" for="gram">Revision after grammar fixes '
+      + '<span class="opt">&mdash; repair any grammar <em>your own edits</em> broke; change '
+      + "nothing else, and add no new information</span></label>"
+      + '<textarea id="gram" class="rev">' + esc(cur.gram) + "</textarea>"
+      + '<div class="autonote"><span id="gramstate"></span>'
+      + '<button type="button" class="choice small" id="copyrev">Copy the revision above down'
+      + "</button></div></div></div>"
+      + '<div class="foot">'
+      + '<button type="button" class="ghost" id="prev"' + (st.at === 0 ? " hidden" : "")
+      + ">&larr; Previous</button>"
+      + (main.label ? '<button type="button" class="cta" id="next">' + main.label + "</button>"
+                    : "")
+      + (main.onward ? '<button type="button" class="cta" id="onward">' + main.onward
+                       + "</button>" : "")
+      + '<span class="saved" id="saved"></span>'
+      + '<span class="err" id="err"></span></div>'
+      + "</div></div>";
+    document.getElementById("below").innerHTML =
+      HOOKS.below ? HOOKS.below(api, item, cur) : "";
+    paintStates(item, cur);
+    fitAll();
+    window.scrollTo(0, keepY);
   }
-  return bad;
-}
 
-function collect() {
-  const e = EX[i];
-  return {
-    id: e.id, item: e.item,
-    spans: e.spans.map((sp, k) => ({
-      span: sp, q: getVal("q", k + 1), op: opOf(k + 1),
-      not_hallucinated: nh(k + 1), nhreason: getVal("nhreason", k + 1),
-      r: getVal("r", k + 1), attr: getVal("attr", k + 1),
-      expl: getVal("expl", k + 1), scope: getVal("scope", k + 1)
-    })),
-    revision: $("f_rev").value.trim(),
-    revision_grammar: $("f_rev_grammar").value.trim(),
-    answer_ms: TIME.items[i].answer_ms,
-    visits: TIME.items[i].visits,
-    checked: true
-  };
-}
-
-/* ─────────────────────────────── the worked solution ───────────────────────────────
-   Order matters here: what the annotator wrote, then the correct solution, then the
-   explanation of it, then the questions that reach it, then the wrong answers. The
-   explanation comes AFTER the answer because it explains the answer.
-   Nothing is marked right or wrong automatically -- the comparison is the annotator's
-   to make, and a different wording can be just as correct.                           */
-const TAG = {settled: "RIGHT SPECIFICITY", rejected: "NOT ANSWERABLE",
-             surpassed: "TOO COARSE", available: "TOO SPECIFIC"};
-
-/* A word-level diff, so the worked revision shows at a glance what it drops (red) and what
-   it puts in (green), rather than making the reader spot the change for themselves. Plain
-   LCS over space-separated words; these are single sentences, so that is enough.        */
-function diffWords(from, to) {
-  const A = String(from).split(" "), B = String(to).split(" ");
-  const m = A.length, k = B.length;
-  const L = [];
-  for (let x = 0; x <= m; x++) L.push(new Array(k + 1).fill(0));
-  for (let x = m - 1; x >= 0; x--)
-    for (let y = k - 1; y >= 0; y--)
-      L[x][y] = A[x] === B[y] ? L[x + 1][y + 1] + 1 : Math.max(L[x + 1][y], L[x][y + 1]);
-  const runs = [];
-  const push = (kind, word) => {
-    const last = runs[runs.length - 1];
-    if (last && last.kind === kind) last.words.push(word);
-    else runs.push({kind: kind, words: [word]});
-  };
-  let x = 0, y = 0;
-  while (x < m && y < k) {
-    if (A[x] === B[y]) { push("same", A[x]); x++; y++; }
-    else if (L[x + 1][y] >= L[x][y + 1]) { push("del", A[x]); x++; }
-    else { push("ins", B[y]); y++; }
+  function fit(el) {
+    el.style.height = "auto";
+    el.style.height = (el.scrollHeight + 3) + "px";
   }
-  while (x < m) { push("del", A[x]); x++; }
-  while (y < k) { push("ins", B[y]); y++; }
-  return runs.map((r) => {
-    const txt = esc(r.words.join(" "));
-    return r.kind === "same" ? txt : "<" + r.kind + ">" + txt + "</" + r.kind + ">";
-  }).join(" ");
-}
+  function fitAll() {
+    root.querySelectorAll("textarea").forEach(function (t) { if (t.offsetParent) fit(t); });
+  }
+  window.addEventListener("resize", fitAll);
 
-function teach() {
-  const e = EX[i], a = ans[i], t = e.teach;
+  // ---- soft checks, recorded and shown but never blocking ----------------------
+  function loose(s) {
+    return String(s).toLowerCase().replace(/[‘’]/g, "'")
+      .replace(/[“”]/g, '"').replace(/\s+/g, " ").trim();
+  }
+  function repInR(s) {
+    return !s.rep.trim() || !s.r.trim() || loose(s.r).indexOf(loose(s.rep)) !== -1;
+  }
 
-  let h = '<div class="yours"><span class="k">Your revision</span><span class="v">' +
-       (a.revision ? esc(a.revision) : "<i>left empty</i>") + '</span>' +
-       (a.revision_grammar ? '<span class="k">Your grammar pass</span><span class="v">' +
-         esc(a.revision_grammar) + '</span>' : "") +
-       '<span class="k">Your question' + (a.spans.length > 1 ? "s" : "") + '</span><span class="v">' +
-       a.spans.map((s) => s.q ? esc(s.q) : "<i>left empty</i>").join("<br>") + '</span></div>';
+  // ---- adjusting a span -------------------------------------------------------
+  function nearest(text, needle, near) {
+    var hay = text.toLowerCase(), nd = needle.toLowerCase(), best = -1, at = -1;
+    while ((at = hay.indexOf(nd, at + 1)) !== -1) {
+      if (best === -1 || Math.abs(at - near) < Math.abs(best - near)) best = at;
+    }
+    return best;
+  }
+  function applyAdjust(item, cur, i) {
+    var s = cur.spans[i], v = s.adj.trim();
+    s.adjBad = false;
+    if (!v) { s.start = s.baseStart; s.end = s.baseEnd; return; }
+    var at = nearest(item.summary, v, s.baseStart), end = at + v.length;
+    var clash = at !== -1 && cur.spans.some(function (o, k) {
+      return k !== i && at < o.end && end > o.start;
+    });
+    if (at === -1 || clash) { s.adjBad = true; s.start = s.baseStart; s.end = s.baseEnd; return; }
+    s.start = at; s.end = end;
+  }
 
-  const changed = e.revision !== e.target || !!e.revision_grammar;
-  h += '<div class="ladder-cap">Correct solution example</div>' +
-       '<div class="ans"><span class="k">Revision</span>' + diffWords(e.target, e.revision) +
-       (e.revision_grammar ? '<span class="k" style="margin-top:8px">After grammar fixes</span>' +
-         diffWords(e.revision, e.revision_grammar) : "") +
-       '<span class="k" style="margin-top:8px">Operation</span>' + esc(t.op) +
-       (changed ? '<div class="difflegend"><del>struck out</del> is what the revision takes out of ' +
-         'the summary, <ins>highlighted</ins> is what it puts in; everything else is unchanged.</div>' : "") +
-       '</div>';
+  // ---- events: delegated, so a re-render never loses a handler -----------------
+  function curItem() { return ITEMS[st.at]; }
+  function curState() { return st.items[st.at]; }
 
-  h += '<h3>' + esc(t.title) + '</h3><div class="note">' + esc(t.note) + '</div>';
-
-  h += '<div class="ladder-cap" style="margin-top:16px">The questions, in order</div><div class="ladder">';
-  t.ladder.forEach((r) => {
-    h += '<div class="rung ' + r.status + '"><span class="qn">' + (TAG[r.status] || r.status.toUpperCase()) +
-         '</span><span class="qt">' + esc(r.q) + '<span class="src">' + esc(r.src) + '</span></span></div>';
+  root.addEventListener("click", function (e) {
+    if (st.at < 0 || st.finished) return;
+    var item = curItem(), cur = curState(), t = e.target.closest("button,mark.sp");
+    if (!t) return;
+    var d = t.dataset;
+    if (d.act) {
+      var s = cur.spans[+d.i];
+      s.act = s.act === d.act ? "" : d.act;
+      s.splitOpen = false;
+      save(); render();
+    } else if (d.adjust) {
+      var sa = cur.spans[+d.adjust], wasOpen = sa.adjOpen || !!sa.adj;
+      if (sa.adj) {
+        sa.adj = ""; applyAdjust(item, cur, +d.adjust);
+        cur.note = "The span adjustment was removed, so the mark is back on the original words.";
+      }
+      sa.adjOpen = !wasOpen;
+      save(); render();
+      var box = document.getElementById("f_adj" + d.adjust);
+      if (box) box.focus();
+    } else if (d.split) {
+      var ss = cur.spans[+d.split];
+      ss.splitOpen = !ss.splitOpen; save(); render();
+    } else if (d.cut) {
+      cut(item, cur, d.cut);
+    } else if (d.merge) {
+      merge(item, cur, +d.merge);
+    } else if (t.id === "rebuild") {
+      cur.revTouched = false; sync(item, cur); save(); render();
+    } else if (t.id === "copyrev") {
+      cur.gramTouched = false; sync(item, cur); save(); render();
+    } else if (t.id === "next") {
+      submitItem(item, cur);
+    } else if (t.id === "prev") {
+      goTo(st.at - 1);
+    } else if (t.id === "onward") {
+      advance();
+    } else if (t.matches("mark.sp")) {
+      var el = document.getElementById("card" + d.i);
+      if (el) {
+        el.scrollIntoView({behavior: "smooth", block: "center"});
+        el.classList.add("flash");
+        setTimeout(function () { el.classList.remove("flash"); }, 900);
+      }
+    }
   });
-  h += '</div>';
-  if (t.close) h += '<div class="note" style="margin:-2px 0 12px">' + esc(t.close) + '</div>';
 
-  h += '<div class="traps"><div class="ladder-cap">Wrong answers, and why</div>';
-  t.traps.forEach((x) => {
-    h += '<div class="trap' + (x.severity === "partial" ? " partial" : "") + '">' +
-         '<span class="x">' + (x.severity === "partial" ? "~" : "✗") + '</span>' +
-         '<span class="tt">' + esc(x.t) + '<span class="tw">' + esc(x.w) + '</span></span></div>';
+  function cut(item, cur, spec) {
+    var p = spec.split(":"), i = +p[0], k = +p[1], s = cur.spans[i];
+    if (!k) { s.splitOpen = false; save(); render(); return; }
+    var w = wordsOf(spanText(item, s));
+    // The choice and the question carry across. An annotator who decided how to handle a
+    // span and then noticed it held two details should not be punished for noticing. The
+    // rest was written for the whole span and is wrong for either half on its own.
+    if (s.h.trim() || s.r.trim() || s.rep.trim() || s.attr.trim() || s.expl.trim()) {
+      cur.note = "What you had written for the whole statement was cleared, because each part "
+               + "needs its own answers. Only the choice and the question carried over.";
+    }
+    var A = blankSpan(s.sid + "a", s.start, s.start + w[k - 1][1]);
+    var B = blankSpan(s.sid + "b", s.start + w[k][0], s.end);
+    var keep = {sid: s.sid, from: s.from, parent: s.parent, baseStart: s.baseStart,
+                baseEnd: s.baseEnd, adj: s.adj};
+    [A, B].forEach(function (c) {
+      c.act = s.act; c.q = s.q; c.from = s.sid; c.parent = keep;
+    });
+    cur.spans.splice(i, 1, A, B);
+    save(); render();
+  }
+  function merge(item, cur, i) {
+    var a = cur.spans[i], z = cur.spans[i + 1], p = a.parent;
+    if (a.rep.trim() && z.rep.trim()) {
+      cur.note = "Both parts had an answer. The first was kept for the statement as a whole; "
+               + "check it still says what you mean.";
+    }
+    var m = blankSpan(p.sid, a.baseStart, z.baseEnd);
+    m.baseStart = p.baseStart; m.baseEnd = p.baseEnd; m.adj = p.adj;
+    m.from = p.from; m.parent = p.parent;
+    ["act", "h", "q", "r", "rep", "attr", "expl", "why"].forEach(function (f) {
+      var x = a[f], y = z[f];
+      m[f] = String(x).trim() ? x : y;
+    });
+    cur.spans.splice(i, 2, m);
+    save(); render();
+  }
+
+  root.addEventListener("input", function (e) {
+    if (st.at < 0 || st.finished) return;
+    var t = e.target, item = curItem(), cur = curState();
+    if (cur.note) {
+      cur.note = "";
+      var n = root.querySelector(".notice");
+      if (n) n.remove();
+    }
+    if (t.dataset.f) {
+      var i = +t.dataset.i, f = t.dataset.f, s = cur.spans[i];
+      s[f] = t.value;
+      clearErr(t, f, i);
+      if (f === "adj") {
+        applyAdjust(item, cur, i);
+        document.getElementById("tgt").innerHTML = markup(item, cur);
+        document.getElementById("text" + i).innerHTML = "&ldquo;" + esc(spanText(item, s))
+          + "&rdquo;";
+        var ae = root.querySelector('[data-e="adj"][data-i="' + i + '"]');
+        if (ae) ae.classList.toggle("on", s.adjBad);
+        t.classList.toggle("needs", s.adjBad);
+      }
+      if (f === "r" || f === "rep") {
+        var sr = document.getElementById("soft_rep" + i);
+        if (sr) sr.hidden = repInR(s);
+      }
+      if (t.tagName === "TEXTAREA") fit(t);
+      if (f === "rep" || f === "adj") pushRevision(item, cur);
+    } else if (t.id === "rev") {
+      cur.rev = t.value; cur.revTouched = true; cur.revBase = assemble(item, cur);
+      if (!cur.gramTouched) {
+        cur.gram = cur.rev;
+        var g = document.getElementById("gram");
+        g.value = cur.gram; fit(g);
+      }
+      document.getElementById("rev_err").classList.remove("on");
+      t.classList.remove("needs");
+      fit(t);
+    } else if (t.id === "gram") {
+      cur.gram = t.value; cur.gramTouched = true; cur.gramBase = cur.rev;
+      fit(t);
+    }
+    paintStates(item, cur);
+    save();
   });
-  h += '</div>';
+  function pushRevision(item, cur) {
+    sync(item, cur);
+    var r = document.getElementById("rev"), g = document.getElementById("gram");
+    if (!cur.revTouched) { r.value = cur.rev; fit(r); }
+    if (!cur.gramTouched) { g.value = cur.gram; fit(g); }
+  }
+  // Pastes per field, because a paste into the attribution is the job and a paste into R
+  // is a signal. Never grounds for rejecting work; grounds for not inviting someone back.
+  root.addEventListener("paste", function (e) {
+    if (st.at < 0 || st.finished) return;
+    var cur = curState(), f = e.target.dataset.f || e.target.id;
+    if (f) { cur.pastes[f] = (cur.pastes[f] || 0) + 1; save(); }
+  });
+  root.addEventListener("keydown", function (e) {
+    if (st.at < 0 || st.finished) return;
+    if (e.target.matches("input,textarea")) curState().keys += 1;
+  });
 
-  $("teach").innerHTML = h;
-  $("teach").classList.remove("hidden");
-  $("checkBtn").classList.add("hidden");
-  $("nextBtn").classList.remove("hidden");
-}
-
-/* ───────────────────────────── scoring + submit ─────────────────────────────
-   Only the mechanically decidable parts are scored, only on the finish screen, and
-   only for the candidate to read -- nothing here is submitted. The question text is
-   never machine-scored, here or in the rounds that follow: a keyword match on a
-   question would reward the wrong thing and we would never find out.             */
-function finalScore() {
-  let got = 0, tot = 0;
-  EX.forEach((e, k) => {
-    const a = ans[k];
-    e.key.forEach((key, n) => {
-      tot += 1;
-      if (a && a.spans[n] && a.spans[n].op === key.op) got += 1;
-      if (key.op === "replace") {
-        tot += 1;
-        const g = norm(a && a.spans[n] ? a.spans[n].r : "");
-        if (g && key.accept.some((x) => g === norm(x) || g.indexOf(norm(x)) >= 0)) got += 1;
+  // ---- submit ----------------------------------------------------------------
+  function ctl(f, i) { return document.getElementById("f_" + f + i); }
+  function clearErr(el, f, i) {
+    el.classList.remove("needs");
+    var m = root.querySelector('[data-e="' + f + '"][data-i="' + i + '"]');
+    if (m) m.classList.remove("on");
+  }
+  function flag(f, i, list) {
+    var el = ctl(f, i), m = root.querySelector('[data-e="' + f + '"][data-i="' + i + '"]');
+    if (el) { el.classList.add("needs"); list.push(el); }
+    if (m) m.classList.add("on");
+  }
+  function isQuote(needle, hay) { return loose(hay).indexOf(loose(needle)) !== -1; }
+  function validate(item, cur) {
+    root.querySelectorAll(".needs").forEach(function (x) { x.classList.remove("needs"); });
+    root.querySelectorAll(".fielderr.on").forEach(function (x) { x.classList.remove("on"); });
+    var bad = [];
+    cur.spans.forEach(function (s, i) {
+      if (s.adj.trim() && s.adjBad) flag("adj", i, bad);
+      if (!s.act) {
+        var m = root.querySelector('[data-e="act"][data-i="' + i + '"]');
+        if (m) m.classList.add("on");
+        var row = root.querySelector('[data-group="act' + i + '"]');
+        if (row) bad.push(row);
+        return;
+      }
+      if (s.act === "not") {
+        if (!s.why.trim()) flag("why", i, bad);
+        return;
+      }
+      if (!s.h.trim()) flag("h", i, bad);
+      if (s.act === "replace") {
+        if (!s.q.trim()) flag("q", i, bad);
+        if (!s.r.trim()) flag("r", i, bad);
+        if (!s.rep.trim()) flag("rep", i, bad);
+        if (!s.attr.trim() || !isQuote(s.attr, item.source)) flag("attr", i, bad);
+      } else if (!s.expl.trim()) {
+        flag("expl", i, bad);
       }
     });
-  });
-  return {got: got, tot: tot};
-}
-
-/* Fire-and-forget, because the candidate is on their way to the next page and must never
-   wait for us or see us fail. sendBeacon survives the navigation; the keepalive fetch is
-   the fallback for browsers without it. text/plain avoids a CORS preflight, which Apps
-   Script does not answer.                                                               */
-let posted = false;
-function report(partial) {
-  if (posted || !ENDPOINT) return;
-  posted = true;
-  const t = timings();
-  const body = JSON.stringify({
-    tool: TOOL_VERSION, stage: "training", partial: !!partial,
-    prolific: PROLIFIC,
-    finished_items: ans.filter((a) => a && a.checked).length,
-    score: finalScore(),
-    intro_s: t.intro_s, answer_s: t.answer_s, review_s: t.review_s,
-    visits: t.visits, wall_s: t.wall_s,
-    submitted_at: new Date().toISOString()
-  });
-  try {
-    if (navigator.sendBeacon &&
-        navigator.sendBeacon(ENDPOINT, new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
-  } catch (e) { /* fall through */ }
-  try {
-    fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
-                     headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
-  } catch (e) { /* the candidate is not told, and is not kept waiting */ }
-}
-
-/* The link onward. The annotation round is a separate page with its own endpoint, so the
-   three Prolific identifiers have to travel on the query string for the two halves of the
-   session to be joinable afterwards.                                                     */
-function nextHref() {
-  if (!NEXT_URL) return "";
-  try {
-    const u = new URL(NEXT_URL, location.href);
-    if (PROLIFIC.pid) u.searchParams.set("PROLIFIC_PID", PROLIFIC.pid);
-    if (PROLIFIC.study) u.searchParams.set("STUDY_ID", PROLIFIC.study);
-    if (PROLIFIC.session) u.searchParams.set("SESSION_ID", PROLIFIC.session);
-    // A second copy of the timings, for the annotation tool to record alongside its own
-    // submission. The post above is the one we rely on; these four are free redundancy,
-    // and they make a session's two halves legible in a server log.
-    const t = timings();
-    u.searchParams.set("train_intro_s", String(t.intro_s));
-    u.searchParams.set("train_answer_s", t.answer_s.join(","));
-    u.searchParams.set("train_review_s", t.review_s.join(","));
-    u.searchParams.set("train_wall_s", String(t.wall_s));
-    return u.toString();
-  } catch (e) { return NEXT_URL; }
-}
-
-function finish() {
-  const s = finalScore();
-  const href = nextHref();
-  clockTo(null);
-  report(false);
-  let h = '<h2 style="font-size:18px;margin-bottom:10px">Training complete</h2>' +
-    '<p class="sub" style="margin-bottom:4px">Operation and replacement, automatically checked</p>' +
-    '<div class="score">' + s.got + " / " + s.tot + '</div>' +
-    '<p style="font-size:13.4px;color:#33424f;margin:10px 0 16px">This score is yours to read and is not ' +
-    'sent anywhere — none of your six answers is. The questions you wrote are the part that ' +
-    'matters, and they are the part no score can check.</p>' +
-
-    '<p style="font-size:13.4px;color:#33424f;margin-bottom:14px">Carry these into the annotation round: ' +
-    'narrow the question until the source stops being able to answer, and settle there — neither coarser ' +
-    'nor finer than the marked statement itself; make sure the question you settle on is one the source ' +
-    'can actually answer; use the source’s wording where it fits the slot; delete only when no question ' +
-    'works, or when the answer you found could be dropped with no loss of information; a source that ' +
-    'states the reverse is still answering, so replace rather than delete; and a marked statement the ' +
-    'source supports is left alone.</p>' +
-    (href
-      ? '<a class="btn primary" id="nextStage" style="text-decoration:none;display:inline-block" ' +
-        'href="' + esc(href) + '">Start the annotation round &rarr;</a>'
-      : '<div class="warnbox">The link to the annotation round goes here. It is a separate page, and ' +
-        'it is not published yet — if you are reading this in a live study, message us on Prolific ' +
-        'and we will send it to you.</div>');
-  $("finish").innerHTML = h;
-  $("finish").classList.remove("hidden");
-  $("ex").classList.add("hidden");
-  document.querySelector("footer").classList.add("hidden");
-  window.scrollTo(0, 0);
-}
-
-/* ───────────────────────────────── wiring ───────────────────────────────── */
-$("startBtn").onclick = () => {
-  tick();
-  $("intro").classList.add("hidden");
-  $("ex").classList.remove("hidden");
-  document.querySelector("footer").classList.remove("hidden");
-  render();
-};
-$("copyBtn").onclick = () => {
-  revDirty = false;
-  $("f_rev").value = autoRevision();
-  $("f_rev").classList.remove("needs");
-  $("f_rev_err").classList.remove("on");
-};
-$("f_rev").addEventListener("input", () => {
-  revDirty = true;
-  $("f_rev").classList.remove("needs");
-  $("f_rev_err").classList.remove("on");
-});
-$("checkBtn").onclick = () => {
-  if (validate()) {
-    $("hint").textContent = "Some required fields are empty — they are marked in red.";
-    const first = document.querySelector(".needs");
-    if (first) first.scrollIntoView({behavior: "smooth", block: "center"});
-    return;
+    if (!cur.rev.trim()) {
+      document.getElementById("rev").classList.add("needs");
+      document.getElementById("rev_err").classList.add("on");
+      bad.push(document.getElementById("rev"));
+    }
+    return bad;
   }
-  $("hint").textContent = "";
-  tick();
-  ans[i] = collect();
-  save();
-  dots();
-  teach();
-  reviewClock(i);
-  $("teach").scrollIntoView({behavior: "smooth", block: "start"});
-};
-$("nextBtn").onclick = () => {
-  if (i === EX.length - 1) { finish(); return; }
-  i += 1; save(); render();
-};
-$("prevBtn").onclick = () => { if (i > 0) { i -= 1; save(); render(); } };
-window.addEventListener("beforeunload", save);
+  function submitItem(item, cur) {
+    var bad = validate(item, cur), err = document.getElementById("err");
+    if (bad.length) {
+      err.textContent = "Some required fields are empty or need fixing. They are marked in red.";
+      bad[0].scrollIntoView({behavior: "smooth", block: "center"});
+      return;
+    }
+    err.textContent = "";
+    showGate(item, cur);
+  }
 
-introClock();
-window.addEventListener("pagehide", () => { tick(); report(true); });
+  // The last gate: the diff beside the original, and the one question that cannot be
+  // answered without looking at both. A tick box would be clicked without reading.
+  function showGate(item, cur) {
+    var ops = wordDiff(item.summary, finalText(cur));
+    var changed = diffChanged(ops);
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    // Asking "did you lose anything?" over an unchanged text reads as a trick question.
+    // When nothing moved, the thing worth confirming is that nothing moved on purpose.
+    bg.innerHTML = changed
+      ? '<div class="modal"><h2>Before you continue</h2>'
+        + '<p class="lab">What you changed</p>'
+        + '<div class="diff">' + diffHtml(ops) + "</div>"
+        + '<p class="sub">Read your revision against the marked statements once more.</p>'
+        + '<p style="font-weight:600;margin:0 0 10px">Did you lose any salvageable '
+        + "faithful information?</p>"
+        + '<div class="row"><button type="button" class="choice" id="lostno">'
+        + "No &mdash; everything the statement got right is still there</button>"
+        + '<button type="button" class="choice" id="lostyes">Yes &mdash; let me fix it'
+        + "</button></div></div>"
+      : '<div class="modal"><h2>You are submitting the text unchanged</h2>'
+        + '<p class="sub">Your answers leave this summary exactly as it arrived, word for '
+        + "word. That is the right answer when every marked statement is faithful to the "
+        + "source &mdash; and the wrong one if any of them is not.</p>"
+        + '<div class="row"><button type="button" class="choice" id="lostno">'
+        + "That is my answer &mdash; continue</button>"
+        + '<button type="button" class="choice" id="lostyes">Let me look again'
+        + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("lostyes").addEventListener("click", function () {
+      cur.lost = "yes"; save(); bg.remove();
+    });
+    document.getElementById("lostno").addEventListener("click", function () {
+      cur.lost = changed ? "no" : "unchanged";
+      cur.done = true;
+      tick(); helpTick("procedure"); helpTick("guidelines");
+      save(); bg.remove();
+      HOOKS.passed(api, item, cur);
+    });
+  }
 
-if (!PROLIFIC.pid) {
-  $("intro").insertAdjacentHTML("beforeend",
-    '<div class="warnbox" style="margin-top:14px">This page was opened without a Prolific ID. The ' +
-    'training itself does not need one, but the link at the end carries it into the annotation round, ' +
-    'where your submission does depend on it. If you came from Prolific, go back and use the study ' +
-    'link there rather than a copied address.</div>');
-}
+  // ---- moving between items ----------------------------------------------------
+  function goTo(k) {
+    tick();
+    helpTick("procedure"); helpTick("guidelines");
+    st.at = k;
+    var cur = st.items[k];
+    if (cur) cur.visits += 1;
+    clockFor(cur);
+    save(); render();
+    window.scrollTo({top: 0});
+  }
+  function advance() {
+    if (st.at < ITEMS.length - 1) { goTo(st.at + 1); return; }
+    finish();
+  }
+  function finish() {
+    tick(); clockAdd = null; parked = null;
+    ["procedure", "guidelines"].forEach(function (k) {
+      if (HELP[k].open) closeAid(k);
+    });
+    st.finished = true;
+    save();
+    HOOKS.finish(api);
+    closing();
+  }
+  function closing() {
+    document.getElementById("count").innerHTML = CFG.doneCount;
+    document.getElementById("fill").style.width = "100%";
+    ["task-h1", "task-intro", "llm-note", "nopid", "procbtn", "glbtn"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+    root.innerHTML = HOOKS.closing(api);
+    document.getElementById("below").innerHTML = "";
+    window.scrollTo({top: 0});
+  }
+
+  function withIds(url) {
+    try {
+      var u = new URL(url, location.href);
+      if (PRO.pid) u.searchParams.set("PROLIFIC_PID", PRO.pid);
+      if (PRO.study) u.searchParams.set("STUDY_ID", PRO.study);
+      if (PRO.session) u.searchParams.set("SESSION_ID", PRO.session);
+      return u.toString();
+    } catch (e) { return url; }
+  }
+  window.nextHref = function () { return withIds(CFG.nextPage); };   // test_chain.py reads this
+
+  function send(body) {
+    try {
+      if (navigator.sendBeacon
+          && navigator.sendBeacon(CFG.endpoint,
+                                  new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
+    } catch (e) {}
+    try {
+      fetch(CFG.endpoint, {method: "POST", keepalive: true, mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+    } catch (e) {}
+  }
+
+  // One span as the analysis needs it. Only what the chosen operation asks for is sent: a
+  // value typed before the annotator changed their mind is not an answer.
+  function spanRecord(item, s) {
+    var o = {sid: s.sid, text: spanText(item, s), start: s.start, end: s.end,
+             marked: item.summary.slice(s.baseStart, s.baseEnd), adj: s.adj.trim(),
+             split_from: s.from || null, act: s.act};
+    if (s.act === "not") { o.why = s.why; return o; }
+    o.h = s.h; o.q = s.q;
+    if (s.act === "replace") {
+      o.r = s.r; o.rep = s.rep; o.attr = s.attr;
+      o.rep_in_r = repInR(s); o.attr_verbatim = isQuote(s.attr, item.source);
+    } else if (s.act === "delete") {
+      o.expl = s.expl;
+    }
+    return o;
+  }
+
+  addEventListener("pagehide", function () {
+    tick(); helpTick("procedure"); helpTick("guidelines"); save();
+    if (!st.finished && HOOKS.partial) HOOKS.partial(api);
+  });
+
+  // ---- the two aids ------------------------------------------------------------
+  var proc = document.getElementById("procpanel"), procBtn = document.getElementById("procbtn");
+  var glm = document.getElementById("glmodal"), glBtn = document.getElementById("glbtn");
+  var glf = document.getElementById("glframe");
+
+  function syncFrameTheme() {
+    try {
+      var de = glf.contentDocument.documentElement;
+      var dark = document.documentElement.getAttribute("data-theme") === "dark";
+      if (dark) de.setAttribute("data-theme", "dark"); else de.removeAttribute("data-theme");
+    } catch (e) {}
+  }
+  function closeAid(k) {
+    if (!HELP[k].open) return;
+    helpClose(k);
+    if (k === "procedure") {
+      proc.hidden = true; procBtn.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("procopen"); fitAll();
+    } else {
+      glm.hidden = true; glBtn.setAttribute("aria-expanded", "false"); glBtn.focus();
+    }
+  }
+  procBtn.addEventListener("click", function () {
+    if (HELP.procedure.open) { closeAid("procedure"); return; }
+    proc.hidden = false; procBtn.setAttribute("aria-expanded", "true");
+    document.body.classList.add("procopen"); fitAll();
+    helpOpen("procedure");
+  });
+  document.getElementById("procclose").addEventListener("click", function () {
+    closeAid("procedure");
+  });
+  glBtn.addEventListener("click", function () {
+    // Loaded on first use and then kept, so reopening returns to the same place.
+    if (!glf.getAttribute("src")) {
+      glf.addEventListener("load", syncFrameTheme);
+      glf.setAttribute("src", CFG.guidelines + "?embed=1");
+    }
+    syncFrameTheme();
+    glm.hidden = false; glBtn.setAttribute("aria-expanded", "true");
+    helpOpen("guidelines");
+    document.getElementById("glclose").focus();
+  });
+  document.getElementById("glclose").addEventListener("click", function () {
+    closeAid("guidelines");
+  });
+  glm.addEventListener("click", function (e) { if (e.target === glm) closeAid("guidelines"); });
+  addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (HELP.guidelines.open) closeAid("guidelines");
+    else if (HELP.procedure.open) closeAid("procedure");
+  });
+  // Escape pressed inside the guidelines arrives here, since the frame has the focus.
+  addEventListener("message", function (e) {
+    if (e.origin === location.origin && e.data === "gl-close") closeAid("guidelines");
+  });
+
+  // ---- theme ---------------------------------------------------------------
+  var tb = document.getElementById("theme");
+  function paintTheme() {
+    var d = document.documentElement.getAttribute("data-theme") === "dark";
+    tb.textContent = d ? "☀ Light" : "☾ Dark";
+  }
+  tb.addEventListener("click", function () {
+    var d = document.documentElement.getAttribute("data-theme") === "dark";
+    if (d) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", "dark");
+    try { localStorage.setItem("gl-theme", d ? "light" : "dark"); } catch (e) {}
+    paintTheme(); syncFrameTheme();
+  });
+  paintTheme();
+
+  // ---- start -----------------------------------------------------------------
+  var api = {st: st, PRO: PRO, esc: esc, save: save, render: render, advance: advance,
+             send: send, withIds: withIds, wordDiff: wordDiff, diffHtml: diffHtml,
+             spanRecord: spanRecord, spanText: spanText, finalText: finalText,
+             startReview: function (cur) { clockFor(cur); }};
+  window.toolApi = api;     // test_tool.py drives the diff through this
+
+  if (!PRO.pid) {
+    var w = document.getElementById("nopid");
+    if (w) w.hidden = false;
+  }
+  if (!st.finished) {
+    var c0 = st.items[st.at];
+    if (c0) c0.visits += 1;
+    clockFor(c0);
+  }
+  render();
+})();
+
 </script>
 </body>
 </html>
