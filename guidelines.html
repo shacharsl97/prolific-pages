@@ -483,8 +483,11 @@ var SOURCE_SHA = '208a5ba7df6e9038';
     for (var s2 in T.sec) read += T.sec[s2];
     return {
       stage: "guidelines",
+      tool: TOOL_VERSION,
       tool_version: TOOL_VERSION,
       guidelines_sha: SOURCE_SHA,
+      prolific: {pid: q.get("PROLIFIC_PID") || "", study: q.get("STUDY_ID") || "",
+                 session: q.get("SESSION_ID") || ""},
       prolific_pid: q.get("PROLIFIC_PID") || "",
       study_id: q.get("STUDY_ID") || "",
       session_id: q.get("SESSION_ID") || "",
@@ -513,6 +516,13 @@ var SOURCE_SHA = '208a5ba7df6e9038';
   addEventListener("pagehide", function () { send(false); });
   var go = document.getElementById("go");
   if (go) {
+    try {
+      var u = new URL(go.getAttribute("href"), location.href);
+      ["PROLIFIC_PID", "STUDY_ID", "SESSION_ID"].forEach(function (k) {
+        if (q.get(k)) u.searchParams.set(k, q.get(k));
+      });
+      go.href = u.toString();
+    } catch (e) { /* a dead link is worse than a link without ids */ }
     go.addEventListener("click", function () { send(true); });
   }
 })();

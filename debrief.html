@@ -195,6 +195,7 @@ document.querySelectorAll('input[name="conf"]').forEach((el) =>
 function payload(partial) {
   const d = {
     tool: TOOL_VERSION, stage: "debrief", partial: !!partial,
+    prolific: {pid: PROLIFIC.pid, study: PROLIFIC.study, session: PROLIFIC.session},
     prolific_pid: PROLIFIC.pid, study_id: PROLIFIC.study, session_id: PROLIFIC.session,
     debrief_s: Math.round((Date.now() - started) / 1000)
   };
