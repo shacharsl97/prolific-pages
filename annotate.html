@@ -484,7 +484,7 @@ window.TOOL_HOOKS = {
         if (/^[,.;:!?]/.test(r) && (!L.trim() || /[.!?;:,]\s*$/.test(L))) {
           r = r.replace(/^[,.;:!?]+\s*/, "");
         }
-        if (L.trim() && r && !/^[,.;:!?]/.test(r) && !/[\s(\["“‘]$/.test(L)) {
+        if (L.trim() && r && !/^[,.;:!?]/.test(r) && !/^['’]s\b/.test(r) && !/[\s(\["“‘]$/.test(L)) {
           r = " " + r;
         }
         text = (L.trim() ? L : "") + r;
