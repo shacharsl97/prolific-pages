@@ -119,6 +119,8 @@ a{color:var(--accent)}
 .overview ol{margin:8px 0 10px;padding-left:22px}
 .overview li{margin-bottom:6px}
 .overview p{margin:0}
+.overview p.consent{margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);
+  font-size:.92em;color:var(--muted)}
 /* Opened from inside the tools as a popup: the guidelines and nothing else. */
 .embed .overview,.embed .cta,.embed .llmnote,.embed .themetoggle{display:none}
 @media (max-width:980px){
@@ -142,6 +144,7 @@ a{color:var(--accent)}
     <h2>What this study involves</h2>
     <ol><li><b>Read these guidelines, carefully.</b> Everything that follows depends on them. You can reopen them at any point during the practice and qualification rounds.</li><li><b>Practice round: 6 items.</b> You try each one yourself, then see a worked solution to compare with your answer.</li><li><b>Qualification round: 8 items.</b> Follow the guidelines as closely as you can. Some of your annotations will be compared with reference annotations, and the others assessed by automatic and qualitative measures. Annotators above a certain threshold may be invited to a follow-up study with more annotations. Your payment for this study does not depend on that assessment, provided you work in good faith.</li><li><b>Feedback.</b> A short form asking what you think of the guidelines, the practice round and the tool, and whether anything is missing.</li><li><b>Completion.</b> Your Prolific completion link comes after the feedback form.</li></ol>
     <p>Please work thoroughly and carefully, and please do not use any LLMs.</p>
+    <p class="consent">This is a research study at Bar-Ilan University. You must be 18 or over. Taking part is voluntary, and you can stop at any time by returning the study on Prolific. We record your answers and how you use the tool, such as time spent and pasting, linked only to your Prolific ID, and use them only for research. By continuing you agree to this.</p>
   </section>
   <section class="sec lvl2" id="terminology" data-sec="terminology"><div class="card wide"><h2><span class="n">1</span>Terminology</h2><div class="body"><p><strong>Target text:</strong> The text we scan for hallucinations. Could be LLM generated or human written. We attempt to find and correct all non factual details (with respect to the source text) within this text.</p>
 <p><strong>Source:</strong> The reference text that the target text is intended to reflect. It serves as our ground truth and provides the factual evidence against which the target text is compared to detect hallucinated statements.</p>
