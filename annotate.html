@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Minimal revision &mdash; annotation</title>
+<title>Minimal factual revision &mdash; annotation</title>
 <script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
@@ -629,13 +629,10 @@ window.TOOL_HOOKS = {
         + ">This is not word for word in R above. It should be the part of R that fits the "
         + "slot.</p>"
         + field(i, "attr", s.attr, "Source attribution (copied verbatim from the source)",
-          "the exact sentence or phrase in the source that your answer comes from",
+          "the exact sentence or phrase in the source that your answer comes from or is implied by",
           "Required: copy the exact sentence or phrase from the source, verbatim.");
     } else if (s.act === "delete") {
       h += H
-        + field(i, "q", s.q, "Final question", "optional for a deletion: you are deleting "
-          + "precisely because no question works. Write one only if you want to show us the "
-          + "closest you got; the Explanation below is where the reasoning goes", "")
         + field(i, "expl", s.expl, "Explanation", "which questions did you consider that the "
           + "source could not answer, and why did you choose to delete?",
           "Required for a deletion: please say which questions were not answerable, and why "
@@ -717,6 +714,8 @@ window.TOOL_HOOKS = {
     var last = st.at === ITEMS.length - 1;
     var cards = cur.spans.map(function (s, i) { return card(item, cur, s, i); }).join("");
     var main = HOOKS.mainButton(cur, last);
+    var prevBtn = '<button type="button" class="ghost" id="prev"'
+      + (st.at === 0 ? " hidden" : "") + ">&larr; Previous</button>";
     root.innerHTML =
       '<div class="panes">'
       + '<div class="pane src"><p class="lab">Source &mdash; the ground truth</p>'
@@ -742,17 +741,18 @@ window.TOOL_HOOKS = {
       + '<button type="button" class="choice small" id="copyrev">Copy the revision above down'
       + "</button></div></div></div>"
       + '<div class="foot">'
-      + '<button type="button" class="ghost" id="prev"' + (st.at === 0 ? " hidden" : "")
-      + ">&larr; Previous</button>"
+      + (main.onward ? "" : prevBtn)
       + (main.label ? '<button type="button" class="cta" id="next">' + main.label + "</button>"
                     : "")
-      + (main.onward ? '<button type="button" class="cta" id="onward">' + main.onward
-                       + "</button>" : "")
       + '<span class="saved" id="saved"></span>'
       + '<span class="err" id="err"></span></div>'
       + "</div></div>";
+    // Moving on goes after the worked solution, so that it is read first.
     document.getElementById("below").innerHTML =
-      HOOKS.below ? HOOKS.below(api, item, cur) : "";
+      (HOOKS.below ? HOOKS.below(api, item, cur) : "")
+      + (main.onward ? '<div class="foot">' + prevBtn
+          + '<button type="button" class="cta" id="onward">' + main.onward + "</button></div>"
+        : "");
     paintStates(item, cur);
     fitAll();
     window.scrollTo(0, keepY);
@@ -835,8 +835,6 @@ window.TOOL_HOOKS = {
       submitItem(item, cur);
     } else if (t.id === "prev") {
       goTo(st.at - 1);
-    } else if (t.id === "onward") {
-      advance();
     } else if (t.matches("mark.sp")) {
       var el = document.getElementById("card" + d.i);
       if (el) {
@@ -845,6 +843,13 @@ window.TOOL_HOOKS = {
         setTimeout(function () { el.classList.remove("flash"); }, 900);
       }
     }
+  });
+
+  document.getElementById("below").addEventListener("click", function (e) {
+    var t = e.target.closest("button");
+    if (!t) return;
+    if (t.id === "onward") advance();
+    else if (t.id === "prev") goTo(st.at - 1);
   });
 
   function cut(item, cur, spec) {
@@ -954,10 +959,13 @@ window.TOOL_HOOKS = {
     var m = root.querySelector('[data-e="' + f + '"][data-i="' + i + '"]');
     if (m) m.classList.remove("on");
   }
-  function flag(f, i, list) {
+  function flag(f, i, list, message) {
     var el = ctl(f, i), m = root.querySelector('[data-e="' + f + '"][data-i="' + i + '"]');
     if (el) { el.classList.add("needs"); list.push(el); }
-    if (m) m.classList.add("on");
+    if (m) {
+      if (message) m.textContent = message;
+      m.classList.add("on");
+    }
   }
   function isQuote(needle, hay) { return loose(hay).indexOf(loose(needle)) !== -1; }
   function validate(item, cur) {
@@ -982,7 +990,14 @@ window.TOOL_HOOKS = {
         if (!s.q.trim()) flag("q", i, bad);
         if (!s.r.trim()) flag("r", i, bad);
         if (!s.rep.trim()) flag("rep", i, bad);
-        if (!s.attr.trim() || !isQuote(s.attr, item.source)) flag("attr", i, bad);
+        // Calling a filled-in box "required" tells them nothing about what is wrong with it.
+        if (!s.attr.trim()) {
+          flag("attr", i, bad, "Required: copy the exact sentence or phrase from the source, "
+                             + "verbatim.");
+        } else if (!isQuote(s.attr, item.source)) {
+          flag("attr", i, bad, "The text you entered does not appear in the source like this. "
+                             + "Please copy it from the source word for word.");
+        }
       } else if (!s.expl.trim()) {
         flag("expl", i, bad);
       }
@@ -1113,9 +1128,9 @@ window.TOOL_HOOKS = {
              marked: item.summary.slice(s.baseStart, s.baseEnd), adj: s.adj.trim(),
              split_from: s.from || null, act: s.act};
     if (s.act === "not") { o.why = s.why; return o; }
-    o.h = s.h; o.q = s.q;
+    o.h = s.h;
     if (s.act === "replace") {
-      o.r = s.r; o.rep = s.rep; o.attr = s.attr;
+      o.q = s.q; o.r = s.r; o.rep = s.rep; o.attr = s.attr;
       o.rep_in_r = repInR(s); o.attr_verbatim = isQuote(s.attr, item.source);
     } else if (s.act === "delete") {
       o.expl = s.expl;
