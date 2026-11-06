@@ -119,6 +119,25 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
   font-size:12.5px;color:var(--muted)}
 .autonote .stale{color:var(--dis);font-weight:600}
 .revsecond{margin-top:18px}
+.edits{background:var(--raised);border:1px solid var(--rule);border-radius:6px;
+  padding:10px 12px;margin:0 0 14px;font-size:15px;line-height:1.7}
+.editline{margin:0}
+.hlwrap{position:relative;background:var(--raised);border-radius:6px}
+.hlwrap textarea{position:relative;z-index:1;background:transparent}
+.hl{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  border:1px solid transparent;padding:8px 11px;font:inherit;font-size:15px;line-height:1.7;
+  white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;color:transparent}
+.hl mark{background:var(--mark);color:transparent;padding:0;border-radius:2px;
+  box-shadow:0 0 0 1px var(--mark-line)}
+.editline+.editline{margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule)}
+label.gramok{display:flex;gap:9px;align-items:flex-start;margin:12px 0 0;font-size:14px;
+  font-weight:600;cursor:pointer}
+label.gramok input{margin-top:3px;width:17px;height:17px;flex:none}
+label.gramok.needs{border-radius:6px;padding:6px 8px}
+.warnlist{margin:0 0 14px;padding:0;list-style:none}
+.warnlist li{margin:0 0 12px}
+.warnlist .spot{display:block;font-size:14.5px;line-height:1.6;margin:4px 0 0;
+  padding:6px 10px;background:var(--raised);border:1px solid var(--rule);border-radius:6px}
 .cta{display:inline-block;background:var(--accent);color:var(--on-accent);text-decoration:none;
   border:0;font:inherit;font-weight:600;padding:12px 26px;border-radius:6px;cursor:pointer;
   font-size:16px}
@@ -276,22 +295,14 @@ ins{background:var(--ok-bg);color:var(--ok);text-decoration:none;padding:1px 2px
   <div class="llm" id="llm-note">Please do not use any LLMs. We are studying how people write faithful minimal revisions, so we need your own work.</div>
 </div>
 <script>
-var CFG = {"storeKey": "annot-v2", "version": "annotate-v2", "endpoint": "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", "nextPage": "debrief.html", "guidelines": "guidelines.html", "noun": "item", "doneCount": "<b>all 8<\/b> done"};
+var CFG = {"storeKey": "annot-v3", "version": "annotate-v3", "endpoint": "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", "nextPage": "debrief.html", "guidelines": "guidelines.html", "noun": "item", "doneCount": "<b>all 8<\/b> done"};
 var ITEMS = [{"id": "p1", "source": "The victims were found in raids at three restaurants in Coventry, Wolverhampton and West Bromwich and an address in Handsworth, Birmingham. Police suspect the men were working for \"next to nothing\". A 49-year-old man and a 45-year-old woman have been arrested on suspicion of slavery offences. See more stories from Birmingham and the Black Country here . The victims are thought to be mainly Slovakian and Romanian. The suspects, who are both Slovakian, have been arrested on suspicion of providing staff through a recruitment consultancy. The raided restaurants were Ming Moon, Stafford Road in Wolverhampton, Wing Wah, Fletchamstead Highway in Coventry and Red Leaf, High Street in West Bromwich. Five suspected slavery victims were found at the Chinese restaurant in Wolverhampton, 12 at Wing Wah Coventry and three at the an address on Anthrobus Road in Handsworth. The men will be given the opportunity to speak to specially trained officers and helped into alternative accommodation. West Midlands Police said signs of modern slavery to look out for include \"large groups of people staying in multi-occupancy houses and being transported to and from addresses in vans or minibuses from early in the morning and not coming back until late at night\". Further investigations are underway, the force added.", "summary": "Two people have been arrested on suspicion of slavery offences after 26 men were rescued from Chinese restaurants in the West Midlands.", "spans": ["26 men"]}, {"id": "p2", "source": "The side's appearance in France will be its first at a major tournament since the 1958 World Cup. Players and coaches left their base at the Vale Resort, Vale of Glamorgan, on Saturday and headed to Cardiff Airport. After a send-off from pupils from Ysgol Treganna, Cardiff, the team took off for a friendly in Sweden on Sunday. They will then head to France ahead of the team's first game of the tournament against Slovakia on 11 June.", "summary": "The Wales football team has left for Euro 2016 in France.", "spans": ["Wales", "Euro 2016"]}, {"id": "p3", "source": "Two people were left with \"life-changing\" injuries when a corrosive substance was thrown on to them through their car windows. Cousins Resham Khan and Jameel Muhktar had been celebrating Ms Khan's 21st birthday before the attack. John Tomlin, 24, is described as white, 6ft tall, of stocky build and with short fair hair. He is known to frequent the Canning Town area. Ms Khan, a student at Manchester Metropolitan University, and Mr Muhktar suffered severe burns to the face and body in the attack on 21 June. \"Within seconds, my cousin started screaming. Her eyes were blistered, her face started melting. My face started melting\", Mr Muhktar said. According to police, they had stopped at traffic lights when the man approached them and threw the toxic substance at Ms Khan through the window. The attacker then circled around the car and threw more of the acid at Mr Muhktar, before eventually fleeing the scene. Mr Muhktar, 37, had to be temporarily placed in an induced coma to treat his injuries. \"I'm in a really bad way. I'm going to be scarred for life. I can't walk properly, I can't hear properly, I can't sleep\", he said. Police said there was no current information to suggest the attack was racially or religiously motivated.", "summary": "Police have released CCTV images of a man they want to speak to in connection with an acid attack in east London.", "spans": ["CCTV images", "in east London"]}, {"id": "p4", "source": "Hoppus got married in 2000 (see Personal life) just before the band prepared to record their highly anticipated follow-up, \"Take Off Your Pants and Jacket\" (2001). When the band regrouped to record their next record in 2003, all of the members had become fathers (or, in the case of Barker, becoming one) and the trio took a darker, more \"mature\" direction with their untitled fifth studio album, infusing experimentalist elements into their usual pop punk sound partially inspired by Box Car Racer. Unresolved feelings from that project would arise in late 2004 when the band began to argue regarding their future and recording process. The February 2005 break-up of blink-182 affected Hoppus greatly: \"I had no idea what to do.", "summary": "Two more records followed—the heavier \"Take Off Your Pants and Jacket\" (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.", "spans": ["heavier"]}, {"id": "p5", "source": "Beijing (CNN)Chinese police on Monday released five female activists who were detained last month, family and friends of the women tell CNN. Wei Tingting, Wang Man, Zheng Churan, Li Tingting and Wu Rongrong were freed. The women will be under police surveillance for a year and have their movements and activities restricted, attorney Liang Xiaojun said. Police can summon the women for questioning at any time, he added. The five members of China's Women's Rights Action Group were detained in Beijing, Guangzhou and Hangzhou a few days before events planned for International Women's Day on March 8. The United States had urged China to free them, and the international community harshly criticized keeping the women in custody. \"Each and every one of us has the right to speak out against sexual harassment and the many other injustices that millions of women and girls suffer around the world,\" U.S. Secretary of State John Kerry said in a statement Friday. \"We strongly support the efforts of these activists to make progress on these challenging issues, and we believe that Chinese authorities should also support them, not silence them.\" \"Free the five\" became a Twitter hashtag. Wang Qiushi, a lawyer for Wei, said police recommended last week that prosecutors press charges of \"assembling a crowd to disturb public order.\"", "summary": "Five Chinese feminist activists have been released from police custody after being held for over a month. They will be under surveillance and can be summoned for questioning at any time. Their detention had sparked international criticism, with the US calling for their release.", "spans": ["feminist activists"]}, {"id": "p6", "source": "Gastrointestinal illness has gripped 100 people on the cruise ship Celebrity Infinity, according to a report from the Centers for Disease Control. Of the ship's 2,117 passengers, 95 have suffered from vomiting, diarrhea and other symptoms, the CDC said. The illness has also affected five members of the 964-person crew. The CDC has yet to determine what's causing the ailments. Two staffers from the agency are scheduled to meet the West Coast-based ship in San Diego on Monday. The Infinity left San Diego on March 29. It made its last stop in Puerto Vallarta, Mexico, on April 10, according to MarineTraffic.com. Celebrity Cruises has been taking action since the outbreak began, including increasing cleaning and disinfection procedures, keeping passengers informed and taking specimens from the afflicted for testing by the CDC, the agency says. According to the Maritime Executive, this is the third time the Celebrity Infinity has suffered an outbreak of gastrointestinal illness, with others occurring in 2006 and 2013. The ship was built in 2001 and refurbished in 2011.", "summary": "Gastrointestinal illness has affected 100 people on the cruise ship Celebrity Infinity, according to the CDC. Symptoms include vomiting and diarrhea. The cause is unknown and two CDC staffers will meet the ship in San Diego on Monday. This is the third outbreak on the ship, which has a history of sanitation issues.", "spans": ["has a history of sanitation issues"]}, {"id": "p7", "source": "Tries from Macgraff Leuluai, Ah Van and Chris Bridge gave Widnes a 14-6 half-time lead, with Cas loanee Paddy Flynn responding against his parent club. Flynn scored another early in the second, but Ah Van, Lloyd White (2) and Joe Mellor tries made it 38-12. Despite three Cas tries in four minutes - Larne Patrick, Luke Gale and Flynn's hat-trick score - Widnes held on. The Vikings' victory had looked assured when Mellor took advantage of Castleford indecision on a short kick-off, running straight through to help them to a 26-point lead. But, having lost nine of their previous 10 matches, their defence creaked as they let Patrick, who has just signed a three-year deal to move from Huddersfield after his loan spell, in for a try. Gale and Flynn - on loan at Castleford from the Vikings until the end of the season - made it a nervy finish, but the Tigers suffered their fourth consecutive home league defeat. Widnes moved above Wakefield into seventh, while Castleford remain in sixth, one point above the Vikings. Castleford: Solomona, Monaghan, Crooks, Webster, Flynn, McShane, Gale, Jewitt, Milner, Patrick, Moors, McMeeken, Massey. Replacements: Millington, Springer, Tickle, Cook. Widnes: Hanbury, Thompson, Runciman, Bridge, Ah Van, Mellor,Brown, Cahill, White, Buchanan, Whitley, Dean, Leuluai. Replacements: J. Chapelhow, Manuokafoa, Walker, Heremaia. Referee: J Smith", "summary": "Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30. Tries from Macgraff Leuluai, Ah Van, and Chris Bridge gave Widnes a 14-6 lead at halftime. Castleford's Paddy Flynn responded with a try against his parent club. In the second half, Flynn scored another try, but Widnes extended their lead with tries from Ah Van, Lloyd White (2), and Joe Mellor. Castleford managed to score three tries in four minutes, but Widnes held on for the win. This victory moved Widnes above Wakefield into seventh place in the league standings. Castleford suffered their fourth consecutive home league defeat.", "spans": ["Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30"]}, {"id": "p8", "source": "The Briton finished more than two minutes ahead of Poland's Anna Harkowska in Nottwil, Switzerland. Storey can win a 17th title when she rides in Saturday's road race. \"It's a massive relief to win,\" said the 37-year-old, who is targeting further Paralympic success at next year's Games in Rio de Janeiro. Storey is Britain's most decorated female Paralympian with 22 medals. She has won 11 gold, eight silver and three bronze medals in both cycling and swimming across six Paralympics. She won four golds at the 2012 Games in London and has now won 21 world titles across both sports. Storey began her sporting career in the pool, winning six medals at the 1992 Paralympics before switching to cycling in 2005.", "summary": "The passage describes British Paralympian Sarah Storey's victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland. Storey, aged 37, aims to secure her 17th title in the upcoming road race. She is noted as Britain's most decorated female Paralympian with 22 medals, including 11 golds, 8 silvers, and 3 bronzes across cycling and swimming disciplines. Storey has won 21 world titles and achieved four gold medals at the 2012 London Paralympics. Her career began in swimming, where she won six medals at the 1992 Paralympics, before transitioning to cycling in 2005.", "spans": ["Sarah Storey"]}];
 
 function post(api, item, cur, partial) {
   api.send(JSON.stringify({
     tool: CFG.version, stage: "pilot", partial: !!partial, prolific: api.PRO,
     finished_items: 1,
-    answers: [{
-      item: cur.id, answer_ms: Math.round(cur.ms), visits: cur.visits, lost_check: cur.lost,
-      pastes: cur.pastes, keys: cur.keys,
-      revision: cur.rev, revision_grammar: cur.gram,
-      rev_hand_edited: cur.revTouched,
-      grammar_edited: cur.gram.trim() !== cur.rev.trim(),
-      help: cur.help, field_ms: api.fieldTimes(cur),
-      spans: cur.spans.map(function (s) { return api.spanRecord(item, s); })
-    }],
+    answers: [api.logOf(item, cur)],
     wall_s: Math.round((Date.now() - api.st.started) / 1000),
     submitted_at: new Date().toISOString()
   }));
@@ -309,7 +320,7 @@ window.TOOL_HOOKS = {
     }));
   },
   closing: function (api) {
-    return '<div class="pane"><h2>All eight done &mdash; thank you.</h2>'
+    return '<div class="pane"><h2>All ' + ITEMS.length + " done &mdash; thank you.</h2>"
       + '<p class="sub">One short page left: your feedback on the guidelines, the practice '
       + "round and the tool. Your Prolific completion link comes after it.</p>"
       + '<a class="cta" href="' + api.esc(api.withIds(CFG.nextPage)) + '">Continue</a></div>';
@@ -359,7 +370,7 @@ window.TOOL_HOOKS = {
   }
   function blankSpan(sid, start, end) {
     return {sid: sid, start: start, end: end, baseStart: start, baseEnd: end, adj: "",
-            adjOpen: false, adjBad: false, splitOpen: false, act: "", h: "", q: "", r: "",
+            adjOpen: false, adjBad: false, splitOpen: false, act: "", q: "",
             rep: "", attr: "", expl: "", why: "", from: null, parent: null};
   }
   function blankHelp() {
@@ -373,8 +384,16 @@ window.TOOL_HOOKS = {
       }),
       rev: "", revTouched: false, revBase: "", gram: "", gramTouched: false, gramBase: "",
       lost: "", ms: 0, review_ms: 0, visits: 0, pastes: {}, keys: 0, done: false, note: "",
-      help: blankHelp(), fieldMs: {}
+      help: blankHelp(), fieldMs: {}, awayMs: 0, awayN: 0, pasteFrom: {}, pasteOutside: 0,
+      gramOk: false, gramOkRev: "", gramOkStale: false, warnKinds: [], warnedFor: "",
+      warnOverride: false
     };
+  }
+  // Anything a saved state from an earlier version of this page lacks.
+  function upgrade(x) {
+    var d = {fieldMs: {}, awayMs: 0, awayN: 0, pasteFrom: {}, pasteOutside: 0, gramOk: false,
+             gramOkRev: "", gramOkStale: false, warnKinds: [], warnedFor: "", warnOverride: false};
+    Object.keys(d).forEach(function (k) { if (x[k] === undefined) x[k] = d[k]; });
   }
   function spanText(item, s) { return item.summary.slice(s.start, s.end); }
 
@@ -386,7 +405,8 @@ window.TOOL_HOOKS = {
           introHelp: blankHelp(), items: ITEMS.map(freshItem)};
   }
   // Someone part-way through when this was added has a saved state without it.
-  st.items.forEach(function (x) { if (!x.fieldMs) x.fieldMs = {}; });
+  st.items.forEach(upgrade);
+  if (st.introAwayMs === undefined) st.introAwayMs = 0;
   // Two tabs on one id used to overwrite each other, last save winning: with a forgotten tab
   // open, closing the working tab first put the participant back on item 1 with their answers
   // gone (reproduced 5 Nov, after a stray row in a tester's run). The saved copy now carries a
@@ -481,7 +501,24 @@ window.TOOL_HOOKS = {
     return o;
   }
 
+  // Time with the tab hidden, per item, and how many times it was left. The answer clock
+  // already stops while hidden, so this is the other half: in the pilot one annotator spent
+  // about half their item time away from the tab, and that had to be rebuilt from the
+  // sheet's timestamps. Another window over a visible tab does not hide it, so is not counted.
+  var awayAt = null, awaySince = 0;
+  function awayStart() {
+    if (st.finished || stale) return;
+    awayAt = st.at; awaySince = Date.now();
+  }
+  function awayEnd() {
+    if (!awaySince) return;
+    var ms = Date.now() - awaySince, c = awayAt >= 0 ? st.items[awayAt] : null;
+    if (c) { c.awayMs += ms; c.awayN += 1; } else { st.introAwayMs += ms; }
+    awaySince = 0; awayAt = null;
+    save();
+  }
   document.addEventListener("visibilitychange", function () {
+    if (document.hidden) awayStart(); else awayEnd();
     if (document.hidden) {
       fieldTick(); fieldSince = 0;
     } else if (fieldNow) {
@@ -599,6 +636,121 @@ window.TOOL_HOOKS = {
   }
   function diffChanged(ops) { return ops.some(function (o) { return o.k !== "="; }); }
 
+  // Only the sentences an edit touched, each diffed on its own. A grammar slip sits where an
+  // edit meets the text, and in a five-sentence summary the whole-text box buries it: in the
+  // pilot "the ship, which." went unrepaired by two of five, and nobody opened the box.
+  function sentencesOf(t) {
+    return (String(t).match(/[^.!?]*(?:[.!?]+["”’)\]]*|$)\s*/g) || [])
+      .filter(function (x) { return x.trim(); });
+  }
+  function editedSentences(a, b) {
+    var A = sentencesOf(a), B = sentencesOf(b), m = A.length, n = B.length, L = [], x, y;
+    for (x = 0; x <= m; x++) L.push(new Array(n + 1).fill(0));
+    for (x = m - 1; x >= 0; x--) {
+      for (y = n - 1; y >= 0; y--) {
+        L[x][y] = A[x].trim() === B[y].trim() ? L[x + 1][y + 1] + 1
+                                              : Math.max(L[x + 1][y], L[x][y + 1]);
+      }
+    }
+    var out = [], da = [], db = [];
+    function flush() {
+      if (da.length || db.length) {
+        out.push(diffHtml(wordDiff(da.join("").trim(), db.join("").trim())));
+      }
+      da = []; db = [];
+    }
+    x = 0; y = 0;
+    while (x < m || y < n) {
+      if (x < m && y < n && A[x].trim() === B[y].trim()) { flush(); x++; y++; }
+      else if (y >= n || (x < m && L[x + 1][y] >= L[x][y + 1])) { da.push(A[x]); x++; }
+      else { db.push(B[y]); y++; }
+    }
+    flush();
+    return out;
+  }
+  // The same places, painted inside the grammar box itself (Shachar, 6 Nov: with a five-
+  // sentence summary the list above says what broke, but not where to put the cursor). A
+  // textarea cannot hold markup, so the marks sit on a copy of its text drawn behind it, in
+  // the same font, padding and wrapping, with the box's own background made transparent.
+  // Each place is the edit plus one token either side, because a broken join is usually
+  // the word before or after the edit: "for in", "which.", "The The team football".
+  function seamRanges(orig, text) {
+    var ops = wordDiff(orig, text), out = [], i = 0, prev = null;
+    while (i < ops.length) {
+      if (ops[i].k === "=") { prev = ops[i].b; i++; continue; }
+      var ins = [];
+      while (i < ops.length && ops[i].k !== "=") {
+        if (ops[i].k === "+") ins.push(ops[i].b);
+        i++;
+      }
+      var next = i < ops.length ? ops[i].b : null;
+      var s = prev ? prev.at : (ins.length ? ins[0].at : (next ? next.at : 0));
+      var e = next ? next.end : (ins.length ? ins[ins.length - 1].end : (prev ? prev.end : 0));
+      if (e > s) {
+        var last = out[out.length - 1];
+        if (last && s <= last[1]) last[1] = Math.max(e, last[1]); else out.push([s, e]);
+      }
+    }
+    return out;
+  }
+  function seamHtml(orig, text) {
+    var h = "", pos = 0;
+    seamRanges(orig, text).forEach(function (r) {
+      h += esc(text.slice(pos, r[0])) + "<mark>" + esc(text.slice(r[0], r[1])) + "</mark>";
+      pos = r[1];
+    });
+    // A trailing newline takes no room in a div but a line in a textarea.
+    return h + esc(text.slice(pos)) + (/\n$/.test(text) ? " " : "");
+  }
+  function sameText(a, b) {
+    return String(a).replace(/\s+/g, " ").trim() === String(b).replace(/\s+/g, " ").trim();
+  }
+  // Nothing to check when the answers leave the text as it arrived -- every span "Not a
+  // hallucination" -- so the tick is neither shown nor asked for.
+  function hasEdits(item, cur) { return !sameText(finalText(cur), item.summary); }
+  function editsHtml(item, cur) {
+    var parts = editedSentences(item.summary, finalText(cur));
+    return parts.length
+      ? parts.map(function (p) { return '<p class="editline">' + p + "</p>"; }).join("")
+      : '<p class="hint" style="margin:0">No edits yet. They appear here as you answer.</p>';
+  }
+
+  // Soft checks on the final text, at submit. Each one fires only where the revision has
+  // more of the pattern than the summary it started from, so the original's own style is
+  // never flagged. The pilot's broken joins, all of which these catch: "The The team",
+  // "left for in France", "the ship, which.", "Paralympian The Briton's", "tigers..".
+  var GRAM_CHECKS = [
+    {k: "doubled", re: /\b([A-Za-z]+)\s+\1\b/gi, say: "the same word twice in a row"},
+    {k: "dangling", re: /\b(which|that|who|whose|where|and|or|but|of|the|a|an|for|to|in|at|on|by|with|from|its|their|his|her)\s*[.,;:!?](?=\s|$)/gi,
+     say: "a sentence or clause that stops on a word that needs something after it"},
+    {k: "twoprep", re: /\b(for|in|of|to|at|on|by|with|from|into|about)\s+(in|of|to|at|on|by|with|from|for|into)\b/gi,
+     say: "two prepositions in a row"},
+    {k: "article", re: /\b(a|an|the)\s+(the|a|an|of|in|to|at|on|for|with|from|by|and|or)\b/gi,
+     say: "an article followed by a word that cannot follow it"},
+    {k: "midcap", re: /[a-z,]\s+(The|A|An)\b/g, say: "&ldquo;The&rdquo; or &ldquo;A&rdquo; with a capital letter in mid-sentence"},
+    {k: "punct", re: /[,;:]\s*[.,;:]|\.\s*[,;:]|\.\.(?!\.)/g, say: "doubled punctuation"},
+    {k: "space", re: /\s+[,;:!?]|\s+\.(?!\.)/g, say: "a space before punctuation"},
+    {k: "lower", re: /(^\s*|[.!?]\s+)[a-z]/g, say: "a sentence that starts with a small letter"},
+    {k: "end", re: /[^.!?"”’)\]\s]\s*$/g, say: "a text that does not end with a full stop"}
+  ];
+  function countOf(re, t) { return (String(t).match(re) || []).length; }
+  function grammarWarnings(orig, text) {
+    var out = [];
+    GRAM_CHECKS.forEach(function (c) {
+      if (countOf(c.re, text) <= countOf(c.re, orig)) return;
+      var spots = [], m, re = new RegExp(c.re.source, c.re.flags);
+      while ((m = re.exec(text)) && spots.length < 3) {
+        var a = Math.max(0, m.index - 35), b = Math.min(text.length, m.index + m[0].length + 35);
+        spots.push((a > 0 ? "&hellip;" : "") + esc(text.slice(a, m.index)) + "<mark>"
+          + esc(m[0]) + "</mark>" + esc(text.slice(m.index + m[0].length, b))
+          + (b < text.length ? "&hellip;" : ""));
+        if (!m[0].length) re.lastIndex++;
+      }
+      out.push({k: c.k, say: c.say, spots: spots});
+    });
+    return out;
+  }
+
   // ---- render --------------------------------------------------------------
   function markup(item, cur) {
     var text = item.summary, out = "", pos = 0, many = cur.spans.length > 1;
@@ -669,28 +821,24 @@ window.TOOL_HOOKS = {
       + choice(i, "not", "Not a hallucination", s.act) + "</div>"
       + '<div class="fielderr" data-e="act" data-i="' + i + '">Required: please select an '
       + "operation.</div>";
-    var H = field(i, "h", s.h, "H", "the hallucinated statement, as a complete sentence",
-      "Required: please write the hallucinated statement as a complete sentence.");
+    // H and R are steps of the procedure, worked in the head; the tool no longer asks for them
+    // written out (Shachar, 6 Nov). In the pilot H was the costliest field -- 20 of one
+    // annotator's 75 minutes -- and neither field ever changed a revision: H came back as the
+    // corrected sentence or a copy of the summary, R as commentary on the source, and the
+    // replacement was written apart from R in about a third of replaces.
     if (s.act === "replace") {
-      h += H
-        + field(i, "q", s.q, "Final question (Qmax)", "the most specific question answerable "
+      h += field(i, "q", s.q, "Final question (Qmax)", "the most specific question answerable "
           + "by both the source and the hallucinated statement",
           "Required for a replace: please write the final question.")
-        + field(i, "r", s.r, "R", "the source&rsquo;s answer to Qmax, as a complete sentence",
-          "Required for a replace: please write the answer as a complete sentence.")
-        + field(i, "rep", s.rep, "Replacement", "the part of R that takes the place of the "
-          + "marked span in the text",
-          "Required for a replace: please enter the part of R that replaces the span.",
+        + field(i, "rep", s.rep, "Replacement", "the part of the source&rsquo;s answer to Qmax "
+          + "that takes the place of the marked span in the text",
+          "Required for a replace: please enter the words that replace the span.",
           "input")
-        + '<p class="soft" id="soft_rep' + i + '"' + (repInR(s) ? " hidden" : "")
-        + ">This is not word for word in R above. It should be the part of R that fits the "
-        + "slot.</p>"
         + field(i, "attr", s.attr, "Source attribution (copied verbatim from the source)",
           "the exact sentence or phrase in the source that your answer comes from or is implied by",
           "Required: copy the exact sentence or phrase from the source, verbatim.");
     } else if (s.act === "delete") {
-      h += H
-        + field(i, "expl", s.expl, "Explanation", "which questions did you consider that the "
+      h += field(i, "expl", s.expl, "Explanation", "which questions did you consider that the "
           + "source could not answer, and why did you choose to delete?",
           "Required for a deletion: please say which questions were not answerable, and why "
           + "you deleted.");
@@ -733,19 +881,37 @@ window.TOOL_HOOKS = {
     }
     return "You have edited this yourself, so your answers no longer change it.";
   }
-  function gramState(cur) {
-    if (!cur.gramTouched) return "Follows the revision above. Leave it as it is if nothing "
-      + "needs fixing.";
+  function gramState(cur, item) {
+    if (!cur.gramTouched && !hasEdits(item, cur)) {
+      return "Your answers leave the text unchanged, so there is nothing to check here.";
+    }
+    if (!cur.gramTouched) return "This box starts as a copy of the revision, with the places "
+      + "you edited marked. Read each one as a reader would: removing or replacing words often "
+      + "leaves a stray word, a missing &ldquo;a&rdquo; or &ldquo;the&rdquo;, or broken "
+      + "punctuation. Fix those here, and do not add new content.";
     if (cur.gramBase !== cur.rev) {
       return '<span class="stale">The revision above has changed since you edited this box. '
         + "Copy it down to start again from it.</span>";
     }
     return "You have edited this yourself, so the revision above no longer changes it.";
   }
+  // The tick is for this revision. If the answers then change it, the tick no longer covers
+  // what will be submitted, so it comes off and says why.
+  function gramChecked(cur) { return cur.gramOk && cur.gramOkRev === cur.rev; }
   function paintStates(item, cur) {
     var a = document.getElementById("revstate"), b = document.getElementById("gramstate");
     if (a) a.innerHTML = revState(cur, item);
-    if (b) b.innerHTML = gramState(cur);
+    if (b) b.innerHTML = gramState(cur, item);
+    if (cur.gramOk && !gramChecked(cur)) { cur.gramOk = false; cur.gramOkStale = true; }
+    var ok = document.getElementById("gramok"), why = document.getElementById("gramok_stale");
+    if (ok) ok.checked = gramChecked(cur);
+    if (why) why.hidden = !cur.gramOkStale;
+    var wrap = document.getElementById("gramokwrap");
+    if (wrap) wrap.hidden = !hasEdits(item, cur);
+    var ed = document.getElementById("edits");
+    if (ed) ed.innerHTML = editsHtml(item, cur);
+    var hl = document.getElementById("gramhl");
+    if (hl) hl.innerHTML = seamHtml(item.summary, cur.gram);
     var r = document.getElementById("rebuild"), c = document.getElementById("copyrev");
     if (r) r.hidden = !cur.revTouched;
     if (c) c.hidden = !cur.gramTouched;
@@ -791,13 +957,26 @@ window.TOOL_HOOKS = {
       + '<div class="autonote"><span id="revstate"></span>'
       + '<button type="button" class="choice small" id="rebuild">Rebuild from my answers'
       + "</button></div>"
-      + '<div class="revsecond"><label class="lab" for="gram">Revision after grammar fixes '
+      + '<div class="revsecond"><p class="lab">Your edits, marked &mdash; each sentence you '
+      + "changed, as it now reads</p>"
+      + '<div class="edits" id="edits"></div>'
+      + '<label class="lab" for="gram">Revision after grammar fixes '
       + '<span class="opt">&mdash; repair any grammar <em>your own edits</em> broke; change '
       + "nothing else, and add no new information</span></label>"
-      + '<textarea id="gram" class="rev">' + esc(cur.gram) + "</textarea>"
+      + '<div class="hlwrap"><div class="hl" id="gramhl" aria-hidden="true"></div>'
+      + '<textarea id="gram" class="rev">' + esc(cur.gram) + "</textarea></div>"
       + '<div class="autonote"><span id="gramstate"></span>'
       + '<button type="button" class="choice small" id="copyrev">Copy the revision above down'
-      + "</button></div></div></div>"
+      + "</button></div>"
+      + '<div id="gramokwrap"' + (hasEdits(item, cur) ? "" : " hidden") + ">"
+      + '<label class="gramok" for="gramok"><input type="checkbox" id="gramok"'
+      + (gramChecked(cur) ? " checked" : "") + "> I have checked the revision for grammar, "
+      + "and fixed in the box above anything my edits broke.</label>"
+      + '<p class="soft" id="gramok_stale"' + (cur.gramOkStale ? "" : " hidden") + ">Your "
+      + "answers changed the revision after you ticked this, so please check it again.</p>"
+      + '<div class="fielderr" id="gramok_err">Please read your marked edits, fix any grammar '
+      + "they broke, and tick this box.</div></div>"
+      + "</div></div>"
       + '<div class="foot">'
       + (main.onward ? "" : prevBtn)
       + (main.label ? '<button type="button" class="cta" id="next">' + main.label + "</button>"
@@ -829,9 +1008,6 @@ window.TOOL_HOOKS = {
   function loose(s) {
     return String(s).toLowerCase().replace(/[‘’]/g, "'")
       .replace(/[“”]/g, '"').replace(/\s+/g, " ").trim();
-  }
-  function repInR(s) {
-    return !s.rep.trim() || !s.r.trim() || loose(s.r).indexOf(loose(s.rep)) !== -1;
   }
 
   // ---- adjusting a span -------------------------------------------------------
@@ -918,7 +1094,7 @@ window.TOOL_HOOKS = {
     // The choice and the question carry across. An annotator who decided how to handle a
     // span and then noticed it held two details should not be punished for noticing. The
     // rest was written for the whole span and is wrong for either half on its own.
-    if (s.h.trim() || s.r.trim() || s.rep.trim() || s.attr.trim() || s.expl.trim()) {
+    if (s.rep.trim() || s.attr.trim() || s.expl.trim()) {
       cur.note = "What you had written for the whole statement was cleared, because each part "
                + "needs its own answers. Only the choice and the question carried over.";
     }
@@ -941,7 +1117,7 @@ window.TOOL_HOOKS = {
     var m = blankSpan(p.sid, a.baseStart, z.baseEnd);
     m.baseStart = p.baseStart; m.baseEnd = p.baseEnd; m.adj = p.adj;
     m.from = p.from; m.parent = p.parent;
-    ["act", "h", "q", "r", "rep", "attr", "expl", "why"].forEach(function (f) {
+    ["act", "q", "rep", "attr", "expl", "why"].forEach(function (f) {
       var x = a[f], y = z[f];
       m[f] = String(x).trim() ? x : y;
     });
@@ -959,7 +1135,9 @@ window.TOOL_HOOKS = {
   root.addEventListener("focusout", fieldStop);
 
   root.addEventListener("input", function (e) {
-    if (st.at < 0 || st.finished) return;
+    // A checkbox fires input before change, and painting the states here would put the
+    // tick back to what it was a moment ago. The change handler owns it.
+    if (st.at < 0 || st.finished || e.target.id === "gramok") return;
     var t = e.target, item = curItem(), cur = curState();
     if (cur.note) {
       cur.note = "";
@@ -978,10 +1156,6 @@ window.TOOL_HOOKS = {
         var ae = root.querySelector('[data-e="adj"][data-i="' + i + '"]');
         if (ae) ae.classList.toggle("on", s.adjBad);
         t.classList.toggle("needs", s.adjBad);
-      }
-      if (f === "r" || f === "rep") {
-        var sr = document.getElementById("soft_rep" + i);
-        if (sr) sr.hidden = repInR(s);
       }
       if (t.tagName === "TEXTAREA") fit(t);
       if (f === "rep" || f === "adj") pushRevision(item, cur);
@@ -1008,12 +1182,44 @@ window.TOOL_HOOKS = {
     if (!cur.revTouched) { r.value = cur.rev; fit(r); }
     if (!cur.gramTouched) { g.value = cur.gram; fit(g); }
   }
-  // Pastes per field, because a paste into the attribution is the job and a paste into R
-  // is a signal. Never grounds for rejecting work; grounds for not inviting someone back.
+  root.addEventListener("change", function (e) {
+    if (st.at < 0 || st.finished || e.target.id !== "gramok") return;
+    var cur = curState();
+    cur.gramOk = e.target.checked; cur.gramOkRev = cur.rev; cur.gramOkStale = false;
+    var box = document.querySelector("label.gramok");
+    if (box) box.classList.remove("needs");
+    document.getElementById("gramok_err").classList.remove("on");
+    var why = document.getElementById("gramok_stale");
+    if (why) why.hidden = true;
+    save();
+  });
+  // Pastes per field, because a paste into the attribution is the job and a paste into the
+  // explanation is a signal -- and, since the pilot, where each paste came from. Copying from
+  // the source or the summary on this page is how the attribution is meant to be filled; text
+  // from anywhere else is what a paste from another program or a model looks like. Never
+  // grounds for rejecting work; grounds for not inviting someone back.
+  function pasteOrigin(item, cur, text) {
+    var t = loose(text);
+    if (!t) return "empty";
+    if (loose(item.source).indexOf(t) !== -1) return "source";
+    if (loose(item.summary).indexOf(t) !== -1) return "summary";
+    var own = [cur.rev, cur.gram];
+    cur.spans.forEach(function (s) { own.push(s.q, s.rep, s.attr, s.expl, s.why, s.adj); });
+    if (own.some(function (v) { return v && loose(v).indexOf(t) !== -1; })) return "own";
+    return "outside";
+  }
   root.addEventListener("paste", function (e) {
     if (st.at < 0 || st.finished) return;
     var cur = curState(), f = e.target.dataset.f || e.target.id;
-    if (f) { cur.pastes[f] = (cur.pastes[f] || 0) + 1; save(); }
+    if (!f) return;
+    var text = "";
+    try { text = (e.clipboardData || window.clipboardData).getData("text") || ""; } catch (x) {}
+    var from = pasteOrigin(curItem(), cur, text);
+    cur.pastes[f] = (cur.pastes[f] || 0) + 1;
+    cur.pasteFrom[f] = cur.pasteFrom[f] || {};
+    cur.pasteFrom[f][from] = (cur.pasteFrom[f][from] || 0) + 1;
+    if (from === "outside") cur.pasteOutside += text.length;
+    save();
   });
   root.addEventListener("keydown", function (e) {
     if (st.at < 0 || st.finished) return;
@@ -1053,10 +1259,8 @@ window.TOOL_HOOKS = {
         if (!s.why.trim()) flag("why", i, bad);
         return;
       }
-      if (!s.h.trim()) flag("h", i, bad);
       if (s.act === "replace") {
         if (!s.q.trim()) flag("q", i, bad);
-        if (!s.r.trim()) flag("r", i, bad);
         if (!s.rep.trim()) flag("rep", i, bad);
         // Calling a filled-in box "required" tells them nothing about what is wrong with it.
         if (!s.attr.trim()) {
@@ -1075,6 +1279,11 @@ window.TOOL_HOOKS = {
       document.getElementById("rev_err").classList.add("on");
       bad.push(document.getElementById("rev"));
     }
+    if (hasEdits(item, cur) && !gramChecked(cur)) {
+      var box = document.querySelector("label.gramok");
+      if (box) { box.classList.add("needs"); bad.push(box); }
+      document.getElementById("gramok_err").classList.add("on");
+    }
     return bad;
   }
   function submitItem(item, cur) {
@@ -1085,7 +1294,44 @@ window.TOOL_HOOKS = {
       return;
     }
     err.textContent = "";
+    var text = finalText(cur), warn = grammarWarnings(item.summary, text);
+    // Shown once per version of the text: answering "it reads correctly" is an answer, and
+    // asking again about the same words would only train people to click through.
+    if (warn.length && cur.warnedFor !== text) { showWarnings(item, cur, warn, text); return; }
     showGate(item, cur);
+  }
+
+  // Before the gate, the spots that usually mean a broken join. Never blocking: a real
+  // sentence can trip any of these, and the annotator is the judge of their own text.
+  function showWarnings(item, cur, warn, text) {
+    fieldStop();
+    warn.forEach(function (w) {
+      if (cur.warnKinds.indexOf(w.k) === -1) cur.warnKinds.push(w.k);
+    });
+    save();
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    bg.innerHTML = '<div class="modal" id="gramwarn"><h2>Check these spots in your revision</h2>'
+      + '<p class="sub">Edits often break the sentence around them. Each spot below has a '
+      + "pattern that usually means that. If it reads correctly, you can continue.</p>"
+      + '<ul class="warnlist">' + warn.map(function (w) {
+        return "<li><b>" + w.say.charAt(0).toUpperCase() + w.say.slice(1) + "</b>"
+          + w.spots.map(function (s) { return '<span class="spot">' + s + "</span>"; }).join("")
+          + "</li>";
+      }).join("") + "</ul>"
+      + '<div class="row"><button type="button" class="choice" id="warnfix">Let me fix it</button>'
+      + '<button type="button" class="choice" id="warnok">It reads correctly &mdash; continue'
+      + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("warnfix").addEventListener("click", function () {
+      cur.warnOverride = false; save(); bg.remove();
+      var g = document.getElementById("gram");
+      if (g) { g.scrollIntoView({behavior: "smooth", block: "center"}); g.focus(); }
+    });
+    document.getElementById("warnok").addEventListener("click", function () {
+      cur.warnedFor = text; cur.warnOverride = true; save(); bg.remove();
+      showGate(item, cur);
+    });
   }
 
   // The last gate: the diff beside the original, and the one question that cannot be
@@ -1198,14 +1444,30 @@ window.TOOL_HOOKS = {
              marked: item.summary.slice(s.baseStart, s.baseEnd), adj: s.adj.trim(),
              split_from: s.from || null, act: s.act};
     if (s.act === "not") { o.why = s.why; return o; }
-    o.h = s.h;
     if (s.act === "replace") {
-      o.q = s.q; o.r = s.r; o.rep = s.rep; o.attr = s.attr;
-      o.rep_in_r = repInR(s); o.attr_verbatim = isQuote(s.attr, item.source);
+      o.q = s.q; o.rep = s.rep; o.attr = s.attr;
+      o.attr_verbatim = isQuote(s.attr, item.source);
     } else if (s.act === "delete") {
       o.expl = s.expl;
     }
     return o;
+  }
+
+  // One item as both pages post it, so the practice round and the annotation rounds are read
+  // by the same code. away_ms is time with the tab hidden; answer_ms already excludes it.
+  function logOf(item, cur) {
+    return {
+      item: cur.id, answer_ms: Math.round(cur.ms), visits: cur.visits, lost_check: cur.lost,
+      pastes: cur.pastes, paste_from: cur.pasteFrom, paste_outside_chars: cur.pasteOutside,
+      keys: cur.keys, away_ms: Math.round(cur.awayMs), away_n: cur.awayN,
+      revision: cur.rev, revision_grammar: cur.gram, rev_hand_edited: cur.revTouched,
+      grammar_edited: cur.gram.trim() !== cur.rev.trim(),
+      // null where there was nothing to check: the text went out as it arrived
+      grammar_checked: hasEdits(item, cur) ? gramChecked(cur) : null,
+      grammar_warnings: cur.warnKinds, grammar_warning_overridden: cur.warnOverride,
+      help: cur.help, field_ms: fieldTimes(cur),
+      spans: cur.spans.map(function (s) { return spanRecord(item, s); })
+    };
   }
 
   addEventListener("pagehide", function () {
@@ -1295,7 +1557,8 @@ window.TOOL_HOOKS = {
   var api = {st: st, PRO: PRO, esc: esc, save: save, render: render, advance: advance,
              send: send, withIds: withIds, wordDiff: wordDiff, diffHtml: diffHtml,
              spanRecord: spanRecord, spanText: spanText, finalText: finalText,
-             fieldTimes: fieldTimes,
+             fieldTimes: fieldTimes, logOf: logOf, grammarWarnings: grammarWarnings,
+             editedSentences: editedSentences, seamRanges: seamRanges,
              startReview: function (cur) { clockFor(cur); }};
   window.toolApi = api;     // test_tool.py drives the diff through this
 

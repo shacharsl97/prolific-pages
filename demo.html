@@ -119,6 +119,25 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
   font-size:12.5px;color:var(--muted)}
 .autonote .stale{color:var(--dis);font-weight:600}
 .revsecond{margin-top:18px}
+.edits{background:var(--raised);border:1px solid var(--rule);border-radius:6px;
+  padding:10px 12px;margin:0 0 14px;font-size:15px;line-height:1.7}
+.editline{margin:0}
+.hlwrap{position:relative;background:var(--raised);border-radius:6px}
+.hlwrap textarea{position:relative;z-index:1;background:transparent}
+.hl{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  border:1px solid transparent;padding:8px 11px;font:inherit;font-size:15px;line-height:1.7;
+  white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;color:transparent}
+.hl mark{background:var(--mark);color:transparent;padding:0;border-radius:2px;
+  box-shadow:0 0 0 1px var(--mark-line)}
+.editline+.editline{margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule)}
+label.gramok{display:flex;gap:9px;align-items:flex-start;margin:12px 0 0;font-size:14px;
+  font-weight:600;cursor:pointer}
+label.gramok input{margin-top:3px;width:17px;height:17px;flex:none}
+label.gramok.needs{border-radius:6px;padding:6px 8px}
+.warnlist{margin:0 0 14px;padding:0;list-style:none}
+.warnlist li{margin:0 0 12px}
+.warnlist .spot{display:block;font-size:14.5px;line-height:1.6;margin:4px 0 0;
+  padding:6px 10px;background:var(--raised);border:1px solid var(--rule);border-radius:6px}
 .cta{display:inline-block;background:var(--accent);color:var(--on-accent);text-decoration:none;
   border:0;font:inherit;font-weight:600;padding:12px 26px;border-radius:6px;cursor:pointer;
   font-size:16px}
@@ -274,21 +293,23 @@ ins{background:var(--ok-bg);color:var(--ok);text-decoration:none;padding:1px 2px
   <div class="llm" id="llm-note">Please do not use ChatGPT, Claude, Gemini or any other language model, here or in the qualification round. We are studying how people write faithful minimal revisions, so we need your own answers.</div>
 </div>
 <script>
-var CFG = {"storeKey": "demo-v6", "version": "demo-v6", "endpoint": "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", "nextPage": "annotate.html", "guidelines": "guidelines.html", "noun": "example", "introCount": "practice round", "doneCount": "practice complete"};
-var ITEMS = [{"id": "p1", "source": "British Army soldiers were deployed to support flood relief efforts across the region on Wednesday. A Ministry of Defence spokesperson confirmed troops from the Mercian Regiment arrived to help with sandbagging and evacuations, working alongside local emergency services throughout the week.", "summary": "Soldiers from the Yorkshire Regiment have been deployed to help with flood relief.", "spans": ["the Yorkshire Regiment"], "revision": "Soldiers from the Mercian Regiment have been deployed to help with flood relief.", "revision_grammar": "", "worked": [{"span": "the Yorkshire Regiment", "act": "replace", "h": "Soldiers from the Yorkshire Regiment have been deployed to help with flood relief.", "q": "Which regiment were the soldiers from?", "r": "The soldiers were from the Mercian Regiment.", "rep": "the Mercian Regiment", "attr": "troops from the Mercian Regiment"}], "teach": {"title": "Do not stop at the first question the source and the summary both answer — match the marked statement's own level of detail", "note": "The coarser question here genuinely works. But “the Yorkshire Regiment” names a regiment, not merely an army, and the source can answer at that level too, so settling for “the British Army” gives up precision the source supports.", "ladder": [{"q": "Which armed force were the soldiers from?", "status": "surpassed", "src": "Both answer this. “The Yorkshire Regiment” entails the British Army — a regiment is part of an army — and the source says it outright: “British Army soldiers were deployed.” So “the British Army” would fill the slot. The claim named a regiment, though, so try the finer question before settling here."}, {"q": "Which regiment were the soldiers from?", "status": "settled", "src": "Answered by both, at the level the claim attempted: “troops from the Mercian Regiment.”"}], "op": "Replace", "traps": [{"t": "“Soldiers from the British Army have been deployed…”", "severity": "partial", "w": "True, and the source supports it — but the claim named a particular regiment and the source names the actual one. Stopping here gives up specificity the source can match."}, {"t": "“Soldiers from the Yorkshire Regiment…” (keeping it)", "w": "Not stated in the source. The regiment this article names is the Mercian Regiment."}, {"t": "Deleting the regiment — “Soldiers have been deployed to help with flood relief.”", "w": "More than the fix needs: the source names a regiment, so a faithful replacement exists."}]}}, {"id": "p2", "source": "A £100,000 reward is on offer for information leading to the conviction of the killers of 14-year-old Charlene Downes or the recovery of her body. An appeal will be made on the big screen and inside programmes during the team's match against Brighton at Bloomfield Road on Saturday. Charlene disappeared near Blackpool's North Pier on 1 November 2003. Police believe she was one of a number of girls who were groomed for sex. Lancashire Police and Crime Commissioner Clive Grunshaw said: “Someone out there knows something about what happened to Charlene. ”Detectives believe the answer lies in Blackpool - and it could lie at Bloomfield Road on Saturday.“ Det Supt Andy Webster said: ”We have never given up our search for information about Charlene, who we believe was murdered more than a decade ago. “We appreciate that a considerable amount of time has passed since Charlene went missing, but we would still encourage anyone with information at all to come forward and speak to us.” In 2008, a judge ordered a man to be cleared of Charlene's murder, after “grave doubts” were raised around evidence during his second trial. The jury in his first trial failed to reach a verdict. The following year, the Independent Police Complaints Commission (IPCC) said police errors in gathering evidence had contributed to the collapse of the retrial. The IPCC investigation concluded the investigating team was guilty of a strategic and tactical failure in the management of the material and several officers were disciplined, with one being forced to resign in 2011. The resignation order was overturned by a Police Arbitration Tribunal in 2012.", "summary": "A fresh appeal for information about the murder of a teenage girl in Blackpool 10 years ago is to be made at the town's football ground.", "spans": ["10"], "revision": "A fresh appeal for information about the murder of a teenage girl in Blackpool more than 10 years ago is to be made at the town's football ground.", "revision_grammar": "", "worked": [{"span": "10", "act": "replace", "h": "The girl was murdered 10 years ago.", "q": "How long ago was the girl murdered?", "r": "The girl was murdered more than 10 years ago.", "rep": "more than 10", "attr": "who we believe was murdered more than a decade ago"}], "teach": {"title": "The source cannot answer at the claim's level, but it does answer — generalise, do not delete", "note": "A number in the summary does not mean the source has a number. Here the source gives a bound — police believe she was “murdered more than a decade ago” — and that is the most specific thing it supports about how long ago. Writing “more than a decade ago” instead is the source's own wording, is semantically the same, and is equally accepted.", "ladder": [{"q": "Exactly how many years ago was the girl murdered?", "status": "rejected", "src": "Not answerable. The source gives one date — she disappeared on 1 November 2003 — but we cannot know when the article was written, so the elapsed time cannot be worked out from it."}, {"q": "How long ago was the girl murdered?", "status": "settled", "src": "Answered by both. Two answers fit the source: “some years ago” and “more than a decade ago”. Take the more specific of the two, which is also the one closer to what the summary claimed: Det Supt Webster says she was “murdered more than a decade ago”."}], "op": "Replace", "traps": [{"t": "“…in Blackpool years ago…” (deleting the span)", "severity": "partial", "w": "This is what an annotator of a previous dataset wrote. It is faithful, and still suboptimal for this task. The summary claimed a definite number of years, so we stay as close to that level as the source allows: “more than 10 years ago” is a bound the source states in its own words, and it is more specific than a bare “years ago”. The bound is worth keeping precisely because the summary was specific."}, {"t": "“…in Blackpool in 2003…”", "severity": "partial", "w": "Uses a real date from the source and answers a “when” question — but 1 November 2003 is when Charlene disappeared, and the source says only that she was murdered more than a decade ago. Close, and still a different claim from the one the source makes."}]}}, {"id": "p3", "source": "Solly Msimanga, from the opposition Democratic Alliance (DA), said the vehicles would instead be given to a police anti-hijack unit. However, he will continue to use the luxury car used by the previous mayor. The DA took control of Tshwane, a metropolitan area including the capital Pretoria, from the African National Congress (ANC) in local elections. Mr Msimanga said no more luxury cars would be bought under his leadership. He took over from the governing ANC, which lost control of the capital for the first time since 1994, last month. More on this and other African stories . Four things from South Africa election . The ANC bought 10 new BMW 3 series vehicles, which are yet to be delivered, for 5 million rand ($356,000; £266,000), local reports say. The cars were meant for members of the mayoral council, with the ANC said to be confident it would retain control of the municipality in the elections. He will still use a BMW 5 series car he inherited from the previous mayor, reports the IOL website. Mr Msimanga's spokesman Matthew Gerstner told the BBC that this vehicle could not “be dispensed with because it's been bought and paid for already and treasury regulations prohibit that”. He added: “But, as soon as he can replace it, he will, with a sensible, low-cost vehicle”. Mr Msimango says the DA-led coalition government wanted to embark on cost-cutting measures. He said in a statement: “No new luxury cars will be bought or leased for politicians, and if vehicles currently owned by Tshwane require replacement, sensible and low-cost vehicles will be procured. I will not allow public money to be spent on luxury cars, while our people struggle for services, houses and jobs. A Hyundai i20 or Toyota Corolla can do the same job for a politician as an expensive sedan.” The ANC national government has been criticised for wasteful expenditure, so South Africans will be closely watching what the opposition do differently in the key urban areas they won in the August elections, says the BBC's Pumza Fihlani in Johannesburg. South Africans will be keen to see if the opposition, which has until now only run one province, will be able to make good on its ambitious election promises, our correspondent says.", "summary": "The new mayor of South Africa's capital, Tshwane, says he will stop using 10 new BMW cars bought by the governing party.", "spans": ["stop using"], "revision": "The new mayor of South Africa's capital, Tshwane, says he will not use 10 new BMW cars bought by the governing party.", "revision_grammar": "", "worked": [{"span": "stop using", "act": "replace", "h": "The mayor says he will stop using 10 new BMW cars.", "q": "What will the mayor do about his own use of the 10 new BMW cars?", "r": "The mayor will not use the 10 new BMW cars.", "rep": "not use", "attr": "the vehicles would instead be given to a police anti-hijack unit"}], "teach": {"title": "The presupposition fails, and the source states the reverse — replace, do not delete", "note": "“Stop using” assumes he has been using the cars, and the source says they are “yet to be delivered”. But the source is not silent about whether he will use them, and silence and contradiction call for different operations: a source that states the reverse is still answering the question.", "ladder": [{"q": "When will the mayor stop using the 10 new BMW cars?", "status": "rejected", "src": "This keeps an assumption the source does not support — that he has been using them. The cars are “yet to be delivered”, and he “will continue to use the luxury car used by the previous mayor.”"}, {"q": "What will the mayor do with the 10 new BMW cars?", "status": "available", "src": "The source does answer this: the vehicles “would instead be given to a police anti-hijack unit”. The answer is real and it is in the source — it is simply a more specific answer than the summary's own. The summary said he would stop using the cars, so the level to match is his own use of them, not what becomes of them."}, {"q": "What will the mayor do about his own use of the 10 new BMW cars?", "status": "settled", "src": "Answered by both, at the claim's own level, and the answer drops straight into the slot: he will not use them. The cars are going to a police unit instead, and he will keep the car he inherited. What you write into the revision is the answer to your question, so a question answerable with yes or no is no use here — “Will the mayor use the cars?” leaves you nothing to insert."}], "op": "Replace", "traps": [{"t": "“…says he will give 10 new BMW cars to a police anti-hijack unit.”", "severity": "partial", "w": "True, and in the source — but it answers at a level of detail the summary never attempted, and it is a much larger edit than the fix needs."}, {"t": "“…says he will not buy 10 new BMW cars bought by the governing party.”", "w": "The source's line about buying is about future luxury cars in general. These ten were already bought by the ANC, so this answers a different question."}]}}, {"id": "p4", "source": "Media playback is not supported on this device . A statement from F1's governing body the FIA said the man gained “unauthorised access” to the circuit. The FIA said: “We are awaiting a full report from the clerk of the course in order to determine the circumstances surrounding this incident.” Race winner Sebastian Vettel said: “Fortunately nothing happened to us or him. It's not what you want to see.” It is the second time this year someone has gained access to a track during a grand prix weekend, with a spectator running across the circuit during practice at the Chinese Grand Prix in April. Media playback is not supported on this device . It is also the third time in recent history that a track invader has disrupted a grand prix. In 2003, a man wearing a kilt ran across the track during the British Grand Prix. And a disaffected former Mercedes employee invaded the track during the 2000 race in Germany. Vettel, who drives for Ferrari, made a joke about this incident, which has been reported to involve an English tourist. “When I was watching F1 there was a scene in Hockenheim and then a couple of years later in Silverstone,” he said. “This guy was fairly boring. He could have dressed a little funny or something. Now we are joking about it, but it is fairly serious.” Red Bull's Daniel Ricciardo, who finished second, added: “He was on his phone taking pictures, probably for Instagram or something. I hope he got some more followers because it's got to be worth a night in prison.”", "summary": "A man ran on to the track during the Austrian Grand Prix.", "spans": ["Austrian"], "revision": "A man ran on to the track during the Grand Prix.", "revision_grammar": "A man ran on to the track during a Grand Prix.", "worked": [{"span": "Austrian", "act": "delete", "h": "A man ran on to the track during the Austrian Grand Prix.", "expl": "“Which Grand Prix did the man run on to the track during?” and “In which country was the race held?” are both unanswerable: the source never names this race, and the races it does name are separate incidents. No question about “Austrian” has an answer the source supports, so there is nothing to insert."}], "teach": {"title": "No question reaches the claim — delete, and let the grammar pass tidy what is left", "note": "We try to find which Grand Prix it was, and the source will not tell us — not the race, not the country. No question about the marked word gets a meaningful answer out of the source, so there is nothing to put in the slot. Once “Austrian” is gone, “the Grand Prix” reads better as “a Grand Prix”: that is the grammar pass, written after the revision.", "ladder": [{"q": "Which Grand Prix did the man run on to the track during?", "status": "rejected", "src": "Not answerable about this incident. The source names three others — the Chinese Grand Prix in April, the British Grand Prix in 2003, Germany in 2000 — and marks each as a separate event: this is “the second time this year” and “the third time in recent history”. The race being reported is never named."}, {"q": "In which country was the race held?", "status": "rejected", "src": "Also not answerable. Silverstone and Hockenheim appear only inside Vettel's recollection of past incidents, and the tourist being English says nothing about where this race was held."}], "close": "No question we can ask about “Austrian” has an answer the source supports, so there is nothing to insert and we delete the marked word.", "op": "Delete", "traps": [{"t": "“…during the British Grand Prix.”", "severity": "partial", "w": "This is what a past annotator wrote. “British Grand Prix” is in the source — but it belongs to the 2003 incident, a different man in a kilt."}, {"t": "“…during the Chinese Grand Prix.”", "w": "The same error, and the source rules it out explicitly: that was the first of the two this year, during practice, and this is the second."}, {"t": "“…during the Austrian Grand Prix.” (keeping it)", "w": "Not in the source at any point."}]}}, {"id": "p5", "source": "The International Committee of the Red Cross (ICRC) has had to halt deliveries to the Red Sea port of Hudaydah. It said this was partly because it had not received security guarantees. The port has also been targeted by warplanes from a Saudi-led coalition which is backing Yemen's government in its war with the rebel Houthi movement. UN attempts to bring in five cranes to replace those damaged in the attacks have not been successful. The ICRC's Middle East regional director Robert Mardini warned that Yemen, which depends on imports for 90% of its food supplies, was now living on its “reserves” and that the “day will come very soon” when they run out. He said that despite the focus on the damage and casualties caused by the fighting, thousands of people were dying “silently” of complications due to malnutrition, or of minor illnesses or injuries which were not being treated at the 45% of health facilities that are still functioning. The conflict, which escalated in March 2015, has left at least 7,500 people dead and 40,000 injured, according to the United Nations. But almost 19 million people are in need of some form of humanitarian assistance. Seven million people do not know where their next meal is coming from and more than three million, including 2.1 million children, are suffering from acute malnutrition. The UN's emergency relief co-ordinator, Stephen O'Brien, called on the warring parties to guarantee more access to ports to let in food, fuel and medicine imports on Monday. He told the BBC the situation was “very desperate”, and that he had seen children so “severely malnourished” that he feared they would not survive another day. Earlier this month, the UN appealed for $2.1bn (£1.7bn) to provide life-saving assistance to 12 million people in Yemen over the next year. But it has so far received only $43m. On Tuesday, Mr O'Brien was forced to cancel a visit to the city of Taiz, which is besieged by rebel fighters, reportedly after his convoy came under fire. In a separate development on Tuesday, UN human rights officials said they had evidence of the recruitment of child soldiers in Yemen, mostly by groups affiliated with the Houthis. In all, the UN managed to verify the recruitment of 1,476 children, all boys, between March 2015 and the end of January 2017. However, it said the numbers were likely to be much higher.", "summary": "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.", "spans": ["Millions"], "revision": "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.", "revision_grammar": "", "worked": [{"span": "Millions", "act": "not", "why": "The source puts it in the millions several times over: “Seven million people do not know where their next meal is coming from”, and “more than three million, including 2.1 million children, are suffering from acute malnutrition.”"}], "teach": {"title": "A marked statement can be supported — then you change nothing", "note": "Spans are marked by a previous annotator, and a previous annotator can be wrong. When a marked statement is actually supported, choose “Not a hallucination” and change nothing in it. If more than the span is part of the hallucination, or only a part of it is, copy the true hallucinated statement into Span adjustment and revise that part according to the guidelines.", "ladder": [{"q": "How many people in Yemen are at risk of starving?", "status": "settled", "src": "Answered by both, at the same level. The source puts it in the millions several times over: “almost 19 million people are in need of some form of humanitarian assistance”, “Seven million people do not know where their next meal is coming from”, “more than three million, including 2.1 million children, are suffering from acute malnutrition.” “Millions” is entailed, so the marked word is already faithful."}, {"q": "Exactly how many — seven million? three million?", "status": "available", "src": "The source would answer this, but the statement only claimed “millions”, and we do not need to touch a statement the source already supports."}], "op": "Not hallucinated — left as is", "traps": [{"t": "“Thousands of people in war-torn Yemen…”", "w": "This is what an annotator of a previous dataset wrote, reading “thousands of people were dying silently” as the answer. That sentence answers a different question — how many are dying of malnutrition complications and untreated illness — not how many are at risk of starving."}, {"t": "“Seven million people in war-torn Yemen…”", "severity": "partial", "w": "True and supported, but more specific than the claim. The original summary was already supported by the source."}, {"t": "Deleting “Millions”", "w": "Discards a quantity the source supports."}]}}, {"id": "p6", "source": "The scandal, known as “uranium-gate”, resulted from a 2011 transaction between French nuclear giant Areva and companies both in Niger and abroad. There is also a French investigation into some of Areva's business dealings, with aspects related to this deal. Areva has not commented on the legal case in Niger, but says it is cooperating in the French enquiry. Niger is one of the biggest uranium producers in the world and the metal is the country's largest export. Many people turned up on Friday morning outside the court in the capital, Niamey, as representatives of civil society movements arrived to register the court action, the BBC's Himadou Hamadou said. Their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud. The legal action centres on the allegation that Areva in 2011 bought a stock of uranium from Niger at a discounted price. Niger has two significant uranium mines that provides 7.5% of the world mining output from Africa's highest-grade uranium ores, according to the World Nuclear Association, the international organisation that represents the global nuclear industry. Niger's first commercial uranium mine began operating in 1971, with a strong government support for expanding uranium mining.", "summary": "A court in Niger has opened a criminal investigation into alleged corruption in the country's uranium industry.", "spans": ["opened", "investigation into"], "revision": "A court in Niger has received a criminal complaint about alleged corruption in the country's uranium industry.", "revision_grammar": "", "worked": [{"span": "opened", "act": "replace", "h": "A court in Niger has opened a criminal investigation.", "q": "What happened at the court in Niger?", "r": "A court in Niger has received a criminal complaint.", "rep": "received", "attr": "arrived to register the court action"}, {"span": "investigation into", "act": "replace", "h": "A court in Niger has opened a criminal investigation into alleged corruption.", "q": "What happened at the court in Niger?", "r": "A court in Niger has received a criminal complaint about alleged corruption.", "rep": "complaint about", "attr": "Their complaint alleges embezzlement of public funds"}], "teach": {"title": "Two marked statements, one claim", "note": "These two spans are not independent. “Opened” and “investigation into” combine into a single claim about what stage the case has reached, so both have to be repaired before the claim is faithful. Here one final question covers both, and neither span answers it on its own: “received” and “complaint about” answer it together, read as a single phrase. That is not the rule. In many summaries each marked statement makes a claim of its own and deserves its own question, so ask whether two spans really stand or fall together before you treat them as one.", "ladder": [{"q": "What was opened by the court in Niger?", "status": "rejected", "src": "Nothing in the source says the court opened anything. The only investigation it mentions is a separate French one into Areva's business dealings."}, {"q": "What did the court in Niger do about the criminal investigation?", "status": "rejected", "src": "Still not answerable, because the premise is wrong: there is no criminal investigation in Niger in this source. What it describes is a filing."}, {"q": "What happened at the court in Niger?", "status": "settled", "src": "Answered by both. Representatives of civil society movements “arrived to register the court action”, and “their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud.” The court has been presented with a complaint."}], "op": "Replace, both spans", "traps": [{"t": "“A court in Niger has received a criminal investigation into…”", "severity": "partial", "w": "Fixing one span and leaving the other. “Investigation” is still unsupported — what the source describes is a complaint being registered — so the revision keeps a hallucination. A half-repair is not a smaller edit; it is an unfaithful one."}, {"t": "“A court in Niger has opened a criminal investigation…” (keeping it)", "w": "The source attributes an investigation only to the French authorities, and only into Areva's business dealings."}]}}];
-var INTRO_HTML = "<div class=\"intro\">\n<h2>Six practice examples<\/h2>\n<p>These six examples are practice: you answer, submit, and are then shown a worked solution\n   &mdash; the sequence of questions that reaches it, and several mistakes that are easy to\n   make. Your answers here are not sent to us. Work as you would on real data, because the\n   round that follows has no worked solutions.<\/p>\n<p>This is the same tool you will use in the qualification round. Each marked statement gets\n   one card. Choose <b>Replace<\/b>, <b>Delete<\/b> or <b>Not a hallucination<\/b>, and the fields\n   follow your choice. A replace asks for <b>H<\/b>, the hallucinated statement as a complete\n   sentence; the <b>final question<\/b> that both the source and the hallucinated statement\n   answer; <b>R<\/b>, the source&rsquo;s answer as a complete sentence; the <b>replacement<\/b>,\n   the part of R that takes the place of the marked span; and the <b>source attribution<\/b> it\n   comes from or is implied by. A deletion asks for H and an <b>explanation<\/b> of which questions were not\n   answerable, and why deletion was chosen. Not a hallucination asks why the statement is\n   faithful.<\/p>\n<p>If a mark covers more or fewer words than the true hallucinated statement, use\n   <b>Adjust span<\/b>. If it holds several hallucinated details, use <b>Split span<\/b>.<\/p>\n<p>The <b>revision<\/b> is written once for the whole summary, with every span correction\n   applied. It is filled in for you as you answer, and you can edit it. Grammar fixes are made\n   after the factual revision, in their own box.<\/p>\n<p>Five of these six have one marked statement; the sixth has two that must be repaired. Three\n   of the six are harder than they look, and on one of them the right answer is to change\n   nothing.<\/p>\n<p>The revision procedure and the full guidelines are at the top of the page whenever you want\n   them.<\/p>\n<p style=\"margin:16px 0 0\"><button type=\"button\" class=\"cta\" id=\"begin\">Begin<\/button><\/p>\n<\/div>";
+var CFG = {"storeKey": "demo-v7", "version": "demo-v7", "endpoint": "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", "nextPage": "annotate.html", "guidelines": "guidelines.html", "noun": "example", "introCount": "practice round", "doneCount": "practice complete"};
+var ITEMS = [{"id": "p1", "source": "British Army soldiers were deployed to support flood relief efforts across the region on Wednesday. A Ministry of Defence spokesperson confirmed troops from the Mercian Regiment arrived to help with sandbagging and evacuations, working alongside local emergency services throughout the week.", "summary": "Soldiers from the Yorkshire Regiment have been deployed to help with flood relief.", "spans": ["the Yorkshire Regiment"], "revision": "Soldiers from the Mercian Regiment have been deployed to help with flood relief.", "revision_grammar": "", "worked": [{"span": "the Yorkshire Regiment", "act": "replace", "h": "Soldiers from the Yorkshire Regiment have been deployed to help with flood relief.", "q": "Which regiment were the soldiers from?", "r": "The soldiers were from the Mercian Regiment.", "rep": "the Mercian Regiment", "attr": "troops from the Mercian Regiment"}], "teach": {"title": "Do not stop at the first question the source and the summary both answer — match the marked statement's own level of detail", "note": "The coarser question here genuinely works. But “the Yorkshire Regiment” names a regiment, not merely an army, and the source can answer at that level too, so settling for “the British Army” gives up precision the source supports.", "ladder": [{"q": "Which armed force were the soldiers from?", "status": "surpassed", "src": "Both answer this. “The Yorkshire Regiment” entails the British Army — a regiment is part of an army — and the source says it outright: “British Army soldiers were deployed.” So “the British Army” would fill the slot. The claim named a regiment, though, so try the finer question before settling here."}, {"q": "Which regiment were the soldiers from?", "status": "settled", "src": "Answered by both, at the level the claim attempted: “troops from the Mercian Regiment.”"}], "op": "Replace", "traps": [{"t": "“Soldiers from the British Army have been deployed…”", "severity": "partial", "w": "True, and the source supports it — but the claim named a particular regiment and the source names the actual one. Stopping here gives up specificity the source can match."}, {"t": "“Soldiers from the Yorkshire Regiment…” (keeping it)", "w": "Not stated in the source. The regiment this article names is the Mercian Regiment."}, {"t": "Deleting the regiment — “Soldiers have been deployed to help with flood relief.”", "w": "More than the fix needs: the source names a regiment, so a faithful replacement exists."}]}}, {"id": "p2", "source": "A £100,000 reward is on offer for information leading to the conviction of the killers of 14-year-old Charlene Downes or the recovery of her body. An appeal will be made on the big screen and inside programmes during the team's match against Brighton at Bloomfield Road on Saturday. Charlene disappeared near Blackpool's North Pier on 1 November 2003. Police believe she was one of a number of girls who were groomed for sex. Lancashire Police and Crime Commissioner Clive Grunshaw said: “Someone out there knows something about what happened to Charlene. ”Detectives believe the answer lies in Blackpool - and it could lie at Bloomfield Road on Saturday.“ Det Supt Andy Webster said: ”We have never given up our search for information about Charlene, who we believe was murdered more than a decade ago. “We appreciate that a considerable amount of time has passed since Charlene went missing, but we would still encourage anyone with information at all to come forward and speak to us.” In 2008, a judge ordered a man to be cleared of Charlene's murder, after “grave doubts” were raised around evidence during his second trial. The jury in his first trial failed to reach a verdict. The following year, the Independent Police Complaints Commission (IPCC) said police errors in gathering evidence had contributed to the collapse of the retrial. The IPCC investigation concluded the investigating team was guilty of a strategic and tactical failure in the management of the material and several officers were disciplined, with one being forced to resign in 2011. The resignation order was overturned by a Police Arbitration Tribunal in 2012.", "summary": "A fresh appeal for information about the murder of a teenage girl in Blackpool 10 years ago is to be made at the town's football ground.", "spans": ["10"], "revision": "A fresh appeal for information about the murder of a teenage girl in Blackpool more than 10 years ago is to be made at the town's football ground.", "revision_grammar": "", "worked": [{"span": "10", "act": "replace", "h": "The girl was murdered 10 years ago.", "q": "How long ago was the girl murdered?", "r": "The girl was murdered more than 10 years ago.", "rep": "more than 10", "attr": "who we believe was murdered more than a decade ago"}], "teach": {"title": "The source cannot answer at the claim's level, but it does answer — generalise, do not delete", "note": "A number in the summary does not mean the source has a number. Here the source gives a bound — police believe she was “murdered more than a decade ago” — and that is the most specific thing it supports about how long ago. Writing “more than a decade ago” instead is the source's own wording, is semantically the same, and is equally accepted.", "ladder": [{"q": "Exactly how many years ago was the girl murdered?", "status": "rejected", "src": "Not answerable. The source gives one date — she disappeared on 1 November 2003 — but we cannot know when the article was written, so the elapsed time cannot be worked out from it."}, {"q": "How long ago was the girl murdered?", "status": "settled", "src": "Answered by both. Two answers fit the source: “some years ago” and “more than a decade ago”. Take the more specific of the two, which is also the one closer to what the summary claimed: Det Supt Webster says she was “murdered more than a decade ago”."}], "op": "Replace", "traps": [{"t": "“…in Blackpool years ago…” (deleting the span)", "severity": "partial", "w": "This is what an annotator of a previous dataset wrote. It is faithful, and still suboptimal for this task. The summary claimed a definite number of years, so we stay as close to that level as the source allows: “more than 10 years ago” is a bound the source states in its own words, and it is more specific than a bare “years ago”. The bound is worth keeping precisely because the summary was specific."}, {"t": "“…in Blackpool in 2003…”", "severity": "partial", "w": "Uses a real date from the source and answers a “when” question — but 1 November 2003 is when Charlene disappeared, and the source says only that she was murdered more than a decade ago. Close, and still a different claim from the one the source makes."}]}}, {"id": "p3", "source": "Solly Msimanga, from the opposition Democratic Alliance (DA), said the vehicles would instead be given to a police anti-hijack unit. However, he will continue to use the luxury car used by the previous mayor. The DA took control of Tshwane, a metropolitan area including the capital Pretoria, from the African National Congress (ANC) in local elections. Mr Msimanga said no more luxury cars would be bought under his leadership. He took over from the governing ANC, which lost control of the capital for the first time since 1994, last month. More on this and other African stories . Four things from South Africa election . The ANC bought 10 new BMW 3 series vehicles, which are yet to be delivered, for 5 million rand ($356,000; £266,000), local reports say. The cars were meant for members of the mayoral council, with the ANC said to be confident it would retain control of the municipality in the elections. He will still use a BMW 5 series car he inherited from the previous mayor, reports the IOL website. Mr Msimanga's spokesman Matthew Gerstner told the BBC that this vehicle could not “be dispensed with because it's been bought and paid for already and treasury regulations prohibit that”. He added: “But, as soon as he can replace it, he will, with a sensible, low-cost vehicle”. Mr Msimango says the DA-led coalition government wanted to embark on cost-cutting measures. He said in a statement: “No new luxury cars will be bought or leased for politicians, and if vehicles currently owned by Tshwane require replacement, sensible and low-cost vehicles will be procured. I will not allow public money to be spent on luxury cars, while our people struggle for services, houses and jobs. A Hyundai i20 or Toyota Corolla can do the same job for a politician as an expensive sedan.” The ANC national government has been criticised for wasteful expenditure, so South Africans will be closely watching what the opposition do differently in the key urban areas they won in the August elections, says the BBC's Pumza Fihlani in Johannesburg. South Africans will be keen to see if the opposition, which has until now only run one province, will be able to make good on its ambitious election promises, our correspondent says.", "summary": "The new mayor of South Africa's capital, Tshwane, says he will stop using 10 new BMW cars bought by the governing party.", "spans": ["stop using"], "revision": "The new mayor of South Africa's capital, Tshwane, says he will not use 10 new BMW cars bought by the governing party.", "revision_grammar": "", "worked": [{"span": "stop using", "act": "replace", "h": "The mayor says he will stop using 10 new BMW cars.", "q": "What will the mayor do about his own use of the 10 new BMW cars?", "r": "The mayor will not use the 10 new BMW cars.", "rep": "not use", "attr": "the vehicles would instead be given to a police anti-hijack unit"}], "teach": {"title": "The presupposition fails, and the source states the reverse — replace, do not delete", "note": "“Stop using” assumes he has been using the cars, and the source says they are “yet to be delivered”. But the source is not silent about whether he will use them, and silence and contradiction call for different operations: a source that states the reverse is still answering the question.", "ladder": [{"q": "When will the mayor stop using the 10 new BMW cars?", "status": "rejected", "src": "This keeps an assumption the source does not support — that he has been using them. The cars are “yet to be delivered”, and he “will continue to use the luxury car used by the previous mayor.”"}, {"q": "What will the mayor do with the 10 new BMW cars?", "status": "available", "src": "The source does answer this: the vehicles “would instead be given to a police anti-hijack unit”. The answer is real and it is in the source — it is simply a more specific answer than the summary's own. The summary said he would stop using the cars, so the level to match is his own use of them, not what becomes of them."}, {"q": "What will the mayor do about his own use of the 10 new BMW cars?", "status": "settled", "src": "Answered by both, at the claim's own level, and the answer drops straight into the slot: he will not use them. The cars are going to a police unit instead, and he will keep the car he inherited. What you write into the revision is the answer to your question, so a question answerable with yes or no is no use here — “Will the mayor use the cars?” leaves you nothing to insert."}], "op": "Replace", "traps": [{"t": "“…says he will give 10 new BMW cars to a police anti-hijack unit.”", "severity": "partial", "w": "True, and in the source — but it answers at a level of detail the summary never attempted, and it is a much larger edit than the fix needs."}, {"t": "“…says he will not buy 10 new BMW cars bought by the governing party.”", "w": "The source's line about buying is about future luxury cars in general. These ten were already bought by the ANC, so this answers a different question."}]}}, {"id": "p4", "source": "Media playback is not supported on this device . A statement from F1's governing body the FIA said the man gained “unauthorised access” to the circuit. The FIA said: “We are awaiting a full report from the clerk of the course in order to determine the circumstances surrounding this incident.” Race winner Sebastian Vettel said: “Fortunately nothing happened to us or him. It's not what you want to see.” It is the second time this year someone has gained access to a track during a grand prix weekend, with a spectator running across the circuit during practice at the Chinese Grand Prix in April. Media playback is not supported on this device . It is also the third time in recent history that a track invader has disrupted a grand prix. In 2003, a man wearing a kilt ran across the track during the British Grand Prix. And a disaffected former Mercedes employee invaded the track during the 2000 race in Germany. Vettel, who drives for Ferrari, made a joke about this incident, which has been reported to involve an English tourist. “When I was watching F1 there was a scene in Hockenheim and then a couple of years later in Silverstone,” he said. “This guy was fairly boring. He could have dressed a little funny or something. Now we are joking about it, but it is fairly serious.” Red Bull's Daniel Ricciardo, who finished second, added: “He was on his phone taking pictures, probably for Instagram or something. I hope he got some more followers because it's got to be worth a night in prison.”", "summary": "A man ran on to the track during the Austrian Grand Prix.", "spans": ["Austrian"], "revision": "A man ran on to the track during the Grand Prix.", "revision_grammar": "A man ran on to the track during a Grand Prix.", "grammar_note": "Step 1 deletes “Austrian”, and that is the factual fix. It leaves “the Grand Prix”, which now points to one particular race the reader cannot identify. Changing “the” to “a” repairs that. It is part of the revision too, but it is a grammar repair, so it goes in the grammar box, after the revision box.", "worked": [{"span": "Austrian", "act": "delete", "h": "A man ran on to the track during the Austrian Grand Prix.", "expl": "“Which Grand Prix did the man run on to the track during?” and “In which country was the race held?” are both unanswerable: the source never names this race, and the races it does name are separate incidents. No question about “Austrian” has an answer the source supports, so there is nothing to insert."}], "teach": {"title": "No question reaches the claim — delete, and let the grammar pass tidy what is left", "note": "We try to find which Grand Prix it was, and the source will not tell us — not the race, not the country. No question about the marked word gets a meaningful answer out of the source, so there is nothing to put in the slot. Once “Austrian” is gone, “the Grand Prix” reads better as “a Grand Prix”: that is the grammar pass, written after the revision.", "ladder": [{"q": "Which Grand Prix did the man run on to the track during?", "status": "rejected", "src": "Not answerable about this incident. The source names three others — the Chinese Grand Prix in April, the British Grand Prix in 2003, Germany in 2000 — and marks each as a separate event: this is “the second time this year” and “the third time in recent history”. The race being reported is never named."}, {"q": "In which country was the race held?", "status": "rejected", "src": "Also not answerable. Silverstone and Hockenheim appear only inside Vettel's recollection of past incidents, and the tourist being English says nothing about where this race was held."}], "close": "No question we can ask about “Austrian” has an answer the source supports, so there is nothing to insert and we delete the marked word.", "op": "Delete", "traps": [{"t": "“…during the British Grand Prix.”", "severity": "partial", "w": "This is what a past annotator wrote. “British Grand Prix” is in the source — but it belongs to the 2003 incident, a different man in a kilt."}, {"t": "“…during the Chinese Grand Prix.”", "w": "The same error, and the source rules it out explicitly: that was the first of the two this year, during practice, and this is the second."}, {"t": "“…during the Austrian Grand Prix.” (keeping it)", "w": "Not in the source at any point."}]}}, {"id": "p5", "source": "The International Committee of the Red Cross (ICRC) has had to halt deliveries to the Red Sea port of Hudaydah. It said this was partly because it had not received security guarantees. The port has also been targeted by warplanes from a Saudi-led coalition which is backing Yemen's government in its war with the rebel Houthi movement. UN attempts to bring in five cranes to replace those damaged in the attacks have not been successful. The ICRC's Middle East regional director Robert Mardini warned that Yemen, which depends on imports for 90% of its food supplies, was now living on its “reserves” and that the “day will come very soon” when they run out. He said that despite the focus on the damage and casualties caused by the fighting, thousands of people were dying “silently” of complications due to malnutrition, or of minor illnesses or injuries which were not being treated at the 45% of health facilities that are still functioning. The conflict, which escalated in March 2015, has left at least 7,500 people dead and 40,000 injured, according to the United Nations. But almost 19 million people are in need of some form of humanitarian assistance. Seven million people do not know where their next meal is coming from and more than three million, including 2.1 million children, are suffering from acute malnutrition. The UN's emergency relief co-ordinator, Stephen O'Brien, called on the warring parties to guarantee more access to ports to let in food, fuel and medicine imports on Monday. He told the BBC the situation was “very desperate”, and that he had seen children so “severely malnourished” that he feared they would not survive another day. Earlier this month, the UN appealed for $2.1bn (£1.7bn) to provide life-saving assistance to 12 million people in Yemen over the next year. But it has so far received only $43m. On Tuesday, Mr O'Brien was forced to cancel a visit to the city of Taiz, which is besieged by rebel fighters, reportedly after his convoy came under fire. In a separate development on Tuesday, UN human rights officials said they had evidence of the recruitment of child soldiers in Yemen, mostly by groups affiliated with the Houthis. In all, the UN managed to verify the recruitment of 1,476 children, all boys, between March 2015 and the end of January 2017. However, it said the numbers were likely to be much higher.", "summary": "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.", "spans": ["Millions"], "revision": "Millions of people in war-torn Yemen are at risk of starving to death, the Red Cross has warned.", "revision_grammar": "", "worked": [{"span": "Millions", "act": "not", "why": "The source puts it in the millions several times over: “Seven million people do not know where their next meal is coming from”, and “more than three million, including 2.1 million children, are suffering from acute malnutrition.”"}], "teach": {"title": "A marked statement can be supported — then you change nothing", "note": "Spans are marked by a previous annotator, and a previous annotator can be wrong. When a marked statement is actually supported, choose “Not a hallucination” and change nothing in it. If more than the span is part of the hallucination, or only a part of it is, copy the true hallucinated statement into Span adjustment and revise that part according to the guidelines.", "ladder": [{"q": "How many people in Yemen are at risk of starving?", "status": "settled", "src": "Answered by both, at the same level. The source puts it in the millions several times over: “almost 19 million people are in need of some form of humanitarian assistance”, “Seven million people do not know where their next meal is coming from”, “more than three million, including 2.1 million children, are suffering from acute malnutrition.” “Millions” is entailed, so the marked word is already faithful."}, {"q": "Exactly how many — seven million? three million?", "status": "available", "src": "The source would answer this, but the statement only claimed “millions”, and we do not need to touch a statement the source already supports."}], "op": "Not hallucinated — left as is", "traps": [{"t": "“Thousands of people in war-torn Yemen…”", "w": "This is what an annotator of a previous dataset wrote, reading “thousands of people were dying silently” as the answer. That sentence answers a different question — how many are dying of malnutrition complications and untreated illness — not how many are at risk of starving."}, {"t": "“Seven million people in war-torn Yemen…”", "severity": "partial", "w": "True and supported, but more specific than the claim. The original summary was already supported by the source."}, {"t": "Deleting “Millions”", "w": "Discards a quantity the source supports."}]}}, {"id": "p6", "source": "The scandal, known as “uranium-gate”, resulted from a 2011 transaction between French nuclear giant Areva and companies both in Niger and abroad. There is also a French investigation into some of Areva's business dealings, with aspects related to this deal. Areva has not commented on the legal case in Niger, but says it is cooperating in the French enquiry. Niger is one of the biggest uranium producers in the world and the metal is the country's largest export. Many people turned up on Friday morning outside the court in the capital, Niamey, as representatives of civil society movements arrived to register the court action, the BBC's Himadou Hamadou said. Their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud. The legal action centres on the allegation that Areva in 2011 bought a stock of uranium from Niger at a discounted price. Niger has two significant uranium mines that provides 7.5% of the world mining output from Africa's highest-grade uranium ores, according to the World Nuclear Association, the international organisation that represents the global nuclear industry. Niger's first commercial uranium mine began operating in 1971, with a strong government support for expanding uranium mining.", "summary": "A court in Niger has opened a criminal investigation into alleged corruption in the country's uranium industry.", "spans": ["opened", "investigation into"], "revision": "A court in Niger has received a criminal complaint about alleged corruption in the country's uranium industry.", "revision_grammar": "", "worked": [{"span": "opened", "act": "replace", "h": "A court in Niger has opened a criminal investigation.", "q": "What happened at the court in Niger?", "r": "A court in Niger has received a criminal complaint.", "rep": "received", "attr": "arrived to register the court action"}, {"span": "investigation into", "act": "replace", "h": "A court in Niger has opened a criminal investigation into alleged corruption.", "q": "What happened at the court in Niger?", "r": "A court in Niger has received a criminal complaint about alleged corruption.", "rep": "complaint about", "attr": "Their complaint alleges embezzlement of public funds"}], "teach": {"title": "Two marked statements, one claim", "note": "These two spans are not independent. “Opened” and “investigation into” combine into a single claim about what stage the case has reached, so both have to be repaired before the claim is faithful. Here one final question covers both, and neither span answers it on its own: “received” and “complaint about” answer it together, read as a single phrase. That is not the rule. In many summaries each marked statement makes a claim of its own and deserves its own question, so ask whether two spans really stand or fall together before you treat them as one.", "ladder": [{"q": "What was opened by the court in Niger?", "status": "rejected", "src": "Nothing in the source says the court opened anything. The only investigation it mentions is a separate French one into Areva's business dealings."}, {"q": "What did the court in Niger do about the criminal investigation?", "status": "rejected", "src": "Still not answerable, because the premise is wrong: there is no criminal investigation in Niger in this source. What it describes is a filing."}, {"q": "What happened at the court in Niger?", "status": "settled", "src": "Answered by both. Representatives of civil society movements “arrived to register the court action”, and “their complaint alleges embezzlement of public funds, money laundering, forgery and conspiracy to defraud.” The court has been presented with a complaint."}], "op": "Replace, both spans", "traps": [{"t": "“A court in Niger has received a criminal investigation into…”", "severity": "partial", "w": "Fixing one span and leaving the other. “Investigation” is still unsupported — what the source describes is a complaint being registered — so the revision keeps a hallucination. A half-repair is not a smaller edit; it is an unfaithful one."}, {"t": "“A court in Niger has opened a criminal investigation…” (keeping it)", "w": "The source attributes an investigation only to the French authorities, and only into Areva's business dealings."}]}}];
+var INTRO_HTML = "<div class=\"intro\">\n<h2>Six practice examples<\/h2>\n<p>These six examples are practice: you answer, submit, and are then shown a worked solution\n   &mdash; the sequence of questions that reaches it, and several mistakes that are easy to\n   make. Your practice answers are saved so that we can improve the training, but they are\n   not scored. Work as you would on real data, because the round that follows has no worked\n   solutions.<\/p>\n<p>This is the same tool you will use in the qualification round. Each marked statement gets\n   one card. Choose <b>Replace<\/b>, <b>Delete<\/b> or <b>Not a hallucination<\/b>, and the fields\n   follow your choice. A replace asks for the <b>final question<\/b> that both the source and\n   the hallucinated statement answer; the <b>replacement<\/b>, the part of the source&rsquo;s\n   answer that takes the place of the marked span; and the <b>source attribution<\/b> it comes\n   from or is implied by. A deletion asks for an <b>explanation<\/b> of which questions were not\n   answerable, and why deletion was chosen. Not a hallucination asks why the statement is\n   faithful.<\/p>\n<p>If a mark covers more or fewer words than the true hallucinated statement, use\n   <b>Adjust span<\/b>. If it holds several hallucinated details, use <b>Split span<\/b>.<\/p>\n<p>The revision is written once for the whole summary, in two steps. The <b>revision<\/b> box\n   fills itself in from your answers: that is the factual fix. Your edits are then marked\n   below it. Read each one, and repair in the <b>grammar box<\/b> anything an edit broke, such\n   as a stray word, or a &ldquo;the&rdquo; that should now be &ldquo;a&rdquo;. Then tick the\n   box under it to confirm you checked.<\/p>\n<p>Five of these six have one marked statement; the sixth has two that must be repaired. Three\n   of the six are harder than they look, and on one of them the right answer is to change\n   nothing.<\/p>\n<p>The revision procedure and the full guidelines are at the top of the page whenever you want\n   them.<\/p>\n<p style=\"margin:16px 0 0\"><button type=\"button\" class=\"cta\" id=\"begin\">Begin<\/button><\/p>\n<\/div>";
 
 var TAG = {settled: "RIGHT SPECIFICITY", rejected: "NOT ANSWERABLE",
            surpassed: "TOO COARSE", available: "TOO SPECIFIC"};
 var ACT = {replace: "Replace", delete: "Delete", not: "Not a hallucination"};
-var LABEL = {h: "H", q: "Final question", r: "R", rep: "Replacement",
+var LABEL = {q: "Final question", rep: "Replacement",
              attr: "Source attribution", expl: "Explanation", why: "Why it is faithful"};
 
 function kv(esc, label, value) {
   return value ? '<span class="k">' + label + "</span>" + esc(value) : "";
 }
+// H and R are no longer fields (6 Nov), so the solutions do not show them either: the
+// screen after an answer should match the screen the answer was given on.
 function fieldsOf(esc, o) {
-  return ["h", "q", "r", "rep", "attr", "expl", "why"].map(function (f) {
+  return ["q", "rep", "attr", "expl", "why"].map(function (f) {
     return kv(esc, LABEL[f], o[f]);
   }).join("");
 }
@@ -300,15 +321,16 @@ function fieldsOf(esc, o) {
 function teach(api, item, cur) {
   var esc = api.esc, t = item.teach;
   var h = '<div id="teach"><div class="yours"><p class="cap">Your answer</p>'
-    + kv(esc, "Revision", cur.rev)
-    + (cur.gram.trim() !== cur.rev.trim() ? kv(esc, "After grammar fixes", cur.gram) : "");
+    + kv(esc, "Revision box", cur.rev)
+    + kv(esc, "Grammar box", cur.gram.trim() !== cur.rev.trim() ? cur.gram
+                                                               : "(left as the revision)");
   cur.spans.forEach(function (s) {
     h += '<div class="worked"><span class="k">&ldquo;' + esc(api.spanText(item, s))
       + "&rdquo; &mdash; " + esc(ACT[s.act] || "") + "</span>";
     if (s.act === "replace") {
-      h += fieldsOf(esc, {h: s.h, q: s.q, r: s.r, rep: s.rep, attr: s.attr});
+      h += fieldsOf(esc, {q: s.q, rep: s.rep, attr: s.attr});
     } else if (s.act === "delete") {
-      h += fieldsOf(esc, {h: s.h, expl: s.expl});
+      h += fieldsOf(esc, {expl: s.expl});
     } else {
       h += fieldsOf(esc, {why: s.why});
     }
@@ -316,14 +338,21 @@ function teach(api, item, cur) {
   });
   h += "</div>";
 
+  // The revision in its two steps, every time, so the grammar pass reads as a step of the
+  // task and not as an extra that one example happens to have (Shachar, 6 Nov: in the pilot
+  // nobody opened the grammar box, on this example or any other).
   var changed = item.revision !== item.summary;
   h += '<p class="cap">Correct solution example</p><div class="ans">'
-    + '<span class="k">Revision</span>'
+    + '<span class="k">Step 1 &middot; Revision box &mdash; the factual fix</span>'
     + api.diffHtml(api.wordDiff(item.summary, item.revision))
+    + '<span class="k">Step 2 &middot; Grammar box &mdash; repair what the edit broke</span>'
     + (item.revision_grammar
-        ? '<span class="k">After grammar fixes</span>'
-          + api.diffHtml(api.wordDiff(item.revision, item.revision_grammar))
-        : "")
+        ? api.diffHtml(api.wordDiff(item.revision, item.revision_grammar))
+          + (item.grammar_note ? '<p class="note" style="margin:6px 0 0">'
+                                 + esc(item.grammar_note) + "</p>" : "")
+        : esc(changed ? "Nothing to repair here: after the edit the sentence still reads "
+                        + "correctly, so the grammar box stays as the revision."
+                      : "Nothing to repair: the text is unchanged."))
     + '<span class="k">Operation</span>' + esc(t.op);
   item.worked.forEach(function (w) {
     h += '<div class="worked"><span class="k">&ldquo;' + esc(w.span) + "&rdquo; &mdash; "
@@ -373,6 +402,9 @@ function report(api, partial) {
     guidelines_opens: each(function (x) { return x.help.guidelines.opens; }),
     guidelines_s: each(function (x) { return sec(x.help.guidelines.ms); }),
     field_ms: each(function (x) { return api.fieldTimes(x); }),
+    away_s: each(function (x) { return sec(x.awayMs); }),
+    intro_away_s: sec(st.introAwayMs),
+    answers: st.items.map(function (x, i) { return api.logOf(ITEMS[i], x); }),
     intro_help: {procedure_opens: st.introHelp.procedure.opens,
                  procedure_s: sec(st.introHelp.procedure.ms),
                  guidelines_opens: st.introHelp.guidelines.opens,
@@ -446,7 +478,7 @@ window.TOOL_HOOKS = {
   }
   function blankSpan(sid, start, end) {
     return {sid: sid, start: start, end: end, baseStart: start, baseEnd: end, adj: "",
-            adjOpen: false, adjBad: false, splitOpen: false, act: "", h: "", q: "", r: "",
+            adjOpen: false, adjBad: false, splitOpen: false, act: "", q: "",
             rep: "", attr: "", expl: "", why: "", from: null, parent: null};
   }
   function blankHelp() {
@@ -460,8 +492,16 @@ window.TOOL_HOOKS = {
       }),
       rev: "", revTouched: false, revBase: "", gram: "", gramTouched: false, gramBase: "",
       lost: "", ms: 0, review_ms: 0, visits: 0, pastes: {}, keys: 0, done: false, note: "",
-      help: blankHelp(), fieldMs: {}
+      help: blankHelp(), fieldMs: {}, awayMs: 0, awayN: 0, pasteFrom: {}, pasteOutside: 0,
+      gramOk: false, gramOkRev: "", gramOkStale: false, warnKinds: [], warnedFor: "",
+      warnOverride: false
     };
+  }
+  // Anything a saved state from an earlier version of this page lacks.
+  function upgrade(x) {
+    var d = {fieldMs: {}, awayMs: 0, awayN: 0, pasteFrom: {}, pasteOutside: 0, gramOk: false,
+             gramOkRev: "", gramOkStale: false, warnKinds: [], warnedFor: "", warnOverride: false};
+    Object.keys(d).forEach(function (k) { if (x[k] === undefined) x[k] = d[k]; });
   }
   function spanText(item, s) { return item.summary.slice(s.start, s.end); }
 
@@ -473,7 +513,8 @@ window.TOOL_HOOKS = {
           introHelp: blankHelp(), items: ITEMS.map(freshItem)};
   }
   // Someone part-way through when this was added has a saved state without it.
-  st.items.forEach(function (x) { if (!x.fieldMs) x.fieldMs = {}; });
+  st.items.forEach(upgrade);
+  if (st.introAwayMs === undefined) st.introAwayMs = 0;
   // Two tabs on one id used to overwrite each other, last save winning: with a forgotten tab
   // open, closing the working tab first put the participant back on item 1 with their answers
   // gone (reproduced 5 Nov, after a stray row in a tester's run). The saved copy now carries a
@@ -568,7 +609,24 @@ window.TOOL_HOOKS = {
     return o;
   }
 
+  // Time with the tab hidden, per item, and how many times it was left. The answer clock
+  // already stops while hidden, so this is the other half: in the pilot one annotator spent
+  // about half their item time away from the tab, and that had to be rebuilt from the
+  // sheet's timestamps. Another window over a visible tab does not hide it, so is not counted.
+  var awayAt = null, awaySince = 0;
+  function awayStart() {
+    if (st.finished || stale) return;
+    awayAt = st.at; awaySince = Date.now();
+  }
+  function awayEnd() {
+    if (!awaySince) return;
+    var ms = Date.now() - awaySince, c = awayAt >= 0 ? st.items[awayAt] : null;
+    if (c) { c.awayMs += ms; c.awayN += 1; } else { st.introAwayMs += ms; }
+    awaySince = 0; awayAt = null;
+    save();
+  }
   document.addEventListener("visibilitychange", function () {
+    if (document.hidden) awayStart(); else awayEnd();
     if (document.hidden) {
       fieldTick(); fieldSince = 0;
     } else if (fieldNow) {
@@ -686,6 +744,121 @@ window.TOOL_HOOKS = {
   }
   function diffChanged(ops) { return ops.some(function (o) { return o.k !== "="; }); }
 
+  // Only the sentences an edit touched, each diffed on its own. A grammar slip sits where an
+  // edit meets the text, and in a five-sentence summary the whole-text box buries it: in the
+  // pilot "the ship, which." went unrepaired by two of five, and nobody opened the box.
+  function sentencesOf(t) {
+    return (String(t).match(/[^.!?]*(?:[.!?]+["”’)\]]*|$)\s*/g) || [])
+      .filter(function (x) { return x.trim(); });
+  }
+  function editedSentences(a, b) {
+    var A = sentencesOf(a), B = sentencesOf(b), m = A.length, n = B.length, L = [], x, y;
+    for (x = 0; x <= m; x++) L.push(new Array(n + 1).fill(0));
+    for (x = m - 1; x >= 0; x--) {
+      for (y = n - 1; y >= 0; y--) {
+        L[x][y] = A[x].trim() === B[y].trim() ? L[x + 1][y + 1] + 1
+                                              : Math.max(L[x + 1][y], L[x][y + 1]);
+      }
+    }
+    var out = [], da = [], db = [];
+    function flush() {
+      if (da.length || db.length) {
+        out.push(diffHtml(wordDiff(da.join("").trim(), db.join("").trim())));
+      }
+      da = []; db = [];
+    }
+    x = 0; y = 0;
+    while (x < m || y < n) {
+      if (x < m && y < n && A[x].trim() === B[y].trim()) { flush(); x++; y++; }
+      else if (y >= n || (x < m && L[x + 1][y] >= L[x][y + 1])) { da.push(A[x]); x++; }
+      else { db.push(B[y]); y++; }
+    }
+    flush();
+    return out;
+  }
+  // The same places, painted inside the grammar box itself (Shachar, 6 Nov: with a five-
+  // sentence summary the list above says what broke, but not where to put the cursor). A
+  // textarea cannot hold markup, so the marks sit on a copy of its text drawn behind it, in
+  // the same font, padding and wrapping, with the box's own background made transparent.
+  // Each place is the edit plus one token either side, because a broken join is usually
+  // the word before or after the edit: "for in", "which.", "The The team football".
+  function seamRanges(orig, text) {
+    var ops = wordDiff(orig, text), out = [], i = 0, prev = null;
+    while (i < ops.length) {
+      if (ops[i].k === "=") { prev = ops[i].b; i++; continue; }
+      var ins = [];
+      while (i < ops.length && ops[i].k !== "=") {
+        if (ops[i].k === "+") ins.push(ops[i].b);
+        i++;
+      }
+      var next = i < ops.length ? ops[i].b : null;
+      var s = prev ? prev.at : (ins.length ? ins[0].at : (next ? next.at : 0));
+      var e = next ? next.end : (ins.length ? ins[ins.length - 1].end : (prev ? prev.end : 0));
+      if (e > s) {
+        var last = out[out.length - 1];
+        if (last && s <= last[1]) last[1] = Math.max(e, last[1]); else out.push([s, e]);
+      }
+    }
+    return out;
+  }
+  function seamHtml(orig, text) {
+    var h = "", pos = 0;
+    seamRanges(orig, text).forEach(function (r) {
+      h += esc(text.slice(pos, r[0])) + "<mark>" + esc(text.slice(r[0], r[1])) + "</mark>";
+      pos = r[1];
+    });
+    // A trailing newline takes no room in a div but a line in a textarea.
+    return h + esc(text.slice(pos)) + (/\n$/.test(text) ? " " : "");
+  }
+  function sameText(a, b) {
+    return String(a).replace(/\s+/g, " ").trim() === String(b).replace(/\s+/g, " ").trim();
+  }
+  // Nothing to check when the answers leave the text as it arrived -- every span "Not a
+  // hallucination" -- so the tick is neither shown nor asked for.
+  function hasEdits(item, cur) { return !sameText(finalText(cur), item.summary); }
+  function editsHtml(item, cur) {
+    var parts = editedSentences(item.summary, finalText(cur));
+    return parts.length
+      ? parts.map(function (p) { return '<p class="editline">' + p + "</p>"; }).join("")
+      : '<p class="hint" style="margin:0">No edits yet. They appear here as you answer.</p>';
+  }
+
+  // Soft checks on the final text, at submit. Each one fires only where the revision has
+  // more of the pattern than the summary it started from, so the original's own style is
+  // never flagged. The pilot's broken joins, all of which these catch: "The The team",
+  // "left for in France", "the ship, which.", "Paralympian The Briton's", "tigers..".
+  var GRAM_CHECKS = [
+    {k: "doubled", re: /\b([A-Za-z]+)\s+\1\b/gi, say: "the same word twice in a row"},
+    {k: "dangling", re: /\b(which|that|who|whose|where|and|or|but|of|the|a|an|for|to|in|at|on|by|with|from|its|their|his|her)\s*[.,;:!?](?=\s|$)/gi,
+     say: "a sentence or clause that stops on a word that needs something after it"},
+    {k: "twoprep", re: /\b(for|in|of|to|at|on|by|with|from|into|about)\s+(in|of|to|at|on|by|with|from|for|into)\b/gi,
+     say: "two prepositions in a row"},
+    {k: "article", re: /\b(a|an|the)\s+(the|a|an|of|in|to|at|on|for|with|from|by|and|or)\b/gi,
+     say: "an article followed by a word that cannot follow it"},
+    {k: "midcap", re: /[a-z,]\s+(The|A|An)\b/g, say: "&ldquo;The&rdquo; or &ldquo;A&rdquo; with a capital letter in mid-sentence"},
+    {k: "punct", re: /[,;:]\s*[.,;:]|\.\s*[,;:]|\.\.(?!\.)/g, say: "doubled punctuation"},
+    {k: "space", re: /\s+[,;:!?]|\s+\.(?!\.)/g, say: "a space before punctuation"},
+    {k: "lower", re: /(^\s*|[.!?]\s+)[a-z]/g, say: "a sentence that starts with a small letter"},
+    {k: "end", re: /[^.!?"”’)\]\s]\s*$/g, say: "a text that does not end with a full stop"}
+  ];
+  function countOf(re, t) { return (String(t).match(re) || []).length; }
+  function grammarWarnings(orig, text) {
+    var out = [];
+    GRAM_CHECKS.forEach(function (c) {
+      if (countOf(c.re, text) <= countOf(c.re, orig)) return;
+      var spots = [], m, re = new RegExp(c.re.source, c.re.flags);
+      while ((m = re.exec(text)) && spots.length < 3) {
+        var a = Math.max(0, m.index - 35), b = Math.min(text.length, m.index + m[0].length + 35);
+        spots.push((a > 0 ? "&hellip;" : "") + esc(text.slice(a, m.index)) + "<mark>"
+          + esc(m[0]) + "</mark>" + esc(text.slice(m.index + m[0].length, b))
+          + (b < text.length ? "&hellip;" : ""));
+        if (!m[0].length) re.lastIndex++;
+      }
+      out.push({k: c.k, say: c.say, spots: spots});
+    });
+    return out;
+  }
+
   // ---- render --------------------------------------------------------------
   function markup(item, cur) {
     var text = item.summary, out = "", pos = 0, many = cur.spans.length > 1;
@@ -756,28 +929,24 @@ window.TOOL_HOOKS = {
       + choice(i, "not", "Not a hallucination", s.act) + "</div>"
       + '<div class="fielderr" data-e="act" data-i="' + i + '">Required: please select an '
       + "operation.</div>";
-    var H = field(i, "h", s.h, "H", "the hallucinated statement, as a complete sentence",
-      "Required: please write the hallucinated statement as a complete sentence.");
+    // H and R are steps of the procedure, worked in the head; the tool no longer asks for them
+    // written out (Shachar, 6 Nov). In the pilot H was the costliest field -- 20 of one
+    // annotator's 75 minutes -- and neither field ever changed a revision: H came back as the
+    // corrected sentence or a copy of the summary, R as commentary on the source, and the
+    // replacement was written apart from R in about a third of replaces.
     if (s.act === "replace") {
-      h += H
-        + field(i, "q", s.q, "Final question (Qmax)", "the most specific question answerable "
+      h += field(i, "q", s.q, "Final question (Qmax)", "the most specific question answerable "
           + "by both the source and the hallucinated statement",
           "Required for a replace: please write the final question.")
-        + field(i, "r", s.r, "R", "the source&rsquo;s answer to Qmax, as a complete sentence",
-          "Required for a replace: please write the answer as a complete sentence.")
-        + field(i, "rep", s.rep, "Replacement", "the part of R that takes the place of the "
-          + "marked span in the text",
-          "Required for a replace: please enter the part of R that replaces the span.",
+        + field(i, "rep", s.rep, "Replacement", "the part of the source&rsquo;s answer to Qmax "
+          + "that takes the place of the marked span in the text",
+          "Required for a replace: please enter the words that replace the span.",
           "input")
-        + '<p class="soft" id="soft_rep' + i + '"' + (repInR(s) ? " hidden" : "")
-        + ">This is not word for word in R above. It should be the part of R that fits the "
-        + "slot.</p>"
         + field(i, "attr", s.attr, "Source attribution (copied verbatim from the source)",
           "the exact sentence or phrase in the source that your answer comes from or is implied by",
           "Required: copy the exact sentence or phrase from the source, verbatim.");
     } else if (s.act === "delete") {
-      h += H
-        + field(i, "expl", s.expl, "Explanation", "which questions did you consider that the "
+      h += field(i, "expl", s.expl, "Explanation", "which questions did you consider that the "
           + "source could not answer, and why did you choose to delete?",
           "Required for a deletion: please say which questions were not answerable, and why "
           + "you deleted.");
@@ -820,19 +989,37 @@ window.TOOL_HOOKS = {
     }
     return "You have edited this yourself, so your answers no longer change it.";
   }
-  function gramState(cur) {
-    if (!cur.gramTouched) return "Follows the revision above. Leave it as it is if nothing "
-      + "needs fixing.";
+  function gramState(cur, item) {
+    if (!cur.gramTouched && !hasEdits(item, cur)) {
+      return "Your answers leave the text unchanged, so there is nothing to check here.";
+    }
+    if (!cur.gramTouched) return "This box starts as a copy of the revision, with the places "
+      + "you edited marked. Read each one as a reader would: removing or replacing words often "
+      + "leaves a stray word, a missing &ldquo;a&rdquo; or &ldquo;the&rdquo;, or broken "
+      + "punctuation. Fix those here, and do not add new content.";
     if (cur.gramBase !== cur.rev) {
       return '<span class="stale">The revision above has changed since you edited this box. '
         + "Copy it down to start again from it.</span>";
     }
     return "You have edited this yourself, so the revision above no longer changes it.";
   }
+  // The tick is for this revision. If the answers then change it, the tick no longer covers
+  // what will be submitted, so it comes off and says why.
+  function gramChecked(cur) { return cur.gramOk && cur.gramOkRev === cur.rev; }
   function paintStates(item, cur) {
     var a = document.getElementById("revstate"), b = document.getElementById("gramstate");
     if (a) a.innerHTML = revState(cur, item);
-    if (b) b.innerHTML = gramState(cur);
+    if (b) b.innerHTML = gramState(cur, item);
+    if (cur.gramOk && !gramChecked(cur)) { cur.gramOk = false; cur.gramOkStale = true; }
+    var ok = document.getElementById("gramok"), why = document.getElementById("gramok_stale");
+    if (ok) ok.checked = gramChecked(cur);
+    if (why) why.hidden = !cur.gramOkStale;
+    var wrap = document.getElementById("gramokwrap");
+    if (wrap) wrap.hidden = !hasEdits(item, cur);
+    var ed = document.getElementById("edits");
+    if (ed) ed.innerHTML = editsHtml(item, cur);
+    var hl = document.getElementById("gramhl");
+    if (hl) hl.innerHTML = seamHtml(item.summary, cur.gram);
     var r = document.getElementById("rebuild"), c = document.getElementById("copyrev");
     if (r) r.hidden = !cur.revTouched;
     if (c) c.hidden = !cur.gramTouched;
@@ -878,13 +1065,26 @@ window.TOOL_HOOKS = {
       + '<div class="autonote"><span id="revstate"></span>'
       + '<button type="button" class="choice small" id="rebuild">Rebuild from my answers'
       + "</button></div>"
-      + '<div class="revsecond"><label class="lab" for="gram">Revision after grammar fixes '
+      + '<div class="revsecond"><p class="lab">Your edits, marked &mdash; each sentence you '
+      + "changed, as it now reads</p>"
+      + '<div class="edits" id="edits"></div>'
+      + '<label class="lab" for="gram">Revision after grammar fixes '
       + '<span class="opt">&mdash; repair any grammar <em>your own edits</em> broke; change '
       + "nothing else, and add no new information</span></label>"
-      + '<textarea id="gram" class="rev">' + esc(cur.gram) + "</textarea>"
+      + '<div class="hlwrap"><div class="hl" id="gramhl" aria-hidden="true"></div>'
+      + '<textarea id="gram" class="rev">' + esc(cur.gram) + "</textarea></div>"
       + '<div class="autonote"><span id="gramstate"></span>'
       + '<button type="button" class="choice small" id="copyrev">Copy the revision above down'
-      + "</button></div></div></div>"
+      + "</button></div>"
+      + '<div id="gramokwrap"' + (hasEdits(item, cur) ? "" : " hidden") + ">"
+      + '<label class="gramok" for="gramok"><input type="checkbox" id="gramok"'
+      + (gramChecked(cur) ? " checked" : "") + "> I have checked the revision for grammar, "
+      + "and fixed in the box above anything my edits broke.</label>"
+      + '<p class="soft" id="gramok_stale"' + (cur.gramOkStale ? "" : " hidden") + ">Your "
+      + "answers changed the revision after you ticked this, so please check it again.</p>"
+      + '<div class="fielderr" id="gramok_err">Please read your marked edits, fix any grammar '
+      + "they broke, and tick this box.</div></div>"
+      + "</div></div>"
       + '<div class="foot">'
       + (main.onward ? "" : prevBtn)
       + (main.label ? '<button type="button" class="cta" id="next">' + main.label + "</button>"
@@ -916,9 +1116,6 @@ window.TOOL_HOOKS = {
   function loose(s) {
     return String(s).toLowerCase().replace(/[‘’]/g, "'")
       .replace(/[“”]/g, '"').replace(/\s+/g, " ").trim();
-  }
-  function repInR(s) {
-    return !s.rep.trim() || !s.r.trim() || loose(s.r).indexOf(loose(s.rep)) !== -1;
   }
 
   // ---- adjusting a span -------------------------------------------------------
@@ -1005,7 +1202,7 @@ window.TOOL_HOOKS = {
     // The choice and the question carry across. An annotator who decided how to handle a
     // span and then noticed it held two details should not be punished for noticing. The
     // rest was written for the whole span and is wrong for either half on its own.
-    if (s.h.trim() || s.r.trim() || s.rep.trim() || s.attr.trim() || s.expl.trim()) {
+    if (s.rep.trim() || s.attr.trim() || s.expl.trim()) {
       cur.note = "What you had written for the whole statement was cleared, because each part "
                + "needs its own answers. Only the choice and the question carried over.";
     }
@@ -1028,7 +1225,7 @@ window.TOOL_HOOKS = {
     var m = blankSpan(p.sid, a.baseStart, z.baseEnd);
     m.baseStart = p.baseStart; m.baseEnd = p.baseEnd; m.adj = p.adj;
     m.from = p.from; m.parent = p.parent;
-    ["act", "h", "q", "r", "rep", "attr", "expl", "why"].forEach(function (f) {
+    ["act", "q", "rep", "attr", "expl", "why"].forEach(function (f) {
       var x = a[f], y = z[f];
       m[f] = String(x).trim() ? x : y;
     });
@@ -1046,7 +1243,9 @@ window.TOOL_HOOKS = {
   root.addEventListener("focusout", fieldStop);
 
   root.addEventListener("input", function (e) {
-    if (st.at < 0 || st.finished) return;
+    // A checkbox fires input before change, and painting the states here would put the
+    // tick back to what it was a moment ago. The change handler owns it.
+    if (st.at < 0 || st.finished || e.target.id === "gramok") return;
     var t = e.target, item = curItem(), cur = curState();
     if (cur.note) {
       cur.note = "";
@@ -1065,10 +1264,6 @@ window.TOOL_HOOKS = {
         var ae = root.querySelector('[data-e="adj"][data-i="' + i + '"]');
         if (ae) ae.classList.toggle("on", s.adjBad);
         t.classList.toggle("needs", s.adjBad);
-      }
-      if (f === "r" || f === "rep") {
-        var sr = document.getElementById("soft_rep" + i);
-        if (sr) sr.hidden = repInR(s);
       }
       if (t.tagName === "TEXTAREA") fit(t);
       if (f === "rep" || f === "adj") pushRevision(item, cur);
@@ -1095,12 +1290,44 @@ window.TOOL_HOOKS = {
     if (!cur.revTouched) { r.value = cur.rev; fit(r); }
     if (!cur.gramTouched) { g.value = cur.gram; fit(g); }
   }
-  // Pastes per field, because a paste into the attribution is the job and a paste into R
-  // is a signal. Never grounds for rejecting work; grounds for not inviting someone back.
+  root.addEventListener("change", function (e) {
+    if (st.at < 0 || st.finished || e.target.id !== "gramok") return;
+    var cur = curState();
+    cur.gramOk = e.target.checked; cur.gramOkRev = cur.rev; cur.gramOkStale = false;
+    var box = document.querySelector("label.gramok");
+    if (box) box.classList.remove("needs");
+    document.getElementById("gramok_err").classList.remove("on");
+    var why = document.getElementById("gramok_stale");
+    if (why) why.hidden = true;
+    save();
+  });
+  // Pastes per field, because a paste into the attribution is the job and a paste into the
+  // explanation is a signal -- and, since the pilot, where each paste came from. Copying from
+  // the source or the summary on this page is how the attribution is meant to be filled; text
+  // from anywhere else is what a paste from another program or a model looks like. Never
+  // grounds for rejecting work; grounds for not inviting someone back.
+  function pasteOrigin(item, cur, text) {
+    var t = loose(text);
+    if (!t) return "empty";
+    if (loose(item.source).indexOf(t) !== -1) return "source";
+    if (loose(item.summary).indexOf(t) !== -1) return "summary";
+    var own = [cur.rev, cur.gram];
+    cur.spans.forEach(function (s) { own.push(s.q, s.rep, s.attr, s.expl, s.why, s.adj); });
+    if (own.some(function (v) { return v && loose(v).indexOf(t) !== -1; })) return "own";
+    return "outside";
+  }
   root.addEventListener("paste", function (e) {
     if (st.at < 0 || st.finished) return;
     var cur = curState(), f = e.target.dataset.f || e.target.id;
-    if (f) { cur.pastes[f] = (cur.pastes[f] || 0) + 1; save(); }
+    if (!f) return;
+    var text = "";
+    try { text = (e.clipboardData || window.clipboardData).getData("text") || ""; } catch (x) {}
+    var from = pasteOrigin(curItem(), cur, text);
+    cur.pastes[f] = (cur.pastes[f] || 0) + 1;
+    cur.pasteFrom[f] = cur.pasteFrom[f] || {};
+    cur.pasteFrom[f][from] = (cur.pasteFrom[f][from] || 0) + 1;
+    if (from === "outside") cur.pasteOutside += text.length;
+    save();
   });
   root.addEventListener("keydown", function (e) {
     if (st.at < 0 || st.finished) return;
@@ -1140,10 +1367,8 @@ window.TOOL_HOOKS = {
         if (!s.why.trim()) flag("why", i, bad);
         return;
       }
-      if (!s.h.trim()) flag("h", i, bad);
       if (s.act === "replace") {
         if (!s.q.trim()) flag("q", i, bad);
-        if (!s.r.trim()) flag("r", i, bad);
         if (!s.rep.trim()) flag("rep", i, bad);
         // Calling a filled-in box "required" tells them nothing about what is wrong with it.
         if (!s.attr.trim()) {
@@ -1162,6 +1387,11 @@ window.TOOL_HOOKS = {
       document.getElementById("rev_err").classList.add("on");
       bad.push(document.getElementById("rev"));
     }
+    if (hasEdits(item, cur) && !gramChecked(cur)) {
+      var box = document.querySelector("label.gramok");
+      if (box) { box.classList.add("needs"); bad.push(box); }
+      document.getElementById("gramok_err").classList.add("on");
+    }
     return bad;
   }
   function submitItem(item, cur) {
@@ -1172,7 +1402,44 @@ window.TOOL_HOOKS = {
       return;
     }
     err.textContent = "";
+    var text = finalText(cur), warn = grammarWarnings(item.summary, text);
+    // Shown once per version of the text: answering "it reads correctly" is an answer, and
+    // asking again about the same words would only train people to click through.
+    if (warn.length && cur.warnedFor !== text) { showWarnings(item, cur, warn, text); return; }
     showGate(item, cur);
+  }
+
+  // Before the gate, the spots that usually mean a broken join. Never blocking: a real
+  // sentence can trip any of these, and the annotator is the judge of their own text.
+  function showWarnings(item, cur, warn, text) {
+    fieldStop();
+    warn.forEach(function (w) {
+      if (cur.warnKinds.indexOf(w.k) === -1) cur.warnKinds.push(w.k);
+    });
+    save();
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    bg.innerHTML = '<div class="modal" id="gramwarn"><h2>Check these spots in your revision</h2>'
+      + '<p class="sub">Edits often break the sentence around them. Each spot below has a '
+      + "pattern that usually means that. If it reads correctly, you can continue.</p>"
+      + '<ul class="warnlist">' + warn.map(function (w) {
+        return "<li><b>" + w.say.charAt(0).toUpperCase() + w.say.slice(1) + "</b>"
+          + w.spots.map(function (s) { return '<span class="spot">' + s + "</span>"; }).join("")
+          + "</li>";
+      }).join("") + "</ul>"
+      + '<div class="row"><button type="button" class="choice" id="warnfix">Let me fix it</button>'
+      + '<button type="button" class="choice" id="warnok">It reads correctly &mdash; continue'
+      + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("warnfix").addEventListener("click", function () {
+      cur.warnOverride = false; save(); bg.remove();
+      var g = document.getElementById("gram");
+      if (g) { g.scrollIntoView({behavior: "smooth", block: "center"}); g.focus(); }
+    });
+    document.getElementById("warnok").addEventListener("click", function () {
+      cur.warnedFor = text; cur.warnOverride = true; save(); bg.remove();
+      showGate(item, cur);
+    });
   }
 
   // The last gate: the diff beside the original, and the one question that cannot be
@@ -1285,14 +1552,30 @@ window.TOOL_HOOKS = {
              marked: item.summary.slice(s.baseStart, s.baseEnd), adj: s.adj.trim(),
              split_from: s.from || null, act: s.act};
     if (s.act === "not") { o.why = s.why; return o; }
-    o.h = s.h;
     if (s.act === "replace") {
-      o.q = s.q; o.r = s.r; o.rep = s.rep; o.attr = s.attr;
-      o.rep_in_r = repInR(s); o.attr_verbatim = isQuote(s.attr, item.source);
+      o.q = s.q; o.rep = s.rep; o.attr = s.attr;
+      o.attr_verbatim = isQuote(s.attr, item.source);
     } else if (s.act === "delete") {
       o.expl = s.expl;
     }
     return o;
+  }
+
+  // One item as both pages post it, so the practice round and the annotation rounds are read
+  // by the same code. away_ms is time with the tab hidden; answer_ms already excludes it.
+  function logOf(item, cur) {
+    return {
+      item: cur.id, answer_ms: Math.round(cur.ms), visits: cur.visits, lost_check: cur.lost,
+      pastes: cur.pastes, paste_from: cur.pasteFrom, paste_outside_chars: cur.pasteOutside,
+      keys: cur.keys, away_ms: Math.round(cur.awayMs), away_n: cur.awayN,
+      revision: cur.rev, revision_grammar: cur.gram, rev_hand_edited: cur.revTouched,
+      grammar_edited: cur.gram.trim() !== cur.rev.trim(),
+      // null where there was nothing to check: the text went out as it arrived
+      grammar_checked: hasEdits(item, cur) ? gramChecked(cur) : null,
+      grammar_warnings: cur.warnKinds, grammar_warning_overridden: cur.warnOverride,
+      help: cur.help, field_ms: fieldTimes(cur),
+      spans: cur.spans.map(function (s) { return spanRecord(item, s); })
+    };
   }
 
   addEventListener("pagehide", function () {
@@ -1382,7 +1665,8 @@ window.TOOL_HOOKS = {
   var api = {st: st, PRO: PRO, esc: esc, save: save, render: render, advance: advance,
              send: send, withIds: withIds, wordDiff: wordDiff, diffHtml: diffHtml,
              spanRecord: spanRecord, spanText: spanText, finalText: finalText,
-             fieldTimes: fieldTimes,
+             fieldTimes: fieldTimes, logOf: logOf, grammarWarnings: grammarWarnings,
+             editedSentences: editedSentences, seamRanges: seamRanges,
              startReview: function (cur) { clockFor(cur); }};
   window.toolApi = api;     // test_tool.py drives the diff through this
 
