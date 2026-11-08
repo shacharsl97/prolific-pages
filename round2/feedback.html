@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Minimal factual revision - feedback on your first round</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#fbfaf8;--panel:#ffffff;--ink:#f4f2ee;--line:#e2ded7;--text:#1c1b19;
+      --dim:#6a6660;--accent:#1f4e79;--on-accent:#ffffff;--mark:#fde9a8;--mark-line:#e0c25a;
+      --ok:#2f6b45;--ok-bg:#eaf4ee;--part:#8a5a00;--part-bg:#fbf1dc;--bad:#9b2c2c;--bad-bg:#fbeaea;
+      --del:#9b2c2c;--del-bg:#fbeaea;--ins:#2f6b45;--ins-bg:#e3f2e8;color-scheme:light}
+:root[data-theme="dark"]{--bg:#15171a;--panel:#1c1f23;--ink:#22262b;--line:#2e3237;
+      --text:#e8e6e2;--dim:#9a968f;--accent:#7fb2e0;--on-accent:#10243a;--mark:#4a3f16;
+      --mark-line:#8a7322;--ok:#7fc79b;--ok-bg:#18261e;--part:#e0b25c;--part-bg:#2a2214;
+      --bad:#e88b8b;--bad-bg:#2c1a1a;--del:#e88b8b;--del-bg:#2c1a1a;--ins:#7fc79b;
+      --ins-bg:#16271d;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;
+     line-height:1.6;padding:0 0 90px}
+.wrap{max-width:800px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px))}
+header{border-bottom:1px solid var(--line);padding:12px 0}
+header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600}
+h2{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600;margin-bottom:8px}
+h3{font-family:'Newsreader',Georgia,serif;font-size:18px;font-weight:600}
+.sub,.dim{color:var(--dim)}
+.sub{font-size:12px}
+.spacer{flex:1}
+.barbtn{font:inherit;font-size:12.5px;border:1px solid var(--line);background:transparent;
+        color:var(--text);border-radius:999px;padding:5px 13px;cursor:pointer}
+.box,.card,.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+              padding:18px 20px;margin:16px 0}
+.box p,.card p,.q p{font-size:14.5px;margin-bottom:8px}
+.box ol,.box ul,.card ol,.card ul{margin:4px 0 8px 22px;font-size:14.5px}
+.box li,.card li{margin-bottom:6px}
+.btn{background:var(--accent);border:1px solid var(--accent);color:var(--on-accent);
+     border-radius:7px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;
+     text-decoration:none;display:inline-block;font-family:inherit}
+.hidden{display:none}
+
+.chead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;
+       margin-bottom:6px}
+.topic{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:13.5px;font-weight:400;
+       color:var(--dim)}
+.verdict{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;
+         border:1px solid currentColor;white-space:nowrap}
+.verdict.ok{color:var(--ok);background:var(--ok-bg)}
+.verdict.part{color:var(--part);background:var(--part-bg)}
+.verdict.bad{color:var(--bad);background:var(--bad-bg)}
+.tally{line-height:2.1}
+.tally a{color:var(--accent)}
+.lbl{font-size:11px !important;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);
+     font-weight:600;margin:16px 0 5px !important}
+.summary{font-family:'Newsreader',Georgia,serif;font-size:16.5px !important;line-height:1.65}
+mark{background:var(--mark);color:inherit;box-shadow:0 0 0 1px var(--mark-line);border-radius:2px}
+details.src{margin:6px 0 0;font-size:13.5px}
+details.src summary{cursor:pointer;color:var(--accent);font-size:13px}
+details.src p{background:var(--ink);border:1px solid var(--line);border-radius:8px;
+              padding:10px 12px;margin-top:6px;font-size:13.5px !important;white-space:pre-wrap}
+.ans{border-left:3px solid var(--line);padding:2px 0 2px 10px;margin:6px 0}
+.ah{font-size:14px}
+.act{font-weight:600}
+.fld{display:flex;gap:8px;font-size:13.5px;flex-wrap:wrap}
+.fld .k,.gram .k{color:var(--dim);min-width:92px;font-size:12px;text-transform:uppercase;
+                 letter-spacing:.04em;padding-top:2px}
+.diff{font-family:'Newsreader',Georgia,serif;font-size:16px !important;background:var(--ink);
+      border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+del{color:var(--del);background:var(--del-bg);text-decoration:line-through}
+ins{color:var(--ins);background:var(--ins-bg);text-decoration:none}
+.comment{border-left:3px solid var(--accent);padding:4px 0 4px 12px;margin:14px 0 4px}
+.gram{display:flex;gap:8px;flex-wrap:wrap;background:var(--part-bg);border-radius:8px;
+      padding:8px 12px;margin:8px 0}
+.gram p{margin:0 !important}
+.why ol{margin-left:22px}
+#review{background:var(--part-bg);color:var(--part);font-size:13px;padding:6px 12px;
+        border-radius:8px;margin-top:14px}
+footer{margin:26px 0 0;text-align:center}
+@media (max-width:560px){.box,.card{padding:14px 14px}.fld .k{min-width:0}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Minimal factual revision <span class="sub">&mdash; feedback on your first round</span></h1>
+  <span class="spacer"></span>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></header>
+<main class="wrap">
+  <p id="review" hidden>Review view: this is the page as the annotator will see it.</p>
+  <section class="box"><p>Thank you for your work in the first round. This page goes through your eight items one by one. For each item it shows your revision, the revision we looked for, and how it follows from the guidelines' procedure. Please read it before you start the next round.</p><p>Some items have more than one accepted revision. The guidelines leave room for judgement in a few places, such as whether a fact counts as common knowledge, and a revision that follows the procedure from either judgement is accepted. Where we prefer one of them, the explanation says so.</p><p>The verdict is about your decisions and replacements. Correct means they match a revision we accept. Partly correct means some match and others do not, or that your answer can be defended but is not the one we looked for. Incorrect means they do not match. Grammar repairs you missed are shown separately, and the comment discusses your reasons.</p><p>The next round is another qualification round that has 7 new items. Your work there is scored, and the round has no worked solutions.</p></section>
+  <section class="box" id="nopid"><p>This page was opened without a recognised Prolific ID.
+    If you came from Prolific, go back and use the study link there rather than a copied
+    address.</p></section>
+  
+<div class="who" data-who="P9" data-h="430b125f660e7fee2cefa867cda2f875c263e9d99e0f79cc7f1268a87674d44e" hidden>
+  <section class="box"><h2>Your eight items at a glance</h2><p class="tally"><span class="verdict ok">Correct</span> <a href="#P9-p4">item 4</a>, <a href="#P9-p6">item 6</a>, <a href="#P9-p8">item 8</a> &middot; <span class="verdict part">Partly correct</span> <a href="#P9-p2">item 2</a>, <a href="#P9-p3">item 3</a>, <a href="#P9-p5">item 5</a>, <a href="#P9-p7">item 7</a> &middot; <span class="verdict bad">Incorrect</span> <a href="#P9-p1">item 1</a></p></section>
+  <section class="box"><h2>The main points</h2><ol><li><strong>Grammar after your edits.</strong> Three of your revisions are not grammatical where you edited them: “has left for in France” (item 2), “released described of a man” (item 3) and “on the ship, which.” (item 6). After replacing or deleting, another step is to fix the grammar errors your edit introduced, while not adding or changing any content. In the new tool, the grammar box marks every place you edited, so it will be easier to notice whether errors exist and fix them.</li><li><strong>Preserving information the source supports.</strong> Two of your revisions removed information that the source supports. In item 2, deleting “Euro 2016” also removed the fact that the team left for a major tournament, which the source states. In item 7, deleting the whole first sentence removed “Widnes Vikings secured a victory over Castleford Tigers”, which the source supports.<br>Before you delete, please check whether there is any faithful information in the hallucination that can be kept via a replacement. If only part of a marked span is wrong, adjust the span to that part first.</li></ol></section>
+  
+<section class="card" id="P9-p1">
+  <div class="chead"><h3>Item 1 <span class="topic">&middot; arrests over slavery offences</span></h3>
+    <span class="verdict bad">Incorrect</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Two people have been arrested on suspicion of slavery offences after <mark>26 men</mark> were rescued from Chinese restaurants in the West Midlands.</p>
+  <details class="src"><summary>Show the source</summary><p>The victims were found in raids at three restaurants in Coventry, Wolverhampton and West Bromwich and an address in Handsworth, Birmingham. Police suspect the men were working for &quot;next to nothing&quot;. A 49-year-old man and a 45-year-old woman have been arrested on suspicion of slavery offences. See more stories from Birmingham and the Black Country here . The victims are thought to be mainly Slovakian and Romanian. The suspects, who are both Slovakian, have been arrested on suspicion of providing staff through a recruitment consultancy. The raided restaurants were Ming Moon, Stafford Road in Wolverhampton, Wing Wah, Fletchamstead Highway in Coventry and Red Leaf, High Street in West Bromwich. Five suspected slavery victims were found at the Chinese restaurant in Wolverhampton, 12 at Wing Wah Coventry and three at the an address on Anthrobus Road in Handsworth. The men will be given the opportunity to speak to specially trained officers and helped into alternative accommodation. West Midlands Police said signs of modern slavery to look out for include &quot;large groups of people staying in multi-occupancy houses and being transported to and from addresses in vans or minibuses from early in the morning and not coming back until late at night&quot;. Further investigations are underway, the force added.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “26 men”</div><div class="fld"><span class="k">Question</span><span>how many victims were rescued in Chinese restaurants?</span></div><div class="fld"><span class="k">R</span><span>Two people have been arrested on suspicion of slavery offences after 5 men were rescued from Chinese restaurants in the west midlands</span></div><div class="fld"><span class="k">Replacement</span><span>5 men</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Two people have been arrested on suspicion of slavery offences after <del>26</del> <ins>5</ins> men were rescued from Chinese restaurants in the West Midlands.</p>
+  <div class="comment"><p>You replaced “26 men” with “5 men”. Five is the number found at one restaurant, Ming Moon in Wolverhampton. The source also reports 12 at Wing Wah in Coventry, so “5 men” is not the correct answer. Your question, “How many victims were rescued in Chinese restaurants?”, was the right question. Its answer needs the numbers from all the restaurants, and since one restaurant has no number, the source's answer is “at least 17”.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Two people have been arrested on suspicion of slavery offences after <del>26</del> <ins>at least 17</ins> men were rescued from Chinese restaurants in the West Midlands.</p><p class="diff">Two people have been arrested on suspicion of slavery offences after <del>26</del> men were rescued from Chinese restaurants in the West Midlands.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “26 men were rescued from Chinese restaurants in the West Midlands.”</li><li>Q1: “How many men were rescued from the restaurants?” The source gives numbers for two of the three restaurants: 5 at Ming Moon in Wolverhampton and 12 at Wing Wah in Coventry. It gives no number for Red Leaf in West Bromwich. The 3 men found in Handsworth were at a home address, not at a restaurant.</li><li>The source's answer to Q1 is therefore “at least 17 men” (5 + 12). This answers Q1 with the level of detail most similar to the summary's that the source supports, so no further question is needed: Q1 is Qmax.</li><li>The summary gave a number, so the revision keeps a number (minimal specificity change). Replace “26 men” with “at least 17 men”.</li></ol><p>Deleting the number is also accepted. The source does not make the exact number clear, so the exact number the summary intended cannot be given. “At least 17 men” is preferred, because it keeps a level of detail similar to the summary's, using information found in the source.</p></div>
+</section>
+<section class="card" id="P9-p2">
+  <div class="chead"><h3>Item 2 <span class="topic">&middot; a football team leaving for France</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">The <mark>Wales</mark> football team has left for <mark>Euro 2016</mark> in France.</p>
+  <details class="src"><summary>Show the source</summary><p>The side&#x27;s appearance in France will be its first at a major tournament since the 1958 World Cup. Players and coaches left their base at the Vale Resort, Vale of Glamorgan, on Saturday and headed to Cardiff Airport. After a send-off from pupils from Ysgol Treganna, Cardiff, the team took off for a friendly in Sweden on Sunday. They will then head to France ahead of the team&#x27;s first game of the tournament against Slovakia on 11 June.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “Wales”</div><div class="fld"><span class="k">Explanation</span><span>Which country&#x27;s football team has left for a major football event in France?]]</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “Euro 2016”</div><div class="fld"><span class="k">Explanation</span><span>What  football event will take place in France and when?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">The <del>Wales</del> football team has left for <del>Euro 2016</del> in France.</p>
+  <div class="comment"><p>You were right that the source names neither Wales nor Euro 2016, and deleting “Wales” is accepted. Deleting “Euro 2016”, though, also removed what the source does say about the event: the team left for a major tournament. That span needed a replacement, not a deletion.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>“The football team has left for in France.” is not grammatical. If deleting “Euro 2016” is your decision, the grammar step is to remove “in” as well: “The football team has left for France.” The grammar step repairs the sentence without adding content.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">The Wales football team has left for <del>Euro 2016</del> <ins>a major tournament</ins> in France.</p><p class="diff">The <del>Wales</del> football team has left for <del>Euro 2016</del> <ins>a major tournament</ins> in France.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “Wales”. H: “The team that left is the Wales football team.” The source never names the country. It says the team's base is the Vale Resort in the Vale of Glamorgan, that it flew from Cardiff Airport after a send-off from a Cardiff school, and that this is its first major tournament since the 1958 World Cup.</li><li>Keeping “Wales” is accepted. Cardiff and the Vale of Glamorgan are in Wales, so it can be considered common knowledge that the national team described is the Wales team.</li><li>Deleting “Wales” is also accepted, if you judge that this inference is not strong enough: “The football team has left for …”. What the source supports about the team, that it is a football team, stays in the sentence.</li><li>Replacing “Wales” with a description from the source, such as “the football team that trains in the Vale Resort”, is accepted as well. It does not read naturally, though, so we prefer one of the two revisions above.</li><li>Span “Euro 2016”. H: “The team has left for Euro 2016.” Q1: “Which tournament did the team leave for?” The source does not answer this: it never names the tournament. Knowing that it was Euro 2016 needs outside knowledge.</li><li>Qmax: “What kind of event did the team leave for?” The source answers: “a major tournament” (“its first at a major tournament since the 1958 World Cup”). Replace “Euro 2016” with the source's own words, “a major tournament”.</li></ol></div>
+</section>
+<section class="card" id="P9-p3">
+  <div class="chead"><h3>Item 3 <span class="topic">&middot; a police appeal over an acid attack</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Police have released <mark>CCTV images</mark> of a man they want to speak to in connection with an acid attack <mark>in east London</mark>.</p>
+  <details class="src"><summary>Show the source</summary><p>Two people were left with &quot;life-changing&quot; injuries when a corrosive substance was thrown on to them through their car windows. Cousins Resham Khan and Jameel Muhktar had been celebrating Ms Khan&#x27;s 21st birthday before the attack. John Tomlin, 24, is described as white, 6ft tall, of stocky build and with short fair hair. He is known to frequent the Canning Town area. Ms Khan, a student at Manchester Metropolitan University, and Mr Muhktar suffered severe burns to the face and body in the attack on 21 June. &quot;Within seconds, my cousin started screaming. Her eyes were blistered, her face started melting. My face started melting&quot;, Mr Muhktar said. According to police, they had stopped at traffic lights when the man approached them and threw the toxic substance at Ms Khan through the window. The attacker then circled around the car and threw more of the acid at Mr Muhktar, before eventually fleeing the scene. Mr Muhktar, 37, had to be temporarily placed in an induced coma to treat his injuries. &quot;I&#x27;m in a really bad way. I&#x27;m going to be scarred for life. I can&#x27;t walk properly, I can&#x27;t hear properly, I can&#x27;t sleep&quot;, he said. Police said there was no current information to suggest the attack was racially or religiously motivated.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “CCTV images”</div><div class="fld"><span class="k">Question</span><span>how was the the man identified?</span></div><div class="fld"><span class="k">R</span><span>The man has been described as white, 6ft tall, of stocky build </span></div><div class="fld"><span class="k">Replacement</span><span>described</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “in east London”</div><div class="fld"><span class="k">Explanation</span><span>where did the acid attack happen?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Police have released <del>CCTV images</del> <ins>described</ins> of a man they want to speak to in connection with an acid <del>attack in east London.</del> <ins>attack.</ins></p>
+  <div class="comment"><p>Both of your decisions are right: police released a description, not images, and the source does not say where the attack happened. The replacement, though, has to be the part of the complete-sentence answer that fits the span's slot. The slot holds a noun phrase (“CCTV images”), so the replacement is “a description”, not “described”. As written, “Police have released described of a man” is not grammatical.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Police have released <del>CCTV images</del> <ins>a description</ins> of a man they want to speak to in connection with an acid <del>attack in east London.</del> <ins>attack.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “CCTV images”. H: “Police have released CCTV images of the man.” Q1: “What have police released about the man?” The source mentions no images. It gives a description: “John Tomlin, 24, is described as white, 6ft tall, of stocky build and with short fair hair.”</li><li>The complete-sentence answer is “Police have released a description of the man.” The part of it that fits the span's slot is “a description”, so that is the replacement.</li><li>Span “in east London”. H: “The acid attack happened in east London.” Q1: “Where did the attack happen?” The source does not say. “He is known to frequent the Canning Town area” is about where the man spends time, not where the attack happened.</li><li>No question about the attack's location is answerable by both texts, so delete the span.</li></ol></div>
+</section>
+<section class="card" id="P9-p4">
+  <div class="chead"><h3>Item 4 <span class="topic">&middot; a band&#x27;s later records</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Two more records followed—the <mark>heavier</mark> &quot;Take Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p>
+  <details class="src"><summary>Show the source</summary><p>Hoppus got married in 2000 (see Personal life) just before the band prepared to record their highly anticipated follow-up, &quot;Take Off Your Pants and Jacket&quot; (2001). When the band regrouped to record their next record in 2003, all of the members had become fathers (or, in the case of Barker, becoming one) and the trio took a darker, more &quot;mature&quot; direction with their untitled fifth studio album, infusing experimentalist elements into their usual pop punk sound partially inspired by Box Car Racer. Unresolved feelings from that project would arise in late 2004 when the band began to argue regarding their future and recording process. The February 2005 break-up of blink-182 affected Hoppus greatly: &quot;I had no idea what to do.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “heavier”</div><div class="fld"><span class="k">Explanation</span><span>What was &quot;Take Off Your Pants and Jacket&quot;(2001) like?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Two more records followed—the <del>heavier</del> &quot;Take Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p>
+  <div class="comment"><p>Deleting “heavier” is the decision we looked for, and your explanation names the question the source cannot answer: what the 2001 album was like.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>After you deleted “heavier”, “the” is left directly before the album title. Removing it is the grammar step for this edit, so the revision without “the” is preferred. Keeping it is also accepted.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Two more records <del>followed—the heavier &quot;Take</del> <ins>followed—&quot;Take</ins> Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p><p class="diff">Two more records followed—the <del>heavier</del> &quot;Take Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “Take Off Your Pants and Jacket (2001) had a heavier sound.”</li><li>Q1: “What did the 2001 album sound like?” The source does not say. It calls the album a “highly anticipated follow-up”, which is about how it was expected, not how it sounded. “Darker, more mature” is said of the 2003 album.</li><li>No question about the 2001 album's sound is answerable by both texts, so delete “heavier”. Replacing it with “highly anticipated” would answer a different question, about how the album was expected, which changes the facet.</li><li>After “heavier” is deleted, “the” is left directly before the album title. Removing it is part of the grammar step, which is part of the annotation procedure, so we prefer the revision without “the”. The version that keeps it is also accepted.</li></ol></div>
+</section>
+<section class="card" id="P9-p5">
+  <div class="chead"><h3>Item 5 <span class="topic">&middot; activists released from custody</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Five Chinese <mark>feminist activists</mark> have been released from police custody after being held for over a month. They will be under surveillance and can be summoned for questioning at any time. Their detention had sparked international criticism, with the US calling for their release.</p>
+  <details class="src"><summary>Show the source</summary><p>Beijing (CNN)Chinese police on Monday released five female activists who were detained last month, family and friends of the women tell CNN. Wei Tingting, Wang Man, Zheng Churan, Li Tingting and Wu Rongrong were freed. The women will be under police surveillance for a year and have their movements and activities restricted, attorney Liang Xiaojun said. Police can summon the women for questioning at any time, he added. The five members of China&#x27;s Women&#x27;s Rights Action Group were detained in Beijing, Guangzhou and Hangzhou a few days before events planned for International Women&#x27;s Day on March 8. The United States had urged China to free them, and the international community harshly criticized keeping the women in custody. &quot;Each and every one of us has the right to speak out against sexual harassment and the many other injustices that millions of women and girls suffer around the world,&quot; U.S. Secretary of State John Kerry said in a statement Friday. &quot;We strongly support the efforts of these activists to make progress on these challenging issues, and we believe that Chinese authorities should also support them, not silence them.&quot; &quot;Free the five&quot; became a Twitter hashtag. Wang Qiushi, a lawyer for Wei, said police recommended last week that prosecutors press charges of &quot;assembling a crowd to disturb public order.&quot;</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “feminist activists”</div><div class="fld"><span class="k">Question</span><span>Which activists were released from police custody in China?</span></div><div class="fld"><span class="k">R</span><span>Five female activists have been released from custody.</span></div><div class="fld"><span class="k">Replacement</span><span>female activists</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Five Chinese <del>feminist</del> <ins>female</ins> activists have been released from police custody after being held for over a month.</p>
+  <div class="comment"><p>You replaced “feminist activists” with “female activists”. “Female” is in the source, but it answers a different question: their gender, not their cause. The source supports “feminist”, because the five are members of China's Women's Rights Action Group, so the answer we looked for is Not a hallucination. If you do replace it, “women's rights activists” keeps the same facet.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="dim">Keep the text unchanged: mark the span Not a hallucination.</p><p class="diff">Five Chinese <del>feminist</del> <ins>women&#x27;s rights</ins> activists have been released from police custody after being held for over a month.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “The five people released are feminist activists.”</li><li>Q1: “What cause do the activists campaign for?” The source answers this: they are “the five members of China's Women's Rights Action Group”, detained a few days before events for International Women's Day. Activists in a women's rights group are feminist activists. This is a high-likelihood inference that a reader of the article is expected to make.</li><li>The source therefore supports “feminist activists”. The answer we looked for is Not a hallucination, with that reason.</li><li>If you judge that “feminist” goes beyond the source, the replacement has to answer the same question, about their cause: “women's rights activists”. “Female activists” answers a different question, about their gender, which changes the facet.</li></ol></div>
+</section>
+<section class="card" id="P9-p6">
+  <div class="chead"><h3>Item 6 <span class="topic">&middot; illness on a cruise ship</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Gastrointestinal illness has affected 100 people on the cruise ship Celebrity Infinity, according to the CDC. Symptoms include vomiting and diarrhea. The cause is unknown and two CDC staffers will meet the ship in San Diego on Monday. This is the third outbreak on the ship, which <mark>has a history of sanitation issues</mark>.</p>
+  <details class="src"><summary>Show the source</summary><p>Gastrointestinal illness has gripped 100 people on the cruise ship Celebrity Infinity, according to a report from the Centers for Disease Control. Of the ship&#x27;s 2,117 passengers, 95 have suffered from vomiting, diarrhea and other symptoms, the CDC said. The illness has also affected five members of the 964-person crew. The CDC has yet to determine what&#x27;s causing the ailments. Two staffers from the agency are scheduled to meet the West Coast-based ship in San Diego on Monday. The Infinity left San Diego on March 29. It made its last stop in Puerto Vallarta, Mexico, on April 10, according to MarineTraffic.com. Celebrity Cruises has been taking action since the outbreak began, including increasing cleaning and disinfection procedures, keeping passengers informed and taking specimens from the afflicted for testing by the CDC, the agency says. According to the Maritime Executive, this is the third time the Celebrity Infinity has suffered an outbreak of gastrointestinal illness, with others occurring in 2006 and 2013. The ship was built in 2001 and refurbished in 2011.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “has a history of sanitation issues”</div><div class="fld"><span class="k">Explanation</span><span>does the ship have a history of sanitation issues?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">This is the third outbreak on the ship, <del>which has a history of sanitation issues.</del> <ins>which.</ins></p>
+  <div class="comment"><p>Deleting the claim is the decision we looked for, and your explanation names the question the source cannot answer.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>The text now ends “on the ship, which.”, which is not grammatical. Remove the comma and “which”: “This is the third outbreak on the ship.”</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">This is the third outbreak on the <del>ship, which has a history of sanitation issues.</del> <ins>ship.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “The ship has a history of sanitation issues.”</li><li>Q1: “What problems has the ship had before?” The source says only that this is the ship's third outbreak of gastrointestinal illness, after outbreaks in 2006 and 2013. It says nothing about sanitation.</li><li>The faithful part of the claim, that the ship has had outbreaks before, is already in the same sentence: “This is the third outbreak on the ship”. Any replacement would add nothing to the text, so delete.</li><li>Delete the whole clause, “which has a history of sanitation issues”, including “which”, and end the sentence with a full stop.</li></ol></div>
+</section>
+<section class="card" id="P9-p7">
+  <div class="chead"><h3>Item 7 <span class="topic">&middot; a rugby league match</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30</mark>. Tries from Macgraff Leuluai, Ah Van, and Chris Bridge gave Widnes a 14-6 lead at halftime. Castleford&#x27;s Paddy Flynn responded with a try against his parent club. In the second half, Flynn scored another try, but Widnes extended their lead with tries from Ah Van, Lloyd White (2), and Joe Mellor. Castleford managed to score three tries in four minutes, but Widnes held on for the win. This victory moved Widnes above Wakefield into seventh place in the league standings. Castleford suffered their fourth consecutive home league defeat.</p>
+  <details class="src"><summary>Show the source</summary><p>Tries from Macgraff Leuluai, Ah Van and Chris Bridge gave Widnes a 14-6 half-time lead, with Cas loanee Paddy Flynn responding against his parent club. Flynn scored another early in the second, but Ah Van, Lloyd White (2) and Joe Mellor tries made it 38-12. Despite three Cas tries in four minutes - Larne Patrick, Luke Gale and Flynn&#x27;s hat-trick score - Widnes held on. The Vikings&#x27; victory had looked assured when Mellor took advantage of Castleford indecision on a short kick-off, running straight through to help them to a 26-point lead. But, having lost nine of their previous 10 matches, their defence creaked as they let Patrick, who has just signed a three-year deal to move from Huddersfield after his loan spell, in for a try. Gale and Flynn - on loan at Castleford from the Vikings until the end of the season - made it a nervy finish, but the Tigers suffered their fourth consecutive home league defeat. Widnes moved above Wakefield into seventh, while Castleford remain in sixth, one point above the Vikings. Castleford: Solomona, Monaghan, Crooks, Webster, Flynn, McShane, Gale, Jewitt, Milner, Patrick, Moors, McMeeken, Massey. Replacements: Millington, Springer, Tickle, Cook. Widnes: Hanbury, Thompson, Runciman, Bridge, Ah Van, Mellor,Brown, Cahill, White, Buchanan, Whitley, Dean, Leuluai. Replacements: J. Chapelhow, Manuokafoa, Walker, Heremaia. Referee: J Smith</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30”</div><div class="fld"><span class="k">Explanation</span><span>By how many points did Widnes Vikings beat Castleford Tigers?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff"><del>Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30.</del></p>
+  <div class="comment"><p>You deleted the whole sentence. The source supports “Widnes Vikings secured a victory over Castleford Tigers”, so only “with a score of 38-30” had to go. When only part of a marked span is wrong, adjust the span to that part before you decide.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Widnes Vikings secured a victory over Castleford <del>Tigers with a score of 38-30.</del> <ins>Tigers.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Adjust the span first. “Widnes Vikings secured a victory over Castleford Tigers” is faithful: the source says “Widnes held on” and “The Vikings' victory”. Only “with a score of 38-30” is not supported.</li><li>H: “Widnes won with a score of 38-30.” Q1: “What was the final score?” The source does not give it. It gives 38-12 before Castleford's three late tries, and no score after them.</li><li>No question about the final score or the winning margin is answerable by both texts, so delete “with a score of 38-30”.</li></ol></div>
+</section>
+<section class="card" id="P9-p8">
+  <div class="chead"><h3>Item 8 <span class="topic">&middot; a British Paralympian</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">The passage describes British Paralympian <mark>Sarah Storey</mark>&#x27;s victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland. Storey, aged 37, aims to secure her 17th title in the upcoming road race. She is noted as Britain&#x27;s most decorated female Paralympian with 22 medals, including 11 golds, 8 silvers, and 3 bronzes across cycling and swimming disciplines. Storey has won 21 world titles and achieved four gold medals at the 2012 London Paralympics. Her career began in swimming, where she won six medals at the 1992 Paralympics, before transitioning to cycling in 2005.</p>
+  <details class="src"><summary>Show the source</summary><p>The Briton finished more than two minutes ahead of Poland&#x27;s Anna Harkowska in Nottwil, Switzerland. Storey can win a 17th title when she rides in Saturday&#x27;s road race. &quot;It&#x27;s a massive relief to win,&quot; said the 37-year-old, who is targeting further Paralympic success at next year&#x27;s Games in Rio de Janeiro. Storey is Britain&#x27;s most decorated female Paralympian with 22 medals. She has won 11 gold, eight silver and three bronze medals in both cycling and swimming across six Paralympics. She won four golds at the 2012 Games in London and has now won 21 world titles across both sports. Storey began her sporting career in the pool, winning six medals at the 1992 Paralympics before switching to cycling in 2005.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “Sarah” <span class="dim">(you split the marked span)</span></div><div class="fld"><span class="k">Explanation</span><span>What is the first name of the British Paralympian athlete who won by over two minutes in Nottwil, Switzerland and goes by the surname, &quot;Storey&quot;?</span></div></div><div class="ans"><div class="ah"><span class="act">Not a hallucination</span> “Storey” <span class="dim">(you split the marked span)</span></div><div class="fld"><span class="k">Reason</span><span>She is Storey as the article says.</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">The passage describes British Paralympian <del>Sarah</del> Storey&#x27;s victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland.</p>
+  <div class="comment"><p>This is the revision we looked for. You split the span, kept “Storey” and deleted “Sarah”, which is exactly the procedure.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">The passage describes British Paralympian <del>Sarah</del> Storey&#x27;s victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Split the span. “Sarah Storey” contains two details: the first name “Sarah” and the surname “Storey”.</li><li>“Storey” is faithful: the source calls her Storey throughout. Mark it Not a hallucination.</li><li>For “Sarah”, H: “The Paralympian's first name is Sarah.” Q1: “What is her first name?” The source never says. It calls her “Storey”, “the Briton” and “the 37-year-old”.</li><li>Her first name can stay only if it can be considered common knowledge. We believe it cannot: most readers would have to look it up, like the actress's age in the guidelines' common knowledge section. On that reading, no question about her first name is answerable by both texts, so delete “Sarah”.</li><li>If you consider her first name common knowledge, marking the span Not a hallucination is also defensible.</li></ol></div>
+</section>
+</div>
+<div class="who" data-who="P10" data-h="7e2d54c90cfb13a0a12cf21ed888a772d672194b0f58e54672b69623fdac95f8" hidden>
+  <section class="box"><h2>Your eight items at a glance</h2><p class="tally"><span class="verdict ok">Correct</span> <a href="#P10-p3">item 3</a>, <a href="#P10-p4">item 4</a>, <a href="#P10-p5">item 5</a>, <a href="#P10-p6">item 6</a>, <a href="#P10-p7">item 7</a> &middot; <span class="verdict part">Partly correct</span> <a href="#P10-p2">item 2</a>, <a href="#P10-p8">item 8</a> &middot; <span class="verdict bad">Incorrect</span> <a href="#P10-p1">item 1</a></p></section>
+  <section class="box"><h2>The main points</h2><ol><li><strong>Facts the source does not state.</strong> Two of your answers contain facts that the source does not state. In item 1, “20 men” includes 3 men who were found at a home address, not at a restaurant, and the source gives no number for one of the three restaurants. In item 8, the source never gives the first name “Sarah”. A fact from outside the source can stay only if it can be considered common knowledge, and then common knowledge is the reason for keeping it.</li><li><strong>Grammar after your edits.</strong> Two of your revisions are not grammatical where you edited them: “left for Euro tournament” is missing “a” (item 2), and item 6 ends with a comma (“on the ship,”). After replacing or deleting, another step is to fix the grammar errors your edit introduced, while not adding or changing any content. In the new tool, the grammar box marks every place you edited, so it will be easier to notice whether errors exist and fix them.</li></ol></section>
+  
+<section class="card" id="P10-p1">
+  <div class="chead"><h3>Item 1 <span class="topic">&middot; arrests over slavery offences</span></h3>
+    <span class="verdict bad">Incorrect</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Two people have been arrested on suspicion of slavery offences after <mark>26 men</mark> were rescued from Chinese restaurants in the West Midlands.</p>
+  <details class="src"><summary>Show the source</summary><p>The victims were found in raids at three restaurants in Coventry, Wolverhampton and West Bromwich and an address in Handsworth, Birmingham. Police suspect the men were working for &quot;next to nothing&quot;. A 49-year-old man and a 45-year-old woman have been arrested on suspicion of slavery offences. See more stories from Birmingham and the Black Country here . The victims are thought to be mainly Slovakian and Romanian. The suspects, who are both Slovakian, have been arrested on suspicion of providing staff through a recruitment consultancy. The raided restaurants were Ming Moon, Stafford Road in Wolverhampton, Wing Wah, Fletchamstead Highway in Coventry and Red Leaf, High Street in West Bromwich. Five suspected slavery victims were found at the Chinese restaurant in Wolverhampton, 12 at Wing Wah Coventry and three at the an address on Anthrobus Road in Handsworth. The men will be given the opportunity to speak to specially trained officers and helped into alternative accommodation. West Midlands Police said signs of modern slavery to look out for include &quot;large groups of people staying in multi-occupancy houses and being transported to and from addresses in vans or minibuses from early in the morning and not coming back until late at night&quot;. Further investigations are underway, the force added.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “26 men”</div><div class="fld"><span class="k">Question</span><span>How many men were rescued?</span></div><div class="fld"><span class="k">R</span><span>5 suspected victims at Ming Moon, 12 suspected victims at Wing Wah, 3 suspected victims at an address on Anthrobus Road</span></div><div class="fld"><span class="k">Replacement</span><span>20 men</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Two people have been arrested on suspicion of slavery offences after <del>26</del> <ins>20</ins> men were rescued from Chinese restaurants in the West Midlands.</p>
+  <div class="comment"><p>You replaced “26 men” with “20 men”, adding 5 + 12 + 3. Your question, “How many men were rescued?”, leaves out the restaurants, and as a result it also counts the 3 men found at a home address in Handsworth. The statement is about the restaurants, so the question is “How many men were rescued from the restaurants?”. The source gives no number for Red Leaf in West Bromwich, which makes its answer “at least 17”, not an exact number.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Two people have been arrested on suspicion of slavery offences after <del>26</del> <ins>at least 17</ins> men were rescued from Chinese restaurants in the West Midlands.</p><p class="diff">Two people have been arrested on suspicion of slavery offences after <del>26</del> men were rescued from Chinese restaurants in the West Midlands.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “26 men were rescued from Chinese restaurants in the West Midlands.”</li><li>Q1: “How many men were rescued from the restaurants?” The source gives numbers for two of the three restaurants: 5 at Ming Moon in Wolverhampton and 12 at Wing Wah in Coventry. It gives no number for Red Leaf in West Bromwich. The 3 men found in Handsworth were at a home address, not at a restaurant.</li><li>The source's answer to Q1 is therefore “at least 17 men” (5 + 12). This answers Q1 with the level of detail most similar to the summary's that the source supports, so no further question is needed: Q1 is Qmax.</li><li>The summary gave a number, so the revision keeps a number (minimal specificity change). Replace “26 men” with “at least 17 men”.</li></ol><p>Deleting the number is also accepted. The source does not make the exact number clear, so the exact number the summary intended cannot be given. “At least 17 men” is preferred, because it keeps a level of detail similar to the summary's, using information found in the source.</p></div>
+</section>
+<section class="card" id="P10-p2">
+  <div class="chead"><h3>Item 2 <span class="topic">&middot; a football team leaving for France</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">The <mark>Wales</mark> football team has left for <mark>Euro 2016</mark> in France.</p>
+  <details class="src"><summary>Show the source</summary><p>The side&#x27;s appearance in France will be its first at a major tournament since the 1958 World Cup. Players and coaches left their base at the Vale Resort, Vale of Glamorgan, on Saturday and headed to Cardiff Airport. After a send-off from pupils from Ysgol Treganna, Cardiff, the team took off for a friendly in Sweden on Sunday. They will then head to France ahead of the team&#x27;s first game of the tournament against Slovakia on 11 June.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Not a hallucination</span> “Wales”</div><div class="fld"><span class="k">Reason</span><span>Cardiff Airport, Vale of Glamorgan, Cardiff (in Wales)</span></div></div><div class="ans"><div class="ah"><span class="act">Replace</span> “Euro 2016”</div><div class="fld"><span class="k">Question</span><span>What is set in France?</span></div><div class="fld"><span class="k">R</span><span>tournament</span></div><div class="fld"><span class="k">Replacement</span><span>Euro tournament</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">The Wales football team has left for Euro <del>2016</del> <ins>tournament</ins> in France.</p>
+  <div class="comment"><p>Keeping “Wales” is accepted. Your reason (Cardiff Airport, the Vale of Glamorgan) is what allows it: with these clues, it can be considered common knowledge that the team is the Wales team. Replacing “Euro 2016” was also right, but “Euro tournament” keeps “Euro”, which is the part the source does not support.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>“left for Euro tournament” is missing an article. With your replacement, the grammar repair is “left for a Euro tournament”. Whether “Euro” belongs there is a separate question, about the replacement itself, covered above.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">The Wales football team has left for <del>Euro 2016</del> <ins>a major tournament</ins> in France.</p><p class="diff">The <del>Wales</del> football team has left for <del>Euro 2016</del> <ins>a major tournament</ins> in France.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “Wales”. H: “The team that left is the Wales football team.” The source never names the country. It says the team's base is the Vale Resort in the Vale of Glamorgan, that it flew from Cardiff Airport after a send-off from a Cardiff school, and that this is its first major tournament since the 1958 World Cup.</li><li>Keeping “Wales” is accepted. Cardiff and the Vale of Glamorgan are in Wales, so it can be considered common knowledge that the national team described is the Wales team.</li><li>Deleting “Wales” is also accepted, if you judge that this inference is not strong enough: “The football team has left for …”. What the source supports about the team, that it is a football team, stays in the sentence.</li><li>Replacing “Wales” with a description from the source, such as “the football team that trains in the Vale Resort”, is accepted as well. It does not read naturally, though, so we prefer one of the two revisions above.</li><li>Span “Euro 2016”. H: “The team has left for Euro 2016.” Q1: “Which tournament did the team leave for?” The source does not answer this: it never names the tournament. Knowing that it was Euro 2016 needs outside knowledge.</li><li>Qmax: “What kind of event did the team leave for?” The source answers: “a major tournament” (“its first at a major tournament since the 1958 World Cup”). Replace “Euro 2016” with the source's own words, “a major tournament”.</li></ol></div>
+</section>
+<section class="card" id="P10-p3">
+  <div class="chead"><h3>Item 3 <span class="topic">&middot; a police appeal over an acid attack</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Police have released <mark>CCTV images</mark> of a man they want to speak to in connection with an acid attack <mark>in east London</mark>.</p>
+  <details class="src"><summary>Show the source</summary><p>Two people were left with &quot;life-changing&quot; injuries when a corrosive substance was thrown on to them through their car windows. Cousins Resham Khan and Jameel Muhktar had been celebrating Ms Khan&#x27;s 21st birthday before the attack. John Tomlin, 24, is described as white, 6ft tall, of stocky build and with short fair hair. He is known to frequent the Canning Town area. Ms Khan, a student at Manchester Metropolitan University, and Mr Muhktar suffered severe burns to the face and body in the attack on 21 June. &quot;Within seconds, my cousin started screaming. Her eyes were blistered, her face started melting. My face started melting&quot;, Mr Muhktar said. According to police, they had stopped at traffic lights when the man approached them and threw the toxic substance at Ms Khan through the window. The attacker then circled around the car and threw more of the acid at Mr Muhktar, before eventually fleeing the scene. Mr Muhktar, 37, had to be temporarily placed in an induced coma to treat his injuries. &quot;I&#x27;m in a really bad way. I&#x27;m going to be scarred for life. I can&#x27;t walk properly, I can&#x27;t hear properly, I can&#x27;t sleep&quot;, he said. Police said there was no current information to suggest the attack was racially or religiously motivated.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “CCTV images”</div><div class="fld"><span class="k">Question</span><span>What have police released of a man?</span></div><div class="fld"><span class="k">R</span><span>a description</span></div><div class="fld"><span class="k">Replacement</span><span>a description</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “in east London”</div><div class="fld"><span class="k">Explanation</span><span>He is known to frequent the Canning Town area (doesnt specify East London)</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Police have released <del>CCTV images</del> <ins>a description</ins> of a man they want to speak to in connection with an acid <del>attack in east London.</del> <ins>attack.</ins></p>
+  <div class="comment"><p>This is the revision we looked for. You answered “What have police released of a man?” from the source with “a description”, and you deleted the location because the source does not give it. One note on your reason: Canning Town is in east London, so the reason to delete is not that the source fails to mention east London. It is that Canning Town is where the man spends time, and the source never says where the attack happened.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Police have released <del>CCTV images</del> <ins>a description</ins> of a man they want to speak to in connection with an acid <del>attack in east London.</del> <ins>attack.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “CCTV images”. H: “Police have released CCTV images of the man.” Q1: “What have police released about the man?” The source mentions no images. It gives a description: “John Tomlin, 24, is described as white, 6ft tall, of stocky build and with short fair hair.”</li><li>The complete-sentence answer is “Police have released a description of the man.” The part of it that fits the span's slot is “a description”, so that is the replacement.</li><li>Span “in east London”. H: “The acid attack happened in east London.” Q1: “Where did the attack happen?” The source does not say. “He is known to frequent the Canning Town area” is about where the man spends time, not where the attack happened.</li><li>No question about the attack's location is answerable by both texts, so delete the span.</li></ol></div>
+</section>
+<section class="card" id="P10-p4">
+  <div class="chead"><h3>Item 4 <span class="topic">&middot; a band&#x27;s later records</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Two more records followed—the <mark>heavier</mark> &quot;Take Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p>
+  <details class="src"><summary>Show the source</summary><p>Hoppus got married in 2000 (see Personal life) just before the band prepared to record their highly anticipated follow-up, &quot;Take Off Your Pants and Jacket&quot; (2001). When the band regrouped to record their next record in 2003, all of the members had become fathers (or, in the case of Barker, becoming one) and the trio took a darker, more &quot;mature&quot; direction with their untitled fifth studio album, infusing experimentalist elements into their usual pop punk sound partially inspired by Box Car Racer. Unresolved feelings from that project would arise in late 2004 when the band began to argue regarding their future and recording process. The February 2005 break-up of blink-182 affected Hoppus greatly: &quot;I had no idea what to do.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “heavier”</div><div class="fld"><span class="k">Explanation</span><span>The source describes it as their &quot;highly anticipated follow-up&quot; not heavier sound</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Two more records followed—the <del>heavier</del> &quot;Take Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p>
+  <div class="comment"><p>Deleting “heavier” is the decision we looked for, and your reason is the right one: the source calls the album a “highly anticipated follow-up” and says nothing about its sound.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>After you deleted “heavier”, “the” is left directly before the album title. Removing it is the grammar step for this edit, so the revision without “the” is preferred. Keeping it is also accepted.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Two more records <del>followed—the heavier &quot;Take</del> <ins>followed—&quot;Take</ins> Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p><p class="diff">Two more records followed—the <del>heavier</del> &quot;Take Off Your Pants and Jacket&quot; (2001) and the more experimental untitled fifth album (2003)—before the band split in 2005 following internal tension.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “Take Off Your Pants and Jacket (2001) had a heavier sound.”</li><li>Q1: “What did the 2001 album sound like?” The source does not say. It calls the album a “highly anticipated follow-up”, which is about how it was expected, not how it sounded. “Darker, more mature” is said of the 2003 album.</li><li>No question about the 2001 album's sound is answerable by both texts, so delete “heavier”. Replacing it with “highly anticipated” would answer a different question, about how the album was expected, which changes the facet.</li><li>After “heavier” is deleted, “the” is left directly before the album title. Removing it is part of the grammar step, which is part of the annotation procedure, so we prefer the revision without “the”. The version that keeps it is also accepted.</li></ol></div>
+</section>
+<section class="card" id="P10-p5">
+  <div class="chead"><h3>Item 5 <span class="topic">&middot; activists released from custody</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Five Chinese <mark>feminist activists</mark> have been released from police custody after being held for over a month. They will be under surveillance and can be summoned for questioning at any time. Their detention had sparked international criticism, with the US calling for their release.</p>
+  <details class="src"><summary>Show the source</summary><p>Beijing (CNN)Chinese police on Monday released five female activists who were detained last month, family and friends of the women tell CNN. Wei Tingting, Wang Man, Zheng Churan, Li Tingting and Wu Rongrong were freed. The women will be under police surveillance for a year and have their movements and activities restricted, attorney Liang Xiaojun said. Police can summon the women for questioning at any time, he added. The five members of China&#x27;s Women&#x27;s Rights Action Group were detained in Beijing, Guangzhou and Hangzhou a few days before events planned for International Women&#x27;s Day on March 8. The United States had urged China to free them, and the international community harshly criticized keeping the women in custody. &quot;Each and every one of us has the right to speak out against sexual harassment and the many other injustices that millions of women and girls suffer around the world,&quot; U.S. Secretary of State John Kerry said in a statement Friday. &quot;We strongly support the efforts of these activists to make progress on these challenging issues, and we believe that Chinese authorities should also support them, not silence them.&quot; &quot;Free the five&quot; became a Twitter hashtag. Wang Qiushi, a lawyer for Wei, said police recommended last week that prosecutors press charges of &quot;assembling a crowd to disturb public order.&quot;</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Not a hallucination</span> “feminist activists”</div><div class="fld"><span class="k">Reason</span><span>source explains there were 5 female activists</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="dim">You left the text unchanged.</p>
+  <div class="comment"><p>Not a hallucination is the answer we looked for. Your reason, though, does not support it: “female” describes their gender, not their cause. What supports “feminist” is that the five are members of China's Women's Rights Action Group.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="dim">Keep the text unchanged: mark the span Not a hallucination.</p><p class="diff">Five Chinese <del>feminist</del> <ins>women&#x27;s rights</ins> activists have been released from police custody after being held for over a month.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “The five people released are feminist activists.”</li><li>Q1: “What cause do the activists campaign for?” The source answers this: they are “the five members of China's Women's Rights Action Group”, detained a few days before events for International Women's Day. Activists in a women's rights group are feminist activists. This is a high-likelihood inference that a reader of the article is expected to make.</li><li>The source therefore supports “feminist activists”. The answer we looked for is Not a hallucination, with that reason.</li><li>If you judge that “feminist” goes beyond the source, the replacement has to answer the same question, about their cause: “women's rights activists”. “Female activists” answers a different question, about their gender, which changes the facet.</li></ol></div>
+</section>
+<section class="card" id="P10-p6">
+  <div class="chead"><h3>Item 6 <span class="topic">&middot; illness on a cruise ship</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Gastrointestinal illness has affected 100 people on the cruise ship Celebrity Infinity, according to the CDC. Symptoms include vomiting and diarrhea. The cause is unknown and two CDC staffers will meet the ship in San Diego on Monday. This is the third outbreak on the ship, which <mark>has a history of sanitation issues</mark>.</p>
+  <details class="src"><summary>Show the source</summary><p>Gastrointestinal illness has gripped 100 people on the cruise ship Celebrity Infinity, according to a report from the Centers for Disease Control. Of the ship&#x27;s 2,117 passengers, 95 have suffered from vomiting, diarrhea and other symptoms, the CDC said. The illness has also affected five members of the 964-person crew. The CDC has yet to determine what&#x27;s causing the ailments. Two staffers from the agency are scheduled to meet the West Coast-based ship in San Diego on Monday. The Infinity left San Diego on March 29. It made its last stop in Puerto Vallarta, Mexico, on April 10, according to MarineTraffic.com. Celebrity Cruises has been taking action since the outbreak began, including increasing cleaning and disinfection procedures, keeping passengers informed and taking specimens from the afflicted for testing by the CDC, the agency says. According to the Maritime Executive, this is the third time the Celebrity Infinity has suffered an outbreak of gastrointestinal illness, with others occurring in 2006 and 2013. The ship was built in 2001 and refurbished in 2011.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “which has a history of sanitation issues.” <span class="dim">(you adjusted it from “has a history of sanitation issues”)</span></div><div class="fld"><span class="k">Explanation</span><span>no history of sanitation issues described - gastrointestinal outbreaks</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">This is the third outbreak on the ship, <del>which has a history of sanitation issues.</del></p>
+  <div class="comment"><p>Deleting the claim is the decision we looked for. You also extended the span to include “which”: this is the span adjustment the procedure asks for.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>The text now ends with a comma: “on the ship,”. Replace the comma with a full stop.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">This is the third outbreak on the <del>ship, which has a history of sanitation issues.</del> <ins>ship.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>H: “The ship has a history of sanitation issues.”</li><li>Q1: “What problems has the ship had before?” The source says only that this is the ship's third outbreak of gastrointestinal illness, after outbreaks in 2006 and 2013. It says nothing about sanitation.</li><li>The faithful part of the claim, that the ship has had outbreaks before, is already in the same sentence: “This is the third outbreak on the ship”. Any replacement would add nothing to the text, so delete.</li><li>Delete the whole clause, “which has a history of sanitation issues”, including “which”, and end the sentence with a full stop.</li></ol></div>
+</section>
+<section class="card" id="P10-p7">
+  <div class="chead"><h3>Item 7 <span class="topic">&middot; a rugby league match</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30</mark>. Tries from Macgraff Leuluai, Ah Van, and Chris Bridge gave Widnes a 14-6 lead at halftime. Castleford&#x27;s Paddy Flynn responded with a try against his parent club. In the second half, Flynn scored another try, but Widnes extended their lead with tries from Ah Van, Lloyd White (2), and Joe Mellor. Castleford managed to score three tries in four minutes, but Widnes held on for the win. This victory moved Widnes above Wakefield into seventh place in the league standings. Castleford suffered their fourth consecutive home league defeat.</p>
+  <details class="src"><summary>Show the source</summary><p>Tries from Macgraff Leuluai, Ah Van and Chris Bridge gave Widnes a 14-6 half-time lead, with Cas loanee Paddy Flynn responding against his parent club. Flynn scored another early in the second, but Ah Van, Lloyd White (2) and Joe Mellor tries made it 38-12. Despite three Cas tries in four minutes - Larne Patrick, Luke Gale and Flynn&#x27;s hat-trick score - Widnes held on. The Vikings&#x27; victory had looked assured when Mellor took advantage of Castleford indecision on a short kick-off, running straight through to help them to a 26-point lead. But, having lost nine of their previous 10 matches, their defence creaked as they let Patrick, who has just signed a three-year deal to move from Huddersfield after his loan spell, in for a try. Gale and Flynn - on loan at Castleford from the Vikings until the end of the season - made it a nervy finish, but the Tigers suffered their fourth consecutive home league defeat. Widnes moved above Wakefield into seventh, while Castleford remain in sixth, one point above the Vikings. Castleford: Solomona, Monaghan, Crooks, Webster, Flynn, McShane, Gale, Jewitt, Milner, Patrick, Moors, McMeeken, Massey. Replacements: Millington, Springer, Tickle, Cook. Widnes: Hanbury, Thompson, Runciman, Bridge, Ah Van, Mellor,Brown, Cahill, White, Buchanan, Whitley, Dean, Leuluai. Replacements: J. Chapelhow, Manuokafoa, Walker, Heremaia. Referee: J Smith</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “Widnes Vikings secured a victory over Castleford Tigers with a score of 38-30”</div><div class="fld"><span class="k">Question</span><span>What was the outcome of the match?</span></div><div class="fld"><span class="k">R</span><span>Widnes Vikings secured a victory over Castleford Tigers</span></div><div class="fld"><span class="k">Replacement</span><span>Widnes Vikings secured a victory over Castleford Tigers</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Widnes Vikings secured a victory over Castleford <del>Tigers with a score of 38-30.</del> <ins>Tigers.</ins></p>
+  <div class="comment"><p>This is the revision we looked for. You kept the part the source supports and removed only the score, which the source never gives.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Widnes Vikings secured a victory over Castleford <del>Tigers with a score of 38-30.</del> <ins>Tigers.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Adjust the span first. “Widnes Vikings secured a victory over Castleford Tigers” is faithful: the source says “Widnes held on” and “The Vikings' victory”. Only “with a score of 38-30” is not supported.</li><li>H: “Widnes won with a score of 38-30.” Q1: “What was the final score?” The source does not give it. It gives 38-12 before Castleford's three late tries, and no score after them.</li><li>No question about the final score or the winning margin is answerable by both texts, so delete “with a score of 38-30”.</li></ol></div>
+</section>
+<section class="card" id="P10-p8">
+  <div class="chead"><h3>Item 8 <span class="topic">&middot; a British Paralympian</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">The passage describes British Paralympian <mark>Sarah Storey</mark>&#x27;s victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland. Storey, aged 37, aims to secure her 17th title in the upcoming road race. She is noted as Britain&#x27;s most decorated female Paralympian with 22 medals, including 11 golds, 8 silvers, and 3 bronzes across cycling and swimming disciplines. Storey has won 21 world titles and achieved four gold medals at the 2012 London Paralympics. Her career began in swimming, where she won six medals at the 1992 Paralympics, before transitioning to cycling in 2005.</p>
+  <details class="src"><summary>Show the source</summary><p>The Briton finished more than two minutes ahead of Poland&#x27;s Anna Harkowska in Nottwil, Switzerland. Storey can win a 17th title when she rides in Saturday&#x27;s road race. &quot;It&#x27;s a massive relief to win,&quot; said the 37-year-old, who is targeting further Paralympic success at next year&#x27;s Games in Rio de Janeiro. Storey is Britain&#x27;s most decorated female Paralympian with 22 medals. She has won 11 gold, eight silver and three bronze medals in both cycling and swimming across six Paralympics. She won four golds at the 2012 Games in London and has now won 21 world titles across both sports. Storey began her sporting career in the pool, winning six medals at the 1992 Paralympics before switching to cycling in 2005.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Not a hallucination</span> “Sarah Storey”</div><div class="fld"><span class="k">Reason</span><span>The source speaks of Sarah Storey and her achievements</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="dim">You left the text unchanged.</p>
+  <div class="comment"><p>You marked the span Not a hallucination because “The source speaks of Sarah Storey and her achievements”. The source never uses the name Sarah: it calls her “Storey”, “the Briton” and “the 37-year-old”. Her first name comes from outside the source, so it can stay only if it can be considered common knowledge. We believe most readers would have to look it up, so the revision we looked for splits the span, keeps “Storey” and deletes “Sarah”. If you consider her first name common knowledge, Not a hallucination is also defensible, but then the reason is common knowledge, not the source.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">The passage describes British Paralympian <del>Sarah</del> Storey&#x27;s victory in a cycling event in Nottwil, Switzerland, where she won by over two minutes ahead of Anna Harkowska from Poland.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Split the span. “Sarah Storey” contains two details: the first name “Sarah” and the surname “Storey”.</li><li>“Storey” is faithful: the source calls her Storey throughout. Mark it Not a hallucination.</li><li>For “Sarah”, H: “The Paralympian's first name is Sarah.” Q1: “What is her first name?” The source never says. It calls her “Storey”, “the Briton” and “the 37-year-old”.</li><li>Her first name can stay only if it can be considered common knowledge. We believe it cannot: most readers would have to look it up, like the actress's age in the guidelines' common knowledge section. On that reading, no question about her first name is answerable by both texts, so delete “Sarah”.</li><li>If you consider her first name common knowledge, marking the span Not a hallucination is also defensible.</li></ol></div>
+</section>
+</div>
+  <div id="after" hidden>
+    <section class="box"><h2>Before you start: what changed in the tool</h2><p>The tool has changed in two ways since the first round.</p><ol><li><strong>H and R are no longer fields.</strong> You still work through them as steps of the procedure, in your head: the complete statement H, then the questions from Q1 to Qmax, then the complete-sentence answer to Qmax. For a replacement, the card now asks for Qmax, the replacement and the source sentence it comes from. For a deletion, it asks for a short explanation.</li><li><strong>The grammar step is now required more explicitly.</strong> Under the revision, the grammar box shows your revised text with every place you edited marked. Read each marked place, fix any grammar error your edit introduced, and do not add or change any content. Then tick the box that says you checked the grammar. If you change an answer after ticking, the tick is removed and you check again. When you submit, the tool may also point out patterns that usually mean a broken sentence, such as a doubled word or a sentence ending in “which”.</li></ol></section>
+    <footer><a class="btn" id="go" href="annotate.html">Continue to the next round</a></footer>
+  </div>
+</main>
+<script>var ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec"; var VERSION = "round2-feedback-v1"; var SALT = "round2-feedback:";</script>
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  var PRO = {pid: q.get("PROLIFIC_PID") || "", study: q.get("STUDY_ID") || "",
+             session: q.get("SESSION_ID") || ""};
+  var who = null, visibleMs = 0, since = document.hidden ? 0 : Date.now(), deepest = 0;
+  var opened = Date.now(), posted = false;
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { if (since) visibleMs += Date.now() - since; since = 0; }
+    else since = Date.now();
+  });
+  addEventListener("scroll", function () {
+    var h = document.documentElement.scrollHeight - innerHeight;
+    if (h > 0) deepest = Math.max(deepest, Math.round(100 * scrollY / h));
+  }, {passive: true});
+  function hex(buf) {
+    return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+      return ("0" + b.toString(16)).slice(-2); }).join("");
+  }
+  function show(label, review) {
+    who = label;
+    document.querySelectorAll(".who").forEach(function (el) {
+      el.hidden = el.getAttribute("data-who") !== label; });
+    document.getElementById("nopid").hidden = true;
+    document.getElementById("after").hidden = false;
+    if (review) document.getElementById("review").hidden = false;
+  }
+  var view = q.get("view");
+  if (view && document.querySelector('.who[data-who="' + view + '"]')) show(view, true);
+  else if (PRO.pid && window.crypto && crypto.subtle) {
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(SALT + PRO.pid)).then(function (d) {
+      var h = hex(d), el = document.querySelector('.who[data-h="' + h + '"]');
+      if (el) show(el.getAttribute("data-who"), false);
+    });
+  }
+  function withIds(url) {
+    var u = new URL(url, location.href);
+    if (PRO.pid) u.searchParams.set("PROLIFIC_PID", PRO.pid);
+    if (PRO.study) u.searchParams.set("STUDY_ID", PRO.study);
+    if (PRO.session) u.searchParams.set("SESSION_ID", PRO.session);
+    return u.toString();
+  }
+  var go = document.getElementById("go");
+  go.href = withIds("annotate.html");
+  function report(partial) {
+    if (posted || !PRO.pid || !ENDPOINT) return;
+    if (!partial) posted = true;
+    if (since) { visibleMs += Date.now() - since; since = document.hidden ? 0 : Date.now(); }
+    var body = JSON.stringify({tool: VERSION, stage: "round2_feedback", partial: !!partial,
+      prolific: PRO, prolific_pid: PRO.pid, study_id: PRO.study, session_id: PRO.session,
+      who: who, read_s: Math.round(visibleMs / 1000),
+      wall_s: Math.round((Date.now() - opened) / 1000), scrolled_pct: deepest,
+      submitted_at: new Date().toISOString()});
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(ENDPOINT,
+          new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
+      fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+    } catch (e) {}
+  }
+  go.addEventListener("click", function () { report(false); });
+  addEventListener("pagehide", function () { report(true); });
+  var themeBtn = document.getElementById("theme");
+  function paint() {
+    themeBtn.textContent = document.documentElement.getAttribute("data-theme") === "dark"
+      ? "\u2600 Light" : "\u263E Dark";
+  }
+  themeBtn.addEventListener("click", function () {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (dark) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", "dark");
+    try { localStorage.setItem("gl-theme", dark ? "light" : "dark"); } catch (e) {}
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

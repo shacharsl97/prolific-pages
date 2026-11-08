@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Minimal factual revision - closing questions</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#fbfaf8;--panel:#ffffff;--ink:#f4f2ee;--line:#e2ded7;--text:#1c1b19;
+      --dim:#6a6660;--accent:#1f4e79;--on-accent:#ffffff;--mark:#fde9a8;--mark-line:#e0c25a;
+      --ok:#2f6b45;--ok-bg:#eaf4ee;--part:#8a5a00;--part-bg:#fbf1dc;--bad:#9b2c2c;--bad-bg:#fbeaea;
+      --del:#9b2c2c;--del-bg:#fbeaea;--ins:#2f6b45;--ins-bg:#e3f2e8;color-scheme:light}
+:root[data-theme="dark"]{--bg:#15171a;--panel:#1c1f23;--ink:#22262b;--line:#2e3237;
+      --text:#e8e6e2;--dim:#9a968f;--accent:#7fb2e0;--on-accent:#10243a;--mark:#4a3f16;
+      --mark-line:#8a7322;--ok:#7fc79b;--ok-bg:#18261e;--part:#e0b25c;--part-bg:#2a2214;
+      --bad:#e88b8b;--bad-bg:#2c1a1a;--del:#e88b8b;--del-bg:#2c1a1a;--ins:#7fc79b;
+      --ins-bg:#16271d;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;
+     line-height:1.6;padding:0 0 90px}
+.wrap{max-width:800px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px))}
+header{border-bottom:1px solid var(--line);padding:12px 0}
+header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600}
+h2{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600;margin-bottom:8px}
+h3{font-family:'Newsreader',Georgia,serif;font-size:18px;font-weight:600}
+.sub,.dim{color:var(--dim)}
+.sub{font-size:12px}
+.spacer{flex:1}
+.barbtn{font:inherit;font-size:12.5px;border:1px solid var(--line);background:transparent;
+        color:var(--text);border-radius:999px;padding:5px 13px;cursor:pointer}
+.box,.card,.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+              padding:18px 20px;margin:16px 0}
+.box p,.card p,.q p{font-size:14.5px;margin-bottom:8px}
+.box ol,.box ul,.card ol,.card ul{margin:4px 0 8px 22px;font-size:14.5px}
+.box li,.card li{margin-bottom:6px}
+.btn{background:var(--accent);border:1px solid var(--accent);color:var(--on-accent);
+     border-radius:7px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;
+     text-decoration:none;display:inline-block;font-family:inherit}
+.hidden{display:none}
+
+label.sl{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+         color:var(--dim);font-weight:700;margin:10px 0 4px}
+select,textarea{width:100%;background:var(--ink);color:var(--text);border:1px solid var(--line);
+  border-radius:8px;padding:9px 11px;font-size:13.8px;font-family:inherit}
+textarea{min-height:90px;resize:vertical}
+.q h3{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;margin-bottom:4px}
+.hint{font-size:12.8px !important;color:var(--dim)}
+footer{margin:22px 0 0;text-align:center}
+.done{background:var(--ok-bg);border:1px solid var(--ok);border-radius:10px;padding:20px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Minimal factual revision <span class="sub">&mdash; a few questions before you finish</span></h1>
+  <span class="spacer"></span>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></header>
+<main class="wrap">
+  <div id="form">
+    <section class="box"><h2>That's the round done &mdash; thank you</h2>
+      <p>Four short questions. Everything is optional, and your answers are used only to
+         improve the guidelines and the tool.</p></section>
+    <div class="q"><h3>As trained annotators, please let us know if there is anything in the
+      tool you would like changed or improved.</h3>
+      <p class="hint">Anything that slowed you down, was hard to find, or did not work as you
+         expected.</p>
+      <textarea id="tool_change" placeholder="Optional"></textarea></div>
+    <div class="q"><h3>Was the feedback on your first round clear? Do you disagree with any
+      of it?</h3>
+      <textarea id="feedback_view" placeholder="Optional"></textarea></div>
+    <div class="q"><h3>Which item was the hardest, and what made it hard?</h3>
+      <select id="hard_item"><option value="">— choose an item —</option><option value="r1">Item 1: an Olympic dressage champion</option><option value="r2">Item 2: an actor&#x27;s television role</option><option value="r3">Item 3: a French aid package for young people</option><option value="r4">Item 4: a Turkish opposition party</option><option value="r5">Item 5: a snooker match</option><option value="r6">Item 6: the anniversary of an uprising in Egypt</option><option value="r7">Item 7: a highway accident</option><option value="none">None stood out</option></select>
+      <label class="sl" for="hard">What made it hard?</label>
+      <textarea id="hard" placeholder="Optional"></textarea></div>
+    <div class="q"><h3>Anything else?</h3>
+      <textarea id="other" placeholder="Optional"></textarea></div>
+    <footer><a class="btn" id="go" href="https://app.prolific.com/submissions/complete?cc=C1OXW052">Submit and return to Prolific</a></footer>
+  </div>
+  <div id="thanks" class="done hidden"><h2>Thank you &mdash; your answers are recorded</h2>
+    <p id="thanksbody"></p></div>
+</main>
+<script>
+(function () {
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", VERSION = "round2-debrief-v1", CODE = "C1OXW052";
+  var LIVE = true;
+  var qs = new URLSearchParams(location.search);
+  var PRO = {pid: qs.get("PROLIFIC_PID") || "", study: qs.get("STUDY_ID") || "",
+             session: qs.get("SESSION_ID") || ""};
+  var FIELDS = ["tool_change", "feedback_view", "hard_item", "hard", "other"];
+  var KEY = "r2debrief:" + (PRO.pid || "anon"), started = Date.now(), posted = false;
+  function $(id) { return document.getElementById(id); }
+  try { var d = JSON.parse(localStorage.getItem(KEY) || "null");
+        if (d) FIELDS.forEach(function (f) { if (d[f]) $(f).value = d[f]; }); } catch (e) {}
+  FIELDS.forEach(function (f) { $(f).addEventListener("input", function () {
+    var o = {}; FIELDS.forEach(function (g) { o[g] = $(g).value; });
+    try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }); });
+  function report(partial) {
+    if (posted) return;
+    if (!partial) posted = true;
+    var o = {tool: VERSION, stage: "round2_debrief", partial: !!partial, prolific: PRO,
+             prolific_pid: PRO.pid, study_id: PRO.study, session_id: PRO.session,
+             debrief_s: Math.round((Date.now() - started) / 1000)};
+    FIELDS.forEach(function (f) { o[f] = $(f).value.trim(); });
+    var body = JSON.stringify(o);
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(ENDPOINT,
+          new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
+      fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+    } catch (e) {}
+  }
+  addEventListener("pagehide", function () { if (!posted) report(true); });
+  $("go").addEventListener("click", function (e) {
+    report(false);
+    try { localStorage.removeItem(KEY); } catch (err) {}
+    if (LIVE) return;
+    e.preventDefault();
+    $("form").classList.add("hidden"); $("thanks").classList.remove("hidden");
+    $("thanksbody").textContent = "Your answers are recorded. The completion link will be "
+      + "added here when the study is created.";
+    scrollTo(0, 0);
+  });
+  var t = $("theme");
+  function paint() { t.textContent = document.documentElement.getAttribute("data-theme")
+    === "dark" ? "\u2600 Light" : "\u263E Dark"; }
+  t.addEventListener("click", function () {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (dark) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", "dark");
+    try { localStorage.setItem("gl-theme", dark ? "light" : "dark"); } catch (e) {}
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>

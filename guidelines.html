@@ -123,7 +123,7 @@ a{color:var(--accent)}
 .overview p.consent{margin-top:12px;padding-top:12px;border-top:1px solid var(--rule);
   font-size:.92em;color:var(--muted)}
 /* Opened from inside the tools as a popup: the guidelines and nothing else. */
-.embed .overview,.embed .cta,.embed .llmnote,.embed .themetoggle{display:none}
+.embed .overview,.embed .cta,.embed .llmnote,.embed .themetoggle,.embed .demonext{display:none}
 @media (max-width:980px){
   .card.wide{display:block;max-width:786px}
   .card.wide > .marginfig{position:static;max-width:500px;margin:14px 0 4px}
@@ -150,7 +150,7 @@ a{color:var(--accent)}
   </section>
   <section class="sec lvl2" id="terminology" data-sec="terminology"><div class="card wide"><h2><span class="n">1</span>Terminology</h2><div class="body"><p><strong>Target text:</strong> The text we scan for hallucinations. Could be LLM generated or human written. We attempt to find and correct all non factual details (with respect to the source text) within this text.</p>
 <p><strong>Source:</strong> The reference text that the target text is intended to reflect. It serves as our ground truth and provides the factual evidence against which the target text is compared to detect hallucinated statements.</p>
-<p><strong>Statement:</strong> The different propositions or units of information the target text consists of. Each statement may be entailed or contradicted by the source, or neither (“neutral”). A statement is a hallucination to revise when it is contradicted or merely neutral (i.e. not entailed neither contradicted) — both are non-faithful; only entailed statements are left untouched.</p>
+<p><strong>Statement:</strong> The different propositions or units of information the target text consists of. Each statement may be entailed or contradicted by the source, or neither (“neutral”). A statement is a hallucination to revise when it is contradicted or merely neutral (i.e. neither entailed nor contradicted) — both are non-faithful; only entailed statements are left untouched.</p>
 <ul>
 <li>For example, if the target text is “Danny ate a green apple”, it can be decomposed into two different statements: “Danny ate an apple” and “The apple was green”.</li>
 </ul></div><div class="marginfig"><figure><svg viewBox="0 0 470 274" width="100%" role="img" aria-label="A source text, a target text, and one statement picked out of the target that the source contradicts" xmlns="http://www.w3.org/2000/svg">
@@ -415,14 +415,14 @@ a{color:var(--accent)}
 </ul>
 <li>Please <strong>do not use any LLMs</strong>,  we are attempting to examine natural human writing.</li>
 </ul>
-<p>Please now continue to the demo file for initial practice. Thank you very much for your cooperation. 🙂</p></div></div></section>
+<p class="demonext">Please now continue to the demo file for initial practice. Thank you very much for your cooperation. 🙂</p></div></div></section>
   <div class="llmnote">Please do not use any LLMs at any point — here, in the practice round, or in the qualification round. We are studying how people write faithful minimal revisions, so we need your own work.</div>
   <div class="cta"><a id="go" href="demo.html">Continue to the practice round</a></div>
 </div>
 <script>
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec';
 var TOOL_VERSION = 'guidelines-v4';
-var SOURCE_SHA = '914cf8d7ec81c1f5';
+var SOURCE_SHA = '98f3a21abc0dc6b7';
 
 // Theme toggle. The page is light for everyone by default; this only remembers a
 // reader who asked for dark. localStorage can throw in a private window, so every
