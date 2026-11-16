@@ -1,0 +1,1700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Minimal factual revision &mdash; third round</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root {
+  --paper:#fbfaf8; --raised:#ffffff; --ink:#1c1b19; --muted:#6a6660; --rule:#e2ded7;
+  --accent:#1f4e79; --acc-bg:#eaf2fa;
+  --mark:#fde8c8; --mark-line:#d9a441;
+  --ok:#2f6b45; --ok-bg:#eaf4ee;
+  --dis:#9c2b2b; --dis-bg:#fdf1f0;
+  --rej-bg:#f1f3f2;
+  --on-accent:#ffffff;
+  --note:#fdf3dd; --note-line:#d9a441;
+  --display:'Newsreader',Georgia,serif;
+  --body:'IBM Plex Sans',system-ui,sans-serif;
+  color-scheme:light;
+}
+:root[data-theme="dark"] {
+  --paper:#15171a; --raised:#1c1f23; --ink:#e8e6e2; --muted:#9a968f; --rule:#2e3237;
+  --accent:#7fb2e0; --acc-bg:#18222c;
+  --mark:#4a3a1c; --mark-line:#c89a3f;
+  --ok:#7fc79b; --ok-bg:#18261e;
+  --dis:#e98f8a; --dis-bg:#2a1c1c;
+  --rej-bg:#2b323a;
+  --on-accent:#10243a;
+  --note:#33291a; --note-line:#c89a3f;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:16px;
+  line-height:1.6;margin:0;padding:0 0 90px}
+.bar{position:sticky;top:0;z-index:20;background:var(--raised);
+  border-bottom:1px solid var(--rule);padding:10px max(16px,env(safe-area-inset-left,0px))}
+.barin{max-width:1400px;margin:0 auto;display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;font-size:13px}
+.prog{flex:1;min-width:80px;height:5px;background:var(--rule);border-radius:3px;
+  overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.count b{color:var(--ink)}
+.barbtn{font:inherit;font-size:12.5px;border:1px solid var(--rule);background:transparent;
+  color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer;white-space:nowrap}
+.barbtn:hover{border-color:var(--accent);color:var(--accent)}
+.barbtn[aria-expanded="true"]{background:var(--acc-bg);border-color:var(--accent)}
+.wrap{max-width:1400px;margin:0 auto;padding:22px max(16px,env(safe-area-inset-left,0px))}
+h1{font-family:var(--display);font-size:27px;font-weight:600;margin:0 0 6px}
+h2{font-family:var(--display);font-size:20px;font-weight:600;margin:0 0 10px}
+.lab{display:block;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);font-weight:600;margin:0 0 7px}
+.lab .opt{text-transform:none;letter-spacing:0;font-weight:400}
+.sub{color:var(--muted);margin:0 0 16px;max-width:75ch}
+
+/* Source left, target right. One source, never two. */
+.panes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;
+  align-items:start}
+.pane{background:var(--raised);border:1px solid var(--rule);border-radius:10px;
+  padding:18px 20px}
+.pane.src{position:sticky;top:64px;max-height:calc(100vh - 92px);overflow:auto}
+.doc{white-space:pre-wrap;font-size:15.5px;line-height:1.72}
+mark.sp{background:var(--mark);border-bottom:2px solid var(--mark-line);padding:1px 0;
+  cursor:pointer;border-radius:2px;color:var(--ink)}
+/* The browser's own stylesheet puts color:black on <mark>, which it does not
+   adapt for a dark page. Every highlight -- the amber one most of all -- was
+   black text on a dark ground until this line. */
+mark.sp.done{background:var(--ok-bg);border-bottom-color:var(--ok)}
+mark.sp.off{background:var(--rej-bg);border-bottom-color:var(--muted)}
+mark.sp sup{font-size:10px;font-weight:700;color:var(--muted);margin-left:1px;line-height:0}
+
+.span{border:1px solid var(--rule);border-left:3px solid var(--mark-line);
+  border-radius:0 6px 6px 0;background:var(--paper);padding:14px 16px;margin:0 0 14px}
+.span.done{border-left-color:var(--ok)}
+.span.off{border-left-color:var(--muted)}
+.span.flash{outline:2px solid var(--accent);outline-offset:1px}
+.spanhead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+.spantext{font-weight:600;margin:0;flex:1 1 240px;min-width:0}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.choice{font:inherit;font-size:13px;border:1px solid var(--rule);background:transparent;
+  color:var(--ink);border-radius:999px;padding:5px 13px;cursor:pointer}
+.choice:hover{border-color:var(--accent)}
+.choice[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
+  color:var(--on-accent);font-weight:600}
+.choice.small{font-size:12px;padding:3px 10px}
+label.fl{display:block;font-size:12.5px;font-weight:600;margin:12px 0 4px}
+label.fl .opt{font-weight:400;color:var(--muted)}
+input[type=text],textarea{font:inherit;font-size:15px;width:100%;color:var(--ink);
+  background:var(--raised);border:1px solid var(--rule);border-radius:6px;padding:8px 11px}
+textarea{resize:vertical;line-height:1.6;overflow:hidden;display:block}
+textarea.sm{min-height:40px}
+textarea.rev{min-height:110px;line-height:1.7}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.needs{border-color:var(--dis)!important;background:var(--dis-bg)!important}
+.fielderr{display:none;font-size:12.5px;color:var(--dis);margin-top:4px}
+.fielderr.on{display:block}
+.soft{font-size:12.5px;color:var(--muted);margin:4px 0 0}
+.err{color:var(--dis);background:var(--dis-bg);border:1px solid var(--dis);
+  border-radius:6px;font-size:13.5px;font-weight:600;padding:8px 12px;margin:0;
+  flex-basis:100%}
+.err:empty{display:none}
+.notice{background:var(--note);border-left:3px solid var(--note-line);
+  border-radius:0 4px 4px 0;padding:9px 12px;margin:0 0 12px;font-size:13.5px}
+.warnbox{background:var(--note);border:1px solid var(--note-line);border-radius:8px;
+  padding:12px 14px;font-size:13.5px;margin:0 0 16px}
+.hint{color:var(--muted);font-size:12.5px;margin:0 0 10px}
+.sidepanel{margin:10px 0 0;padding:11px 13px;background:var(--mark);
+  border-left:3px solid var(--mark-line);border-radius:0 4px 4px 0}
+.sidepanel p{margin:0 0 9px;font-size:13px}
+.sidepanel label.fl{margin-top:0}
+.word{font:inherit;font-size:14px;border:1px solid var(--mark-line);background:var(--raised);
+  color:var(--ink);border-radius:4px;padding:3px 9px;margin:0 5px 5px 0;cursor:pointer}
+.word:hover{background:var(--mark-line)}
+.autonote{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 0;
+  font-size:12.5px;color:var(--muted)}
+.autonote .stale{color:var(--dis);font-weight:600}
+.revsecond{margin-top:18px}
+.edits{background:var(--raised);border:1px solid var(--rule);border-radius:6px;
+  padding:10px 12px;margin:0 0 14px;font-size:15px;line-height:1.7}
+.editline{margin:0}
+.hlwrap{position:relative;background:var(--raised);border-radius:6px}
+.hlwrap textarea{position:relative;z-index:1;background:transparent}
+.hl{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  border:1px solid transparent;padding:8px 11px;font:inherit;font-size:15px;line-height:1.7;
+  white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word;color:transparent}
+.hl mark{background:none;color:transparent;padding:0;box-shadow:inset 0 -2px 0 var(--accent)}
+.editline+.editline{margin-top:8px;padding-top:8px;border-top:1px dashed var(--rule)}
+label.gramok{display:flex;gap:9px;align-items:flex-start;margin:12px 0 0;font-size:14px;
+  font-weight:600;cursor:pointer}
+label.gramok input{margin-top:3px;width:17px;height:17px;flex:none}
+label.gramok.needs{border-radius:6px;padding:6px 8px}
+.warnlist{margin:0 0 14px;padding:0;list-style:none}
+.warnlist li{margin:0 0 12px}
+.warnlist .spot{display:block;font-size:14.5px;line-height:1.6;margin:4px 0 0;
+  padding:6px 10px;background:var(--raised);border:1px solid var(--rule);border-radius:6px}
+.cta{display:inline-block;background:var(--accent);color:var(--on-accent);text-decoration:none;
+  border:0;font:inherit;font-weight:600;padding:12px 26px;border-radius:6px;cursor:pointer;
+  font-size:16px}
+.ghost{font:inherit;background:transparent;color:var(--accent);border:1px solid var(--rule);
+  padding:11px 18px;border-radius:6px;cursor:pointer;font-size:15px}
+.ghost:hover{border-color:var(--accent)}
+.foot{display:flex;gap:12px;align-items:center;margin:22px 0 0;flex-wrap:wrap}
+.diff{background:var(--raised);border:1px solid var(--rule);border-radius:8px;
+  padding:14px 16px;margin:0 0 14px;font-size:15px;line-height:1.7}
+del{background:var(--dis-bg);color:var(--dis);text-decoration:line-through;padding:1px 2px}
+ins{background:var(--ok-bg);color:var(--ok);text-decoration:none;padding:1px 2px}
+.modalbg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;
+  align-items:center;justify-content:center;padding:20px;z-index:40}
+.modal{background:var(--paper);border-radius:12px;max-width:720px;width:100%;
+  max-height:88vh;overflow:auto;padding:24px 26px}
+.llm{border:1px solid var(--dis);background:var(--dis-bg);border-radius:6px;
+  padding:12px 15px;margin:18px 0 0;font-size:14px}
+.saved{font-size:12px;color:var(--muted)}
+
+/* The revision procedure is meant to be read against the item, so on a laptop or wider the
+   page moves over to make room rather than the panel covering the fields being filled in.
+   The full guidelines are too long for that and get the whole window. */
+.procpanel{position:fixed;top:56px;right:max(16px,env(safe-area-inset-right,0px));z-index:30;
+  width:min(460px,calc(100vw - 32px));max-height:calc(100vh - 76px);overflow:auto;
+  background:var(--raised);border:1px solid var(--rule);border-radius:10px;
+  padding:16px 20px;box-shadow:0 8px 28px rgba(0,0,0,.22);font-size:14px}
+.procpanel ol{margin:8px 0 0;padding-left:20px}
+.procpanel li{margin-bottom:7px}
+.panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.panelhead h2{margin:0;font-size:18px}
+@media (min-width:1100px){
+  body.procopen .wrap{max-width:none;margin:0 484px 0 0}
+  body.procopen .panes{gap:16px}
+}
+.glmodal{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);padding:2vh 2vw;
+  display:flex;flex-direction:column}
+.glmodal .panelhead{background:var(--raised);padding:10px 16px;border-radius:10px 10px 0 0;
+  border:1px solid var(--rule);border-bottom:0}
+.glmodal iframe{flex:1;width:100%;border:1px solid var(--rule);border-radius:0 0 10px 10px;
+  background:var(--paper)}
+
+/* the worked solution, practice round only */
+#teach{margin-top:24px;border-radius:10px;border:1px solid var(--ok);background:var(--raised);
+  padding:20px 22px}
+#teach h3{font-family:var(--display);font-size:20px;font-weight:600;margin:18px 0 4px}
+#teach .note{font-size:14px;color:var(--muted);margin:0 0 14px;max-width:85ch}
+.cap{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);
+  font-weight:600;margin:0 0 6px}
+.rung{display:flex;gap:11px;align-items:flex-start;padding:9px 12px;border-radius:6px;
+  background:var(--rej-bg);border-left:3px solid var(--muted);margin-bottom:7px;font-size:14px}
+.rung.settled{border-left-color:var(--ok);background:var(--ok-bg)}
+.rung.rejected{border-left-color:var(--dis);background:var(--dis-bg)}
+.rung.surpassed{border-left-color:var(--accent);background:var(--acc-bg)}
+.rung.available{border-left-color:var(--note-line);background:var(--note)}
+.rung .qn{font-size:10px;font-weight:700;color:var(--on-accent);background:var(--muted);
+  border-radius:9px;padding:2px 8px;white-space:nowrap;margin-top:2px}
+.rung.settled .qn{background:var(--ok)}
+.rung.rejected .qn{background:var(--dis)}
+.rung.surpassed .qn{background:var(--accent)}
+.rung.available .qn{background:var(--note-line);color:#1c1b19}
+.rung .src{display:block;font-size:13px;color:var(--muted);margin-top:3px}
+.ans{background:var(--ok-bg);border:1px solid var(--ok);border-radius:8px;padding:12px 14px;
+  margin:4px 0 14px;font-size:14.5px}
+.k{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--muted);font-weight:600;margin:8px 0 2px}
+.k:first-child{margin-top:0}
+.worked{border-top:1px solid var(--rule);margin-top:10px;padding-top:8px}
+.trap{display:flex;gap:10px;padding:9px 12px;border-radius:6px;background:var(--dis-bg);
+  border-left:3px solid var(--dis);margin-bottom:7px;font-size:14px}
+.trap.partial{background:var(--note);border-left-color:var(--note-line)}
+.trap .x{color:var(--dis);font-weight:700}
+.trap .tw{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.yours{background:var(--paper);border:1px dashed var(--rule);border-radius:8px;
+  padding:12px 14px;margin:0 0 16px;font-size:14px}
+.intro{background:var(--raised);border:1px solid var(--rule);border-radius:10px;
+  padding:22px 24px;max-width:860px}
+.intro p{margin:0 0 10px}
+.intro .llm{margin:14px 0 16px}
+
+@media (max-width:560px){
+  .bar{padding:7px max(12px,env(safe-area-inset-left,0px))}
+  .barin{gap:7px;font-size:12px}
+  .barbtn{padding:4px 9px;font-size:11.5px}
+  .prog{order:9;flex-basis:100%}
+  .wrap{padding:16px max(14px,env(safe-area-inset-left,0px))}
+  h1{font-size:23px}
+}
+@media (max-width:900px){
+  .panes{grid-template-columns:minmax(0,1fr)}
+  .pane.src{position:static;max-height:420px}
+}
+</style>
+</head>
+<body>
+<div class="bar"><div class="barin">
+  <span class="count" id="count"></span>
+  <span class="prog"><i id="fill"></i></span>
+  <button type="button" class="barbtn" id="procbtn" aria-expanded="false">Revision procedure</button>
+  <button type="button" class="barbtn" id="glbtn" aria-expanded="false">Full guidelines</button>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></div>
+<aside class="procpanel" id="procpanel" hidden aria-label="The revision procedure">
+  <div class="panelhead"><h2>The revision procedure</h2>
+    <button type="button" class="barbtn" id="procclose">Close &times;</button></div>
+  
+<ol>
+  <li><b>Check the mark.</b> If the marked statement is faithful, choose <b>Not a
+    hallucination</b> and say what supports it. If the mark covers more or fewer words than
+    the true hallucinated statement, use <b>Adjust span</b> so that the span is minimal. If it
+    holds several hallucinated details, use <b>Split span</b>.</li>
+  <li>Convert the span into a <b>complete statement H</b>.</li>
+  <li>Find <b>Q1</b>, a question answerable from both H and the source: the hallucination
+    answers it falsely, the source answers it faithfully. The answer to it should be exactly
+    H.</li>
+  <li>Narrow it: keep finding more and more specific questions, until you reach <b>Qmax</b>,
+    the <b>most specific question answerable by both</b>.</li>
+  <li>The question must be one the <b>source</b> can actually answer. Do not keep a
+    presupposition the source does not support, or add a specific value just to match the
+    original text's specificity.</li>
+  <li>Answer Qmax from the source as a complete sentence: that is <b>R</b>. Replace the marked
+    span with only the part of R that fits the span's slot, leaving the rest of the sentence
+    intact. Where the source supports more than one answer, take the one <b>closest in
+    specificity</b> to what the marked statement claimed, neither vaguer nor more detailed.
+    Where the source provides wording that fits the slot, use the source's wording
+    <b>verbatim</b> rather than paraphrasing.</li>
+  <li>If no meaningful question exists, <b>delete</b> the span completely. Rule of thumb: if
+    the answer you found could be dropped from the revision without any loss of information,
+    it is vacuous, so delete instead of inserting it.</li>
+  <li>After replacing or deleting, make the necessary <b>grammar or lexical adjustment</b>, in
+    places where your own edits broke the text, <b>without adding any new information</b>.
+    That goes in the grammar box, after the revision.</li>
+  <li>Validate: is the replacement the same <b>type</b> and same <b>specificity level</b> as H?
+    Did the author really intend to answer the chosen question?</li>
+  <li>Before you submit, check the revision against the marked statement again: did you lose
+    any <b>salvageable faithful information</b>? If possible, keep all faithful information
+    the marked statement entailed, by looking for a question whose answer preserves it, if one
+    exists.</li>
+</ol>
+
+</aside>
+<div class="glmodal" id="glmodal" hidden role="dialog" aria-modal="true" aria-label="The full guidelines">
+  <div class="panelhead"><h2>The full guidelines</h2>
+    <button type="button" class="barbtn" id="glclose">Close &times;</button></div>
+  <iframe id="glframe" title="The full guidelines"></iframe>
+</div>
+<div class="wrap">
+  <h1 id="task-h1">Revise the marked statements</h1>
+  <p class="sub" id="task-intro">Fifteen items. The source is on the left and never changes. On
+    the right is a summary of it with the unfaithful statements already marked. Work through
+    each one as the guidelines describe, then check the grammar of the revised text. The
+    revision procedure and the full guidelines are at the top of the page whenever you want
+    them.</p>
+  <div class="warnbox" id="nopid" hidden>This page was opened without a Prolific ID, and your submission depends on it. If you came from Prolific, go back and use the study link there rather than a copied address.</div>
+  <div id="app"></div>
+  <div id="below"></div>
+  <div class="llm" id="llm-note">Please do not use any LLMs. We are studying how people write faithful minimal revisions, so we need your own work.</div>
+</div>
+<script>
+var CFG = {"storeKey": "annot-r3", "version": "annotate-r3-v1", "endpoint": "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", "nextPage": "debrief.html", "guidelines": "../guidelines.html", "noun": "item", "doneCount": "<b>all 15<\/b> done"};
+var ITEMS = [{"id": "s1", "source": "A host of stars joined him for the final show, including the singer Bruce Springsteen. There were also video messages from US Secretary of State John Kerry and Republican Senator John McCain. Stewart took over the show in 1999 and established himself as one of the most influential satirists in the US and the voice of liberal America. He is being replaced by the South African comedian Trevor Noah. The Daily Show, broadcast on Comedy Central, has often been cited as a leading news source for young people, with an average audience of one million viewers. In his final monologue, Stewart thanked colleagues, fans and family. \"Nothing ends. It's just a continuation. It's a pause in the conversation,\" he said. \"So rather than saying goodbye or good night, I'm just going to say I'm gonna go get a drink,\" he said. The Daily Show has also helped to launch several well-known comic performers, including Steve Carell and John Oliver, as well as Stephen Colbert who is to be David Letterman's replacement on CBS's Late Show. The hashtag #JonVoyage was trending on Twitter as Stewart bid farewell to the Daily Show, with famous fans paying tribute. For John McCain, it was a chance for a spot of gentle revenge. Stewart had once mocked him using a puppet resembling the Republican senator.", "summary": "Jon Stewart has hosted his final edition of the US satirical news show The Daily Show after 16 years.", "spans": ["after 16 years"]}, {"id": "s2", "source": "Canadian-Egyptian Mohamed Fahmy, Egyptian Baher Mohamed and Australian Peter Greste were sentenced to up to 10 years in prison in July 2014. Their convictions for spreading false news were overturned and they were freed in February to await retrial. Mr Greste was deported to Australia and is on trial again in absentia. The journalists strenuously deny collaborating with the Muslim Brotherhood, which the Egyptian government considers a terrorist group, after the overthrow of President Mohammed Morsi by the military in 2013. At a hearing on Sunday, the journalists were told the verdict would be delayed until 29 August.", "summary": "The verdict in the retrial of three Al-Jazeera journalists in Egypt has been delayed until next month.", "spans": ["Al-Jazeera", "next month"]}, {"id": "s3", "source": "Government sources told the BBC that the tribal fighters set fire to a building used by the militants. The source said 10 IS militants and five tribesmen had died in the clashes that followed. Issa al-Issawi, the exiled mayor of Fallujah, said that more tribesmen were joining the fight against IS. Reports said the violence involved men from multiple tribes and IS members known as al-Hisba, who are responsible for enforcing religious strictures in the city. \"Clashes took place between sons of the al-Mahamda and al-Juraisat tribes against the al-Hisba group,\" Mr Issawi told AFP news agency. He said the violence stemmed from tensions over increasingly difficult living conditions while Fallujah is besieged by Iraqi security forces. Sheikh Majeed al-Juraisi, a leader in the al-Juraisat tribe, told AFP the clashes were part of an uprising against IS fighters in the city and called on the government and security forces to help. Reports suggested the tribesmen had seized parts of the north of the city, but later ceded the ground back to IS jihadists. Fallujah, which is about 50km (30 miles) west of Baghdad, has been held by anti-government forces since the beginning of 2014 and is now one of two Iraqi cities still under the IS group's control. IS militants launched a sweeping offensive in June 2014 that overran large areas north and west of Baghdad, but security forces and allied fighters have pushed the jihadists back with support from US-led air strikes.", "summary": "Clashes have broken out in the Iraqi city of Fallujah between tribesmen and Islamic State (IS) militants.", "spans": ["Islamic State"]}, {"id": "s4", "source": "The tie-up could worsen the position for shoppers in local areas owing to a cut in quality, fewer promotions and store closures, an initial probe found. Poundland wants to buy its closest rival in an agreed deal worth £47.5m in cash and £7.5m in shares. The Competition and Markets Authority (CMA) said this could hit 80 areas. These were where the companies, which have a combined network of 800 stores, currently overlap. There was a further 12 areas where they would be competitors in the near future. Following an initial investigation, the CMA said there was \"a realistic prospect of substantial lessening of competition\" in these areas. The authority said it would now move to a more in-depth investigation unless these concerns were addressed in a \"clear-cut manner\" by the companies.", "summary": "Poundland's proposed takeover of rival Homebase could lead to \"substantial lessening of competition\", the competition watchdog has said.", "spans": ["rival Homebase"]}, {"id": "s5", "source": "The cylindrical device, which was between six and eight inches long (15-20cm), was discovered at the Scaur at Kirkcolm on Wednesday. A police spokesman said the small bomb was rusty and resembled a dog bone. He urged anyone who finds similar devices not to touch them, but to contact Police Scotland as soon as possible with its location. The spokesman said: \"The device has been dealt with and there is no danger to the public. \"However, please be aware when walking along the coastline should any similar devices be found. \"The devices will not explode, however they will burn at high temperatures and emit toxic fumes.\" The bomblet may have come from Beaufort's Dyke, a deep trench in the Irish Sea between Scotland and Northern Ireland, which has been used as a munitions dump.", "summary": "A World War Two bomblet has been found on a beach in Fife.", "spans": ["World War Two", "Fife"]}, {"id": "s6", "source": "Bielik, 17, who underwent his medical at Arsenal last week, signed for Legia from their Polish rivals Lech Poznan in July and has made six appearances in all competitions this season. Arsenal say the deal \"is subject to the completion of regulatory processes\". The Poland Under-17 international can play in both a holding midfield role and at centre-back. He said: \"I've decided to move to Arsenal and although I cannot be sure of what's to come in the future, I'm going to London to fulfil my dreams. \"I'm grateful to my team-mates and manager Henning Berg for trusting such a young player and giving me a chance to play for the first team. It's mostly thanks to him that I'm able to move to Arsenal.\" Berg said: \"Krystian is a very talented player, who is going to achieve big success in football in the future.\" For each position, select whether you think Arsenal are sorted, or if a player is needed.", "summary": "Arsenal have signed teenage midfielder Krystian Bielik on loan from Legia Warsaw until the end of the season.", "spans": ["on loan", "Warsaw", "until the end of the season"]}, {"id": "s7", "source": "Smoke bombs were let off and bricks thrown as police turned out in force to oversee hundreds of far-right demonstrators marching through town. They clashed with anti-fascist demonstrators, leaving five people with minor injuries. Kent Police said it seized more than 20 weapons including a knuckle duster. Police said their operation ended at 17:00 GMT after they had arrested individuals for possession of offensive weapons, breaching the peace and public order offences. Banners and placards carried by the right-wing marchers included those from the North West National Front, neo-Nazi organisation Combat 18 and the Scottish Defence League. Counter-demonstrators included members of Kent Anti-Racism Network, anti-fascist group Antifa and people with Socialist Worker placards. They were addressed by Diane Abbott, shadow secretary of state for international development. Earlier, six people were arrested on suspicion of violent disorder at a service station on the M20 which was closed after several coaches believed to be on the way to the demonstrations were damaged. Police said officers were called to a disturbance at Maidstone services at junction eight at 10:51 GMT. Two coaches had swastikas daubed on them in blood following a clash between two rival groups. A coach which left the scene was stopped at junction 11 services at Westenhanger. During the day police took away weapons including a knife, pieces of wood, glass, hammers and bricks. A police spokesman said he could not comment on the motives of those involved, or what groups they may or may not have been a part of. Police warned on Friday the demonstrations were expected to attract large numbers of protesters, with businesses and residents told to expect disruption.", "summary": "Nine people have been arrested following violent clashes in Maidstone.", "spans": ["Nine", "in Maidstone"]}, {"id": "s8", "source": "The Gills had agreed to sign defender N'Gala, 27, after he left Eastleigh. However, he played for Barnet and Eastleigh earlier this campaign, and rules state a player cannot appear for more than two teams in one season. But National League club Dover say they have been allowed to sign him following talks with the Football Association and English Football League. N'Gala started his career at West Ham, and had spells at Stevenage and Portsmouth before joining Barnet in 2014. He became Eastleigh's record signing when they bought him from the Bees in November. The Fifa Players' Transfer rules came into force this season, and recently led to Leyton Orient winger Ulrich Nnomo's proposed move to Paris FC being cancelled. Find all the latest football transfers on our dedicated page.", "summary": "League Two side Gillingham's move for Gala N'Gala has collapsed.", "spans": ["League Two side", "Gillingham's", "Gala"]}, {"id": "s9", "source": "The US Securities and Exchange Commission (SEC) investigated the German bank for the way it accounted for certain assets in reports filed during the financial crisis. The SEC said it over-valued some of these and did not have sufficient collateral to cover potential losses. Deutsche is settling without admitting or denying the charges. The bank said there was no reliable model at the time to value those trades, which were made in the aftermath of the credit crisis and the subsequent collapse of Lehman Brothers. The SEC said the risk for potential losses ran into billions of dollars - a risk which the SEC says was not properly reported to investors. Its investigation found that Deutsche overvalued the value of certain transactions designed to protect against losses on securities in the then highly volatile credit markets. The collateral covering the portfolio was only a fraction, approximately 9%, of the $98bn total in purchased protection. \"At the height of the financial crisis, Deutsche Bank's financial statements did not reflect the significant risk in these large, complex illiquid positions,\" said Andrew Ceresney, director of the SEC's enforcement division. \"Deutsche Bank failed to make reasonable judgments when valuing its positions and lacked robust internal controls over financial reporting.\" Last week, Deutsche Bank encountered anger from its shareholders at its annual general meeting. One of the causes of investor unease was the mounting tally of regulatory fines. Investors singled out a $2.5bn fine to settle investigations into the bank's involvement in the rigging of the Libor interest rate.", "summary": "Deutsche Bank has been charged with civil fraud by US regulators.", "spans": ["charged with civil fraud"]}, {"id": "s10", "source": "Media playback is not supported on this device . The Blues lead the top flight with 59 points with 14 games remaining. Second-placed Tottenham lead the chasing pack with 50 points, and just five points separate them in second and Manchester United in sixth. \"I think there are six teams who are very strong and can fight to win the title,\" said Conte. Third-placed Manchester City, Arsenal, in fourth, and fifth-placed Liverpool make up the top six. \"Manchester United? Yes. They have a great squad,\" added Conte. \"There are 14 games to play and five teams as well as us who can fight to win it. It's important we don't make mistakes in the race.\" Chelsea face a trip to Burnley on Sunday for a 13:30 GMT kick-off. The Clarets have won their last seven games at home in all competitions with 28 of their 29 league points so far this season coming at Turf Moor. \"There are teams at the bottom who win and draw so you must have the right concentration,\" said Conte. \"If your ambition is to stay in the top four or top six, you can have highs and lows. \"If you want to win [the title] you must have concentration and focus and know that in every game you can lose points.\"", "summary": "Chelsea manager Antonio Conte says there are six teams capable of winning the Premier League title this season.", "spans": ["manager", "Antonio", "Premier League"]}, {"id": "s11", "source": "The staff were hired for the launch of the 24-hour Underground service which was was originally scheduled for September. It has been delayed until 2016 due to a dispute over pay and conditions. TfL said it is \"operationally ready\" for the Night Tube and the extra staff are now working across the network. More on this story and news from London . The planned September start date was pushed back until 2016, because TfL and unions were unable to reach an agreement on staffing arrangements. Unions took industrial action during the summer having called for increased pay and a limit on how many all-night shifts their members would be asked to do. Talks at the conciliatory service Acas are due to resume this week. TfL said it is not wasting money as the staff are fully employed. It added 307 are in part-time station positions and the rest work in engineering or service control, adding that some of these staff will be used to replace those that leave or retire. But Val Shawcross, Labour's transport spokeswoman on the London Assembly, said: \"It's a huge amount of money that must be blowing their plans. \"They've obviously pressed the button too soon in terms of putting them on the payroll.\"", "summary": "Transport for London (TfL) has spent more than £2m on 413 extra staff for the Night Tube, it has emerged.", "spans": ["Transport for London", "more than £2m", "413"]}, {"id": "s12", "source": "The group are due to be brought to a hostel in the countryside near Great Torrington, Devon on Sunday or Monday. The children will be transported from Croydon, south London, where they were taken from the Jungle camp by a private security company. The Home Office said they are unaccompanied, vulnerable children. It is not clear if the children are among a group that arrived under the \"Dubs amendment\" which grants refuge to particularly vulnerable individuals, such as those who are unaccompanied and without family ties in the UK. The purpose of the temporary facility is to provide a safe and welcoming place before the children are reunited with family members or moved to other parts of the country, Devon Country Council said. The council said it is working with the police, NHS and other local authorities as part of the \"emergency response\". \"These will be vulnerable young people,\" Councillor James McInnes said. \"They will be frightened and they will be exhausted, and we as an authority have a statutory responsibility to support those that present in Devon.\" Dozens of private security guards will accompany the group. A source told the BBC most of those expected in Devon are over 16 years old. Geoffrey Cox, Conservative MP for Torridge and West Devon, said the move will not be a \"permanent institution\". \"The majority of the children will only be here for a few days,\" he said. \"They will be under 18 and there is no question of anyone over 18 coming.\" The Home Office declined to comment on the details of the transfer, but added the children were often traumatised and their privacy should be respected as they received support to rebuild their lives.", "summary": "Dozens of children rescued from the \"Jungle\" migrant camp in Calais are due to arrive in the UK.", "spans": ["Dozens of", "in Calais", "in the UK"]}, {"id": "s13", "source": "A skeleton of a meat-eating Jurassic dinosaur, the theropod, was uncovered by spring storms at Lavernock beach, Vale of Glamorgan, in 2014. The dinosaur's missing foot was found at the beach by palaeontology student, Sam Davies, of Bridgend, at the beginning of this month. \"My first reaction was that I was very lucky,\" he said. The fossilised skeleton of the theropod - a distant cousin of the giant Tyrannosaurus rex - went on display at the National Museum Cardiff's main hall in June after it was found by fossil-hunting brothers Nick and Rob Hanigan. Mr Davies, who studies at the University of Portsmouth, visited Lavernock, near Penarth, after his tutor told him its cliffs were rich with fossils. He arrived only hours after a cliff fall had exposed the fossil and before it could be washed away by the tide. \"It was pure luck that I found it. It was just sitting on top of a slab of rock,\" he said. His tutor, Dr David Martill, confirmed the find was the missing foot of the recently discovered dinosaur, after the student emailed a picture. Dr Martill said: \"This was a chance-in-a-million find and highlights how important it is to encourage fossil hunting in this country.\" He said the specimen would help chart the evolution of dinosaur feet. The foot has been donated to the Amgueddfa Cymru, which hopes to put it on display with the rest of the skeleton soon. Dr Caroline Buttler, head of palaeontology at the museum, said: \"The dinosaur found by Nick and Rob Hanigan is the first skeleton of a theropod found in Wales. \"Sam's find adds to its significance because we can learn more about the animal and how it is related to the dinosaurs that eventually evolved into birds.\"", "summary": "A dinosaur's missing foot has been found on a south Wales beach, two years after it was discovered.", "spans": ["south", "two years after it was discovered"]}, {"id": "s14", "source": "The 37-year-old suffered the injury on 4 June during the first innings of Sussex's County Championship Division Two win over Worcestershire. It was only the Australian's second Championship appearance of the season after he missed three of Sussex's previous four games with a knee injury. Magoffin took 5-51 in his only other game as Sussex lost at Nottinghamshire. Sussex are currently fifth in the Division Two table, with two wins from their opening five matches.", "summary": "Sussex seamer Steve Magoffin will miss the rest of the season with a shoulder injury.", "spans": ["seamer", "Steve", "will miss the rest of the season", "shoulder"]}, {"id": "s15", "source": "Neville is still waiting for a first league win since taking charge of Valencia in December. Former Barcelona B striker Sanabria, on loan from Roma, scored his fourth goal in two games after Danilo tripped Jony. Alvaro Negredo missed three chances to equalise, heading one against the post, then chipping wide and blazing over. Valencia, previously unbeaten at home in the league, then missed another great chance as Rodrigo Moreno and Sofiane Feghouli narrowly failed to connect with Zakaria Bakkali's left-wing cross. At the other end, Australian goalkeeper Matty Ryan was fortunate not to concede a second penalty after barging into Carlos Carmona. Valencia have not won any of the eight La Liga matches since former Manchester United and England defender Neville took charge and have gone a total of 11 league matches without a win, two short of equalling a club record. Neville must attempt to lift his side in time for Wednesday's Copa del Rey semi-final first leg against Barcelona at the Nou Camp.", "summary": "Gary Neville's winless run as Valencia manager stretched to eight La Liga games as Antonio Sanabria's penalty gave Athletic Bilbao victory at the Mestalla.", "spans": ["Gary", "Antonio", "Athletic Bilbao", "the Mestalla"]}];
+
+function post(api, item, cur, partial) {
+  api.send(JSON.stringify({
+    tool: CFG.version, stage: "round3", partial: !!partial, prolific: api.PRO,
+    finished_items: 1,
+    answers: [api.logOf(item, cur)],
+    wall_s: Math.round((Date.now() - api.st.started) / 1000),
+    submitted_at: new Date().toISOString()
+  }));
+}
+window.TOOL_HOOKS = {
+  mainButton: function (cur, last) { return {label: last ? "Finish" : "Save and continue"}; },
+  passed: function (api, item, cur) { post(api, item, cur, false); api.advance(); },
+  finish: function (api) {
+    api.send(JSON.stringify({
+      tool: CFG.version, stage: "round3", partial: false, prolific: api.PRO,
+      finished_items: 1,
+      answers: [{item: "__all__", answer_ms: 0, spans: []}],
+      wall_s: Math.round((Date.now() - api.st.started) / 1000),
+      submitted_at: new Date().toISOString()
+    }));
+  },
+  closing: function (api) {
+    return '<div class="pane"><h2>All ' + ITEMS.length + " done &mdash; thank you.</h2>"
+      + '<p class="sub">One short page left: a few questions about the tool and the '
+      + "feedback. Your Prolific completion link comes after it.</p>"
+      + '<a class="cta" href="' + api.esc(api.withIds(CFG.nextPage)) + '">Continue</a></div>';
+  },
+  partial: function (api) {
+    var cur = api.st.items[api.st.at];
+    if (cur && !cur.done) post(api, ITEMS[api.st.at], cur, true);
+  }
+};
+
+
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  var PRO = {pid: q.get("PROLIFIC_PID") || "", study: q.get("STUDY_ID") || "",
+             session: q.get("SESSION_ID") || ""};
+  var HOOKS = window.TOOL_HOOKS;
+  var KEY = CFG.storeKey + ":" + (PRO.pid || "anon");
+  var root = document.getElementById("app");
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // ---- spans ---------------------------------------------------------------
+  function isWordAt(text, at, len) {
+    var w = /[\p{L}\p{N}]/u, b = text.charAt(at - 1), a = text.charAt(at + len);
+    return !(b && w.test(b)) && !(a && w.test(a));
+  }
+  // Left to right, whole words first: a span "10" must not land inside "2010".
+  function locate(text, list) {
+    var taken = [];
+    return list.map(function (t, n) {
+      var best = -1, from = 0, at;
+      while ((at = text.indexOf(t, from)) !== -1) {
+        var clash = taken.some(function (h) { return at < h[1] && at + t.length > h[0]; });
+        if (!clash) {
+          if (best === -1) best = at;
+          if (isWordAt(text, at, t.length)) { best = at; break; }
+        }
+        from = at + 1;
+      }
+      taken.push([best, best + t.length]);
+      return {n: n, start: best, end: best + t.length};
+    }).sort(function (a, b) { return a.start - b.start; });
+  }
+  function blankSpan(sid, start, end) {
+    return {sid: sid, start: start, end: end, baseStart: start, baseEnd: end, adj: "",
+            adjOpen: false, adjBad: false, splitOpen: false, act: "", q: "",
+            rep: "", attr: "", expl: "", why: "", from: null, parent: null};
+  }
+  function blankHelp() {
+    return {procedure: {opens: 0, ms: 0}, guidelines: {opens: 0, ms: 0}};
+  }
+  function freshItem(it) {
+    return {
+      id: it.id,
+      spans: locate(it.summary, it.spans).map(function (h) {
+        return blankSpan(it.id + "-s" + h.n, h.start, h.end);
+      }),
+      rev: "", revTouched: false, revBase: "", gram: "", gramTouched: false, gramBase: "",
+      lost: "", ms: 0, review_ms: 0, visits: 0, pastes: {}, keys: 0, done: false, note: "",
+      help: blankHelp(), fieldMs: {}, awayMs: 0, awayN: 0, idleMs: 0, idleN: 0,
+      pasteFrom: {}, pasteOutside: 0, gramOk: false, gramOkRev: "", gramOkStale: false, warnKinds: [], warnedFor: "",
+      warnOverride: false
+    };
+  }
+  // Anything a saved state from an earlier version of this page lacks.
+  function upgrade(x) {
+    var d = {fieldMs: {}, awayMs: 0, awayN: 0, idleMs: 0, idleN: 0, pasteFrom: {},
+             pasteOutside: 0, gramOk: false,
+             gramOkRev: "", gramOkStale: false, warnKinds: [], warnedFor: "", warnOverride: false};
+    Object.keys(d).forEach(function (k) { if (x[k] === undefined) x[k] = d[k]; });
+  }
+  function spanText(item, s) { return item.summary.slice(s.start, s.end); }
+
+  // ---- state ---------------------------------------------------------------
+  var st = null;
+  try { st = JSON.parse(localStorage.getItem(KEY) || "null"); } catch (e) {}
+  if (!st || st.v !== 2 || st.items.length !== ITEMS.length) {
+    st = {v: 2, at: HOOKS.intro ? -1 : 0, started: Date.now(), finished: false, intro_ms: 0,
+          introHelp: blankHelp(), items: ITEMS.map(freshItem)};
+  }
+  // Someone part-way through when this was added has a saved state without it.
+  st.items.forEach(upgrade);
+  if (st.introAwayMs === undefined) st.introAwayMs = 0;
+  if (st.introIdleMs === undefined) st.introIdleMs = 0;
+  // Two tabs on one id used to overwrite each other, last save winning: with a forgotten tab
+  // open, closing the working tab first put the participant back on item 1 with their answers
+  // gone (reproduced 5 Nov, after a stray row in a tester's run). The saved copy now carries a
+  // counter, and a tab that finds someone else has moved it on stops and asks to be reloaded.
+  var REV = KEY + ":rev", rev = 0, stale = false;
+  try { rev = +localStorage.getItem(REV) || 0; } catch (e) {}
+  function staleTab() {
+    if (stale) return;
+    stale = true;
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    bg.style.zIndex = 60;
+    bg.innerHTML = '<div class="modal" id="staletab"><h2>This study is open in another tab</h2>'
+      + '<p class="sub">Your work is being saved from the other tab. Please close this one, or '
+      + "reload it to carry on here from where you got to.</p>"
+      + '<div class="row"><button type="button" class="cta" id="staleReload">Reload this page'
+      + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("staleReload").addEventListener("click", function () {
+      location.reload();
+    });
+  }
+  addEventListener("storage", function (e) {
+    if (e.key === REV && +e.newValue > rev) staleTab();
+  });
+  function save() {
+    if (stale) return;
+    try {
+      var stored = +localStorage.getItem(REV) || 0;
+      if (stored > rev) { staleTab(); return; }
+      rev = stored + 1;
+      localStorage.setItem(KEY, JSON.stringify(st));
+      localStorage.setItem(REV, String(rev));
+    } catch (e) {}
+    var el = document.getElementById("saved");
+    if (el) { el.textContent = "saved"; setTimeout(function () { el.textContent = ""; }, 1400); }
+  }
+
+  // ---- clocks --------------------------------------------------------------
+  // Three kinds, kept apart because they do not all recur. The answer clock is the one
+  // that predicts what a production item costs. All of them stop while the tab is hidden,
+  // and after IDLE_MS with no activity (below), so a coffee break does not become data.
+  var clockAdd = null, clockSince = 0, parked = null;
+  function tick() {
+    if (!clockAdd) return;
+    var now = Date.now();
+    clockAdd(now - clockSince);
+    clockSince = now;
+  }
+  function clockTo(add) { tick(); clockAdd = add; clockSince = Date.now(); }
+  function clockFor(cur) {
+    if (!cur) return clockTo(function (ms) { st.intro_ms += ms; });
+    if (HOOKS.reviewing && HOOKS.reviewing(cur)) {
+      return clockTo(function (ms) { cur.review_ms += ms; });
+    }
+    clockTo(function (ms) { cur.ms += ms; });
+  }
+
+  // How often each aid was opened on this item, and how long it stayed open. A panel left
+  // open across an item keeps counting time on the next one without counting a new open.
+  var HELP = {procedure: {open: false, since: 0}, guidelines: {open: false, since: 0}};
+  function helpBucket() { var c = st.items[st.at]; return c ? c.help : st.introHelp; }
+  function helpTick(k) {
+    var h = HELP[k];
+    if (h.open && h.since) {
+      var now = Date.now();
+      helpBucket()[k].ms += now - h.since;
+      h.since = now;
+    }
+  }
+  function helpOpen(k) {
+    HELP[k].open = true; HELP[k].since = Date.now();
+    helpBucket()[k].opens += 1; save();
+  }
+  function helpClose(k) { helpTick(k); HELP[k].open = false; HELP[k].since = 0; save(); }
+
+  // Time with the cursor in each field, summed per item. The browser moves focus off the
+  // box when the window or the tab loses it, and a re-render removes the box, so all three
+  // stop this clock.
+  var fieldNow = null, fieldSince = 0;
+  function fieldTick() {
+    if (fieldNow && fieldSince) {
+      var now = Date.now(), c = st.items[st.at];
+      if (c) c.fieldMs[fieldNow] = (c.fieldMs[fieldNow] || 0) + (now - fieldSince);
+      fieldSince = now;
+    }
+  }
+  function fieldStop() { fieldTick(); fieldNow = null; fieldSince = 0; }
+  function fieldTimes(cur) {
+    var o = {};
+    Object.keys(cur.fieldMs).forEach(function (k) { o[k] = Math.round(cur.fieldMs[k]); });
+    return o;
+  }
+
+  // Time with the tab hidden, per item, and how many times it was left. The answer clock
+  // already stops while hidden, so this is the other half: in the pilot one annotator spent
+  // about half their item time away from the tab, and that had to be rebuilt from the
+  // sheet's timestamps. Another window over a visible tab does not hide it, so is not counted.
+  var awayAt = null, awaySince = 0;
+  function awayStart() {
+    if (st.finished || stale) return;
+    awayAt = st.at; awaySince = Date.now();
+  }
+  function awayEnd() {
+    if (!awaySince) return;
+    var ms = Date.now() - awaySince, c = awayAt >= 0 ? st.items[awayAt] : null;
+    if (c) { c.awayMs += ms; c.awayN += 1; } else { st.introAwayMs += ms; }
+    awaySince = 0; awayAt = null;
+    save();
+  }
+  document.addEventListener("visibilitychange", function () {
+    // An idle stretch ends where the tab is hidden: from there it is away time. The clocks
+    // idle parked stay parked, and come back when the tab does.
+    if (document.hidden) endIdle(); else lastAct = Date.now();
+    if (document.hidden) awayStart(); else awayEnd();
+    if (document.hidden) {
+      fieldTick(); fieldSince = 0;
+    } else if (fieldNow) {
+      fieldSince = Date.now();
+    }
+    if (document.hidden) {
+      tick(); if (clockAdd) parked = clockAdd; clockAdd = null;
+      ["procedure", "guidelines"].forEach(function (k) {
+        helpTick(k); HELP[k].since = 0;
+      });
+    } else {
+      if (parked) { clockAdd = parked; parked = null; clockSince = Date.now(); }
+      ["procedure", "guidelines"].forEach(function (k) {
+        if (HELP[k].open) HELP[k].since = Date.now();
+      });
+    }
+  });
+
+  // Time with the tab visible but nobody at it. The answer clock used to count a break taken
+  // with the tab left open: in round 2 one item logged 56 minutes with 0.6 away. After
+  // IDLE_MS with no mouse, keyboard, scroll or touch, in the page or the guidelines frame,
+  // the clocks stop at the last activity plus IDLE_MS, and the rest is idle time until the
+  // next activity (16 Nov 2026). Logged as idle_ms / idle_n beside away_ms.
+  var IDLE_MS = 5 * 60 * 1000, lastAct = Date.now(), idle = false, idleSince = 0, idleAt = null;
+  function goIdle(at) {
+    if (idle || document.hidden || st.finished || stale) return;
+    if (clockAdd) {
+      if (at > clockSince) clockAdd(at - clockSince);
+      parked = clockAdd; clockAdd = null;
+    }
+    var c = st.items[st.at];
+    if (fieldNow && fieldSince) {
+      if (c && at > fieldSince) c.fieldMs[fieldNow] = (c.fieldMs[fieldNow] || 0) + (at - fieldSince);
+      fieldSince = 0;
+    }
+    ["procedure", "guidelines"].forEach(function (k) {
+      var h = HELP[k];
+      if (h.open && h.since) {
+        if (at > h.since) helpBucket()[k].ms += at - h.since;
+        h.since = 0;
+      }
+    });
+    idle = true; idleSince = at; idleAt = st.at;
+  }
+  function endIdle() {
+    if (!idle) return false;
+    var ms = Math.max(0, Date.now() - idleSince), c = idleAt >= 0 ? st.items[idleAt] : null;
+    if (c) { c.idleMs += ms; c.idleN += 1; } else { st.introIdleMs += ms; }
+    idle = false; idleSince = 0; idleAt = null;
+    save();
+    return true;
+  }
+  function activity() {
+    lastAct = Date.now();
+    if (!endIdle() || document.hidden) return;
+    if (parked) { clockAdd = parked; parked = null; clockSince = lastAct; }
+    if (fieldNow) fieldSince = lastAct;
+    ["procedure", "guidelines"].forEach(function (k) { if (HELP[k].open) HELP[k].since = lastAct; });
+  }
+  var ACTIVITY = ["mousemove", "mousedown", "keydown", "wheel", "scroll", "touchstart", "input", "focusin"];
+  function watchActivity(doc) {
+    ACTIVITY.forEach(function (ev) { doc.addEventListener(ev, activity, {capture: true, passive: true}); });
+  }
+  watchActivity(document);
+  setInterval(function () {
+    if (!idle && !document.hidden && Date.now() - lastAct > IDLE_MS) goIdle(lastAct + IDLE_MS);
+  }, 15000);
+
+  // ---- the revision --------------------------------------------------------
+  // Right to left, so an edit never moves an offset still to come. A deletion also tidies
+  // its own join and nothing else: no double space, and no full stop left stranded where a
+  // whole sentence used to be. Any other repair is the annotator's grammar pass.
+  function assemble(item, cur) {
+    var text = item.summary;
+    cur.spans.slice().sort(function (a, b) { return b.start - a.start; }).forEach(function (s) {
+      var L = text.slice(0, s.start), R = text.slice(s.end);
+      if (s.act === "replace" && s.rep.trim()) {
+        text = L + s.rep.trim().replace(/\s+/g, " ") + R;
+      } else if (s.act === "delete") {
+        L = L.replace(/[ \t]+$/, "");
+        var r = R.replace(/^[ \t]+/, "");
+        if (/^[,.;:!?]/.test(r) && (!L.trim() || /[.!?;:,]\s*$/.test(L))) {
+          r = r.replace(/^[,.;:!?]+\s*/, "");
+        }
+        if (L.trim() && r && !/^[,.;:!?]/.test(r) && !/^['’]s\b/.test(r) && !/[\s(\["“‘]$/.test(L)) {
+          r = " " + r;
+        }
+        text = (L.trim() ? L : "") + r;
+      }
+    });
+    return text;
+  }
+  function finalText(cur) { return cur.gram.trim() || cur.rev.trim(); }
+  function sync(item, cur) {
+    if (!cur.revTouched) cur.rev = assemble(item, cur);
+    if (!cur.gramTouched) cur.gram = cur.rev;
+  }
+
+  // ---- the diff ------------------------------------------------------------
+  function tokens(s) {
+    s = String(s);
+    var re = /[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*|['’]\p{L}+|\S/gu, out = [], m;
+    while ((m = re.exec(s))) out.push({t: m[0], at: m.index, end: re.lastIndex, ws: ""});
+    out.forEach(function (k, n) {
+      var nx = out[n + 1];
+      k.ws = s.slice(k.end, nx ? nx.at : s.length);
+    });
+    return out;
+  }
+  // Longest common subsequence over words and punctuation.
+  function wordDiff(a, b) {
+    var A = tokens(a), B = tokens(b), ops = [], x, y;
+    var p = 0;
+    while (p < A.length && p < B.length && A[p].t === B[p].t) p++;
+    var ea = A.length, eb = B.length;
+    while (ea > p && eb > p && A[ea - 1].t === B[eb - 1].t) { ea--; eb--; }
+    var m = ea - p, n = eb - p, L = [];
+    for (x = 0; x <= m; x++) L.push(new Array(n + 1).fill(0));
+    for (x = m - 1; x >= 0; x--) {
+      for (y = n - 1; y >= 0; y--) {
+        L[x][y] = A[p + x].t === B[p + y].t ? L[x + 1][y + 1] + 1
+                                            : Math.max(L[x + 1][y], L[x][y + 1]);
+      }
+    }
+    for (x = 0; x < p; x++) ops.push({k: "=", a: A[x], b: B[x]});
+    x = 0; y = 0;
+    while (x < m || y < n) {
+      if (x < m && y < n && A[p + x].t === B[p + y].t) {
+        ops.push({k: "=", a: A[p + x], b: B[p + y]}); x++; y++;
+      } else if (y >= n || (x < m && L[x + 1][y] >= L[x][y + 1])) {
+        ops.push({k: "-", a: A[p + x]}); x++;
+      } else {
+        ops.push({k: "+", b: B[p + y]}); y++;
+      }
+    }
+    for (x = ea; x < A.length; x++) ops.push({k: "=", a: A[x], b: B[eb + x - ea]});
+    return ops;
+  }
+  function joined(list) {
+    return list.map(function (k, n) {
+      return k.t + (n < list.length - 1 ? k.ws : "");
+    }).join("");
+  }
+  // A changed region reads as everything removed, then everything added.
+  function diffHtml(ops) {
+    var out = "", i = 0;
+    while (i < ops.length) {
+      if (ops[i].k === "=") {
+        out += esc(ops[i].a.t) + esc(ops[i].a.ws || ops[i].b.ws);
+        i++;
+        continue;
+      }
+      var dels = [], adds = [];
+      while (i < ops.length && ops[i].k !== "=") {
+        if (ops[i].k === "-") dels.push(ops[i].a); else adds.push(ops[i].b);
+        i++;
+      }
+      if (dels.length) out += "<del>" + esc(joined(dels)) + "</del>";
+      if (dels.length && adds.length) out += " ";
+      if (adds.length) out += "<ins>" + esc(joined(adds)) + "</ins>";
+      var ld = dels[dels.length - 1], la = adds[adds.length - 1];
+      out += esc((la && la.ws) || (ld && ld.ws) || "");
+    }
+    return out;
+  }
+  function diffChanged(ops) { return ops.some(function (o) { return o.k !== "="; }); }
+
+  // Only the sentences an edit touched, each diffed on its own. A grammar slip sits where an
+  // edit meets the text, and in a five-sentence summary the whole-text box buries it: in the
+  // pilot "the ship, which." went unrepaired by two of five, and nobody opened the box.
+  function sentencesOf(t) {
+    return (String(t).match(/[^.!?]*(?:[.!?]+["”’)\]]*|$)\s*/g) || [])
+      .filter(function (x) { return x.trim(); });
+  }
+  function editedSentences(a, b) {
+    var A = sentencesOf(a), B = sentencesOf(b), m = A.length, n = B.length, L = [], x, y;
+    for (x = 0; x <= m; x++) L.push(new Array(n + 1).fill(0));
+    for (x = m - 1; x >= 0; x--) {
+      for (y = n - 1; y >= 0; y--) {
+        L[x][y] = A[x].trim() === B[y].trim() ? L[x + 1][y + 1] + 1
+                                              : Math.max(L[x + 1][y], L[x][y + 1]);
+      }
+    }
+    var out = [], da = [], db = [];
+    function flush() {
+      if (da.length || db.length) {
+        out.push(diffHtml(wordDiff(da.join("").trim(), db.join("").trim())));
+      }
+      da = []; db = [];
+    }
+    x = 0; y = 0;
+    while (x < m || y < n) {
+      if (x < m && y < n && A[x].trim() === B[y].trim()) { flush(); x++; y++; }
+      else if (y >= n || (x < m && L[x + 1][y] >= L[x][y + 1])) { da.push(A[x]); x++; }
+      else { db.push(B[y]); y++; }
+    }
+    flush();
+    return out;
+  }
+  // The same places, painted inside the grammar box itself (Shachar, 6 Nov: with a five-
+  // sentence summary the list above says what broke, but not where to put the cursor). A
+  // textarea cannot hold markup, so the marks sit on a copy of its text drawn behind it, in
+  // the same font, padding and wrapping, with the box's own background made transparent.
+  // Each place is the edit plus one token either side, because a broken join is usually
+  // the word before or after the edit: "for in", "which.", "The The team football".
+  function seamRanges(orig, text) {
+    var ops = wordDiff(orig, text), out = [], i = 0, prev = null;
+    while (i < ops.length) {
+      if (ops[i].k === "=") { prev = ops[i].b; i++; continue; }
+      var ins = [];
+      while (i < ops.length && ops[i].k !== "=") {
+        if (ops[i].k === "+") ins.push(ops[i].b);
+        i++;
+      }
+      var next = i < ops.length ? ops[i].b : null;
+      var s = prev ? prev.at : (ins.length ? ins[0].at : (next ? next.at : 0));
+      var e = next ? next.end : (ins.length ? ins[ins.length - 1].end : (prev ? prev.end : 0));
+      if (e > s) {
+        var last = out[out.length - 1];
+        if (last && s <= last[1]) last[1] = Math.max(e, last[1]); else out.push([s, e]);
+      }
+    }
+    return out;
+  }
+  function seamHtml(orig, text) {
+    var h = "", pos = 0;
+    seamRanges(orig, text).forEach(function (r) {
+      h += esc(text.slice(pos, r[0])) + "<mark>" + esc(text.slice(r[0], r[1])) + "</mark>";
+      pos = r[1];
+    });
+    // A trailing newline takes no room in a div but a line in a textarea.
+    return h + esc(text.slice(pos)) + (/\n$/.test(text) ? " " : "");
+  }
+  function sameText(a, b) {
+    return String(a).replace(/\s+/g, " ").trim() === String(b).replace(/\s+/g, " ").trim();
+  }
+  // Nothing to check when the answers leave the text as it arrived -- every span "Not a
+  // hallucination" -- so the tick is neither shown nor asked for.
+  function hasEdits(item, cur) { return !sameText(finalText(cur), item.summary); }
+  function editsHtml(item, cur) {
+    var parts = editedSentences(item.summary, finalText(cur));
+    return parts.length
+      ? parts.map(function (p) { return '<p class="editline">' + p + "</p>"; }).join("")
+      : '<p class="hint" style="margin:0">No edits yet. They appear here as you answer.</p>';
+  }
+
+  // Soft checks on the final text, at submit. Each one fires only where the revision has
+  // more of the pattern than the summary it started from, so the original's own style is
+  // never flagged. The pilot's broken joins, all of which these catch: "The The team",
+  // "left for in France", "the ship, which.", "Paralympian The Briton's", "tigers..".
+  var GRAM_CHECKS = [
+    {k: "doubled", re: /\b([A-Za-z]+)\s+\1\b/gi, say: "the same word twice in a row"},
+    {k: "dangling", re: /\b(which|that|who|whose|where|and|or|but|of|the|a|an|for|to|in|at|on|by|with|from|its|their|his|her)\s*[.,;:!?](?=\s|$)/gi,
+     say: "a sentence or clause that stops on a word that needs something after it"},
+    {k: "twoprep", re: /\b(for|in|of|to|at|on|by|with|from|into|about)\s+(in|of|to|at|on|by|with|from|for|into)\b/gi,
+     say: "two prepositions in a row"},
+    {k: "article", re: /\b(a|an|the)\s+(the|a|an|of|in|to|at|on|for|with|from|by|and|or)\b/gi,
+     say: "an article followed by a word that cannot follow it"},
+    {k: "midcap", re: /[a-z,]\s+(The|A|An)\b/g, say: "&ldquo;The&rdquo; or &ldquo;A&rdquo; with a capital letter in mid-sentence"},
+    {k: "punct", re: /[,;:]\s*[.,;:]|\.\s*[,;:]|\.\.(?!\.)/g, say: "doubled punctuation"},
+    {k: "space", re: /\s+[,;:!?]|\s+\.(?!\.)/g, say: "a space before punctuation"},
+    {k: "lower", re: /(^\s*|[.!?]\s+)[a-z]/g, say: "a sentence that starts with a small letter"},
+    {k: "end", re: /[^.!?"”’)\]\s]\s*$/g, say: "a text that does not end with a full stop"}
+  ];
+  function countOf(re, t) { return (String(t).match(re) || []).length; }
+  // A grammar repair changes small words: "a", "the", "which", a comma. When the final text
+  // adds any content word the answers did not produce, or drops two or more, the change has
+  // gone past grammar -- the agent walkthrough of 8 Nov rewrote a whole sentence in the
+  // grammar box and kept the tick. Compared against what the answers build, so a rewrite in
+  // either box counts. Case-only changes ("champion" -> "Champion") cancel out.
+  var FUNCTION_WORDS = ("a an the and or but nor so yet of in on at to for from by with into "
+    + "onto about as than that which who whom whose where when while because if though "
+    + "although this these those it its they them their he him his she her we our you your "
+    + "is are was were be been being has have had do does did will would can could may might "
+    + "shall should must not no there here also both either neither each such then very").split(" ");
+  function rewriteWarning(item, cur) {
+    var ops = wordDiff(assemble(item, cur), finalText(cur)), dels = [], adds = [], regions = [];
+    var i = 0;
+    while (i < ops.length) {
+      if (ops[i].k === "=") { i++; continue; }
+      var s = i;
+      for (; i < ops.length && ops[i].k !== "="; i++) {
+        var tk = ops[i].k === "-" ? ops[i].a : ops[i].b;
+        var w = tk.t.toLowerCase().replace(/['’]s$/, "");
+        // One- and two-letter scraps are paste debris or initials, not content.
+        if (w.length > 2 && /\w/.test(w) && FUNCTION_WORDS.indexOf(w) === -1) {
+          (ops[i].k === "-" ? dels : adds).push({w: w, t: tk.t});
+        }
+      }
+      regions.push([s, i]);
+    }
+    // A word swapped for another form of itself is grammar or spelling, not content:
+    // "issue" -> "issues", "described" -> "description", "castledford" -> "Castleford".
+    // Checked on the pilot's 17 grammar-only repairs (pilot_repaired.json).
+    function sameWord(a, b) {
+      return a === b || (a.length >= 5 && b.length >= 5 && a.slice(0, 5) === b.slice(0, 5));
+    }
+    var added = adds.filter(function (x) {
+      for (var j = 0; j < dels.length; j++) {
+        if (sameWord(dels[j].w, x.w)) { dels.splice(j, 1); return false; }
+      }
+      return true;
+    });
+    if (!added.length && dels.length < 2) return null;
+    function quoted(list) {
+      return list.slice(0, 6).map(function (x) { return "&ldquo;" + esc(x.t) + "&rdquo;"; })
+        .join(", ") + (list.length > 6 ? " and more" : "");
+    }
+    var what = [];
+    if (added.length) what.push("adds " + quoted(added));
+    if (dels.length >= 2) what.push("removes " + quoted(dels));
+    return {k: "rewrite",
+      say: "a change beyond grammar: your final text " + what.join(" and ") + ", which your "
+        + "answers did not. A grammar repair changes small words such as &ldquo;a&rdquo;, "
+        + "&ldquo;the&rdquo; or &ldquo;which&rdquo;, so check that you did not add, remove or "
+        + "change content",
+      spots: regions.slice(0, 3).map(function (r) {
+        var a = Math.max(0, r[0] - 4), b = Math.min(ops.length, r[1] + 4);
+        return (a > 0 ? "&hellip;" : "") + diffHtml(ops.slice(a, b))
+          + (b < ops.length ? "&hellip;" : "");
+      })};
+  }
+  function grammarWarnings(orig, text) {
+    var out = [];
+    GRAM_CHECKS.forEach(function (c) {
+      if (countOf(c.re, text) <= countOf(c.re, orig)) return;
+      var spots = [], m, re = new RegExp(c.re.source, c.re.flags);
+      while ((m = re.exec(text)) && spots.length < 3) {
+        var a = Math.max(0, m.index - 35), b = Math.min(text.length, m.index + m[0].length + 35);
+        spots.push((a > 0 ? "&hellip;" : "") + esc(text.slice(a, m.index)) + "<mark>"
+          + esc(m[0]) + "</mark>" + esc(text.slice(m.index + m[0].length, b))
+          + (b < text.length ? "&hellip;" : ""));
+        if (!m[0].length) re.lastIndex++;
+      }
+      out.push({k: c.k, say: c.say, spots: spots});
+    });
+    return out;
+  }
+
+  // ---- render --------------------------------------------------------------
+  function markup(item, cur) {
+    var text = item.summary, out = "", pos = 0, many = cur.spans.length > 1;
+    var order = cur.spans.map(function (s, i) { return i; }).sort(function (a, b) {
+      return cur.spans[a].start - cur.spans[b].start;
+    });
+    order.forEach(function (i) {
+      var s = cur.spans[i];
+      var cls = s.act === "not" ? "off" : (s.act ? "done" : "");
+      out += esc(text.slice(pos, s.start))
+        + '<mark class="sp ' + cls + '" data-i="' + i + '">' + esc(text.slice(s.start, s.end))
+        + (many ? "<sup>" + (i + 1) + "</sup>" : "") + "</mark>";
+      pos = s.end;
+    });
+    return out + esc(text.slice(pos));
+  }
+
+  function field(i, f, value, label, hint, err, kind) {
+    var id = "f_" + f + i;
+    var ctl = kind === "input"
+      ? '<input type="text" id="' + id + '" data-f="' + f + '" data-i="' + i + '" value="'
+        + esc(value) + '" autocomplete="off">'
+      : '<textarea id="' + id + '" class="sm" rows="1" data-f="' + f + '" data-i="' + i + '">'
+        + esc(value) + "</textarea>";
+    return '<label class="fl" for="' + id + '">' + label
+      + (hint ? ' <span class="opt">' + hint + "</span>" : "") + "</label>" + ctl
+      + '<div class="fielderr" data-e="' + f + '" data-i="' + i + '">' + err + "</div>";
+  }
+  function choice(i, act, label, cursel) {
+    return '<button type="button" class="choice" data-act="' + act + '" data-i="' + i
+      + '" aria-pressed="' + (cursel === act) + '">' + label + "</button>";
+  }
+
+  function card(item, cur, s, i) {
+    var text = spanText(item, s), n = cur.spans.length;
+    var words = text.trim().split(/\s+/).length;
+    var next = cur.spans[i + 1];
+    var tools = "";
+    if (s.act !== "not") {
+      tools += '<button type="button" class="choice small" data-adjust="' + i + '"'
+        + ' aria-pressed="' + !!(s.adjOpen || s.adj) + '">Adjust span</button>';
+      if (words > 1) {
+        tools += '<button type="button" class="choice small" data-split="' + i + '"'
+          + ' aria-pressed="' + !!s.splitOpen + '">Split span</button>';
+      }
+    }
+    if (s.from && next && next.from === s.from) {
+      tools += '<button type="button" class="choice small" data-merge="' + i
+        + '">Undo this split</button>';
+    }
+    var cls = s.act === "not" ? " off" : (s.act ? " done" : "");
+    var h = '<div class="span' + cls + '" data-i="' + i + '" id="card' + i + '">'
+      + '<p class="lab">Marked statement ' + (i + 1) + " of " + n + "</p>"
+      + '<div class="spanhead"><p class="spantext" id="text' + i + '">&ldquo;' + esc(text)
+      + "&rdquo;</p>" + (tools ? '<div class="tools">' + tools + "</div>" : "") + "</div>";
+    if (s.act !== "not" && (s.adjOpen || s.adj)) {
+      h += '<div class="sidepanel">'
+        + field(i, "adj", s.adj, "Span adjustment", "if the mark covers more or fewer words "
+          + "than the true hallucinated statement, copy the true hallucinated statement here "
+          + "verbatim from the target text",
+          "This must be an exact quote from the target text, and must not overlap another "
+          + "marked statement. Please copy it verbatim rather than paraphrasing.", "input")
+        + "</div>";
+    }
+    if (s.act !== "not" && s.splitOpen) h += splitUI(item, i, s);
+    h += '<div class="row" data-group="act' + i + '" style="margin-top:10px">'
+      + choice(i, "replace", "Replace", s.act) + choice(i, "delete", "Delete", s.act)
+      + choice(i, "not", "Not a hallucination", s.act) + "</div>"
+      + '<div class="fielderr" data-e="act" data-i="' + i + '">Required: please select an '
+      + "operation.</div>";
+    // H and R are steps of the procedure, worked in the head; the tool no longer asks for them
+    // written out (Shachar, 6 Nov). In the pilot H was the costliest field -- 20 of one
+    // annotator's 75 minutes -- and neither field ever changed a revision: H came back as the
+    // corrected sentence or a copy of the summary, R as commentary on the source, and the
+    // replacement was written apart from R in about a third of replaces.
+    if (s.act === "replace") {
+      h += field(i, "q", s.q, "Final question (Qmax)", "the most specific question answerable "
+          + "by both the source and the hallucinated statement",
+          "Required for a replace: please write the final question.")
+        + field(i, "rep", s.rep, "Replacement", "the part of the source&rsquo;s answer to Qmax "
+          + "that takes the place of the marked span in the text",
+          "Required for a replace: please enter the words that replace the span.",
+          "input")
+        + field(i, "attr", s.attr, "Source attribution (copied verbatim from the source)",
+          "the exact sentence or phrase in the source that your answer comes from or is implied by",
+          "Required: copy the exact sentence or phrase from the source, verbatim.");
+    } else if (s.act === "delete") {
+      h += field(i, "expl", s.expl, "Explanation", "which questions did you consider that the "
+          + "source could not answer, and why did you choose to delete?",
+          "Required for a deletion: please say which questions were not answerable, and why "
+          + "you deleted.");
+    } else if (s.act === "not") {
+      h += field(i, "why", s.why, "Why is this faithful?", "what in the source supports it, "
+        + "or why it counts as reasonable common-knowledge inference",
+        "Required: please explain why this is faithful to the source.");
+    }
+    return h + "</div>";
+  }
+
+  function splitUI(item, i, s) {
+    var w = wordsOf(spanText(item, s)), b = "";
+    // Only the words either side of the cut. Printing the whole phrase on every button
+    // made a long clause into a dozen near-identical lines with the boundary buried.
+    for (var k = 1; k < w.length; k++) {
+      var L = w.slice(0, k).map(function (x) { return x[2]; });
+      var R = w.slice(k).map(function (x) { return x[2]; });
+      b += '<button type="button" class="word" data-cut="' + i + ":" + k + '">'
+        + (L.length > 3 ? "&hellip; " : "") + esc(L.slice(-3).join(" "))
+        + " <b>|</b> " + esc(R.slice(0, 3).join(" ")) + (R.length > 3 ? " &hellip;" : "")
+        + "</button>";
+    }
+    return '<div class="sidepanel"><p>If this statement holds more than one hallucinated '
+      + "detail, choose where to divide it. Each part then gets its own answers.</p>" + b
+      + '<p style="margin:8px 0 0"><button type="button" class="choice small" data-cut="'
+      + i + ':0">Cancel</button></p></div>';
+  }
+  function wordsOf(text) {
+    var re = /\S+/g, m, o = [];
+    while ((m = re.exec(text))) o.push([m.index, re.lastIndex, m[0]]);
+    return o;
+  }
+
+  function revState(cur, item) {
+    if (!cur.revTouched) return "Filled in from your answers above as you type.";
+    if (assemble(item, cur) !== cur.revBase) {
+      return '<span class="stale">Your answers have changed since you edited this box. It '
+        + "has not been overwritten; Rebuild applies them and replaces your edits.</span>";
+    }
+    return "You have edited this yourself, so your answers no longer change it.";
+  }
+  function gramState(cur, item) {
+    if (!cur.gramTouched && !hasEdits(item, cur)) {
+      return "Your answers leave the text unchanged, so there is nothing to check here.";
+    }
+    if (!cur.gramTouched) return "This box starts as a copy of the revision, with the places "
+      + "you edited marked. Read each one as a reader would: removing or replacing words often "
+      + "leaves a stray word, a missing &ldquo;a&rdquo; or &ldquo;the&rdquo;, or broken "
+      + "punctuation. Fix those here, and do not add new content.";
+    if (cur.gramBase !== cur.rev) {
+      return '<span class="stale">The revision above has changed since you edited this box. '
+        + "Copy it down to start again from it.</span>";
+    }
+    return "You have edited this yourself, so the revision above no longer changes it.";
+  }
+  // The tick is for this revision. If the answers then change it, the tick no longer covers
+  // what will be submitted, so it comes off and says why.
+  function gramChecked(cur) { return cur.gramOk && cur.gramOkRev === cur.rev; }
+  function paintStates(item, cur) {
+    var a = document.getElementById("revstate"), b = document.getElementById("gramstate");
+    if (a) a.innerHTML = revState(cur, item);
+    if (b) b.innerHTML = gramState(cur, item);
+    if (cur.gramOk && !gramChecked(cur)) { cur.gramOk = false; cur.gramOkStale = true; }
+    var ok = document.getElementById("gramok"), why = document.getElementById("gramok_stale");
+    if (ok) ok.checked = gramChecked(cur);
+    if (why) why.hidden = !cur.gramOkStale;
+    var wrap = document.getElementById("gramokwrap");
+    if (wrap) wrap.hidden = !hasEdits(item, cur);
+    var ed = document.getElementById("edits");
+    if (ed) ed.innerHTML = editsHtml(item, cur);
+    var hl = document.getElementById("gramhl");
+    if (hl) hl.innerHTML = seamHtml(item.summary, cur.gram);
+    var r = document.getElementById("rebuild"), c = document.getElementById("copyrev");
+    if (r) r.hidden = !cur.revTouched;
+    if (c) c.hidden = !cur.gramTouched;
+  }
+
+  function render() {
+    fieldStop();
+    var keepY = window.scrollY;
+    var bar = document.getElementById("count");
+    document.getElementById("fill").style.width =
+      (Math.max(st.at, 0) / ITEMS.length * 100).toFixed(1) + "%";
+    if (st.finished) { closing(); return; }
+    if (st.at < 0) {
+      bar.innerHTML = CFG.introCount;
+      root.innerHTML = HOOKS.intro;
+      document.getElementById("below").innerHTML = "";
+      var begin = document.getElementById("begin");
+      begin.addEventListener("click", function () { goTo(0); });
+      return;
+    }
+    var item = ITEMS[st.at], cur = st.items[st.at];
+    bar.innerHTML = CFG.noun + " <b>" + (st.at + 1) + "</b> of " + ITEMS.length;
+    sync(item, cur);
+    var last = st.at === ITEMS.length - 1;
+    var cards = cur.spans.map(function (s, i) { return card(item, cur, s, i); }).join("");
+    var main = HOOKS.mainButton(cur, last);
+    var prevBtn = '<button type="button" class="ghost" id="prev"'
+      + (st.at === 0 ? " hidden" : "") + ">&larr; Previous</button>";
+    root.innerHTML =
+      '<div class="panes">'
+      + '<div class="pane src"><p class="lab">Source &mdash; the ground truth</p>'
+      + '<div class="doc">' + esc(item.source) + "</div></div>"
+      + '<div><div class="pane"><p class="lab">Target text &mdash; marked statements '
+      + 'highlighted; click one to jump to it</p><div class="doc" id="tgt">'
+      + markup(item, cur) + "</div></div>"
+      + '<div style="margin-top:18px">'
+      + (cur.note ? '<p class="notice">' + esc(cur.note) + "</p>" : "") + cards + "</div>"
+      + '<div class="pane" style="margin-top:4px">'
+      + '<label class="lab" for="rev">Revision <span class="opt">&mdash; written once for the '
+      + "whole summary, with every span correction applied</span></label>"
+      + '<textarea id="rev" class="rev">' + esc(cur.rev) + "</textarea>"
+      + '<div class="fielderr" id="rev_err">Required: write the revised summary.</div>'
+      + '<div class="autonote"><span id="revstate"></span>'
+      + '<button type="button" class="choice small" id="rebuild">Rebuild from my answers'
+      + "</button></div>"
+      + '<div class="revsecond"><p class="lab">Your edits, marked &mdash; each sentence you '
+      + "changed, as it now reads</p>"
+      + '<div class="edits" id="edits"></div>'
+      + '<label class="lab" for="gram">Revision after grammar fixes '
+      + '<span class="opt">&mdash; fix the grammar errors your edits introduced, without '
+      + "adding or changing any content</span></label>"
+      + '<div class="hlwrap"><div class="hl" id="gramhl" aria-hidden="true"></div>'
+      + '<textarea id="gram" class="rev">' + esc(cur.gram) + "</textarea></div>"
+      + '<div class="autonote"><span id="gramstate"></span>'
+      + '<button type="button" class="choice small" id="copyrev">Copy the revision above down'
+      + "</button></div>"
+      + '<div id="gramokwrap"' + (hasEdits(item, cur) ? "" : " hidden") + ">"
+      + '<label class="gramok" for="gramok"><input type="checkbox" id="gramok"'
+      + (gramChecked(cur) ? " checked" : "") + "> I have checked the revision for grammar, "
+      + "and fixed in the box above the grammar errors my edits introduced.</label>"
+      + '<p class="soft" id="gramok_stale"' + (cur.gramOkStale ? "" : " hidden") + ">Your "
+      + "answers changed the revision after you ticked this, so please check it again.</p>"
+      + '<div class="fielderr" id="gramok_err">Please read your marked edits, fix the grammar '
+      + "errors they introduced, and tick this box.</div></div>"
+      + "</div></div>"
+      + '<div class="foot">'
+      + (main.onward ? "" : prevBtn)
+      + (main.label ? '<button type="button" class="cta" id="next">' + main.label + "</button>"
+                    : "")
+      + '<span class="saved" id="saved"></span>'
+      + '<span class="err" id="err"></span></div>'
+      + "</div></div>";
+    // Moving on goes after the worked solution, so that it is read first.
+    document.getElementById("below").innerHTML =
+      (HOOKS.below ? HOOKS.below(api, item, cur) : "")
+      + (main.onward ? '<div class="foot">' + prevBtn
+          + '<button type="button" class="cta" id="onward">' + main.onward + "</button></div>"
+        : "");
+    paintStates(item, cur);
+    fitAll();
+    window.scrollTo(0, keepY);
+  }
+
+  function fit(el) {
+    el.style.height = "auto";
+    el.style.height = (el.scrollHeight + 3) + "px";
+  }
+  function fitAll() {
+    root.querySelectorAll("textarea").forEach(function (t) { if (t.offsetParent) fit(t); });
+  }
+  window.addEventListener("resize", fitAll);
+
+  // ---- soft checks, recorded and shown but never blocking ----------------------
+  function loose(s) {
+    return String(s).toLowerCase().replace(/[‘’]/g, "'")
+      .replace(/[“”]/g, '"').replace(/\s+/g, " ").trim();
+  }
+
+  // ---- adjusting a span -------------------------------------------------------
+  function nearest(text, needle, near) {
+    var hay = text.toLowerCase(), nd = needle.toLowerCase(), best = -1, at = -1;
+    while ((at = hay.indexOf(nd, at + 1)) !== -1) {
+      if (best === -1 || Math.abs(at - near) < Math.abs(best - near)) best = at;
+    }
+    return best;
+  }
+  function applyAdjust(item, cur, i) {
+    var s = cur.spans[i], v = s.adj.trim();
+    s.adjBad = false;
+    if (!v) { s.start = s.baseStart; s.end = s.baseEnd; return; }
+    var at = nearest(item.summary, v, s.baseStart), end = at + v.length;
+    var clash = at !== -1 && cur.spans.some(function (o, k) {
+      return k !== i && at < o.end && end > o.start;
+    });
+    if (at === -1 || clash) { s.adjBad = true; s.start = s.baseStart; s.end = s.baseEnd; return; }
+    s.start = at; s.end = end;
+  }
+
+  // ---- events: delegated, so a re-render never loses a handler -----------------
+  function curItem() { return ITEMS[st.at]; }
+  function curState() { return st.items[st.at]; }
+
+  root.addEventListener("click", function (e) {
+    if (st.at < 0 || st.finished) return;
+    var item = curItem(), cur = curState(), t = e.target.closest("button,mark.sp");
+    if (!t) return;
+    var d = t.dataset;
+    if (d.act) {
+      var s = cur.spans[+d.i];
+      s.act = s.act === d.act ? "" : d.act;
+      s.splitOpen = false;
+      cur.note = "";
+      save(); render();
+    } else if (d.adjust) {
+      var sa = cur.spans[+d.adjust], wasOpen = sa.adjOpen || !!sa.adj;
+      if (sa.adj) {
+        sa.adj = ""; applyAdjust(item, cur, +d.adjust);
+        cur.note = "The span adjustment was removed, so the mark is back on the original words.";
+      }
+      sa.adjOpen = !wasOpen;
+      save(); render();
+      var box = document.getElementById("f_adj" + d.adjust);
+      if (box) box.focus();
+    } else if (d.split) {
+      var ss = cur.spans[+d.split];
+      ss.splitOpen = !ss.splitOpen; save(); render();
+    } else if (d.cut) {
+      cut(item, cur, d.cut);
+    } else if (d.merge) {
+      merge(item, cur, +d.merge);
+    } else if (t.id === "rebuild") {
+      cur.revTouched = false; sync(item, cur); save(); render();
+    } else if (t.id === "copyrev") {
+      cur.gramTouched = false; sync(item, cur); save(); render();
+    } else if (t.id === "next") {
+      submitItem(item, cur);
+    } else if (t.id === "prev") {
+      goTo(st.at - 1);
+    } else if (t.matches("mark.sp")) {
+      var el = document.getElementById("card" + d.i);
+      if (el) {
+        el.scrollIntoView({behavior: "smooth", block: "center"});
+        el.classList.add("flash");
+        setTimeout(function () { el.classList.remove("flash"); }, 900);
+      }
+    }
+  });
+
+  document.getElementById("below").addEventListener("click", function (e) {
+    var t = e.target.closest("button");
+    if (!t) return;
+    if (t.id === "onward") advance();
+    else if (t.id === "prev") goTo(st.at - 1);
+  });
+
+  function cut(item, cur, spec) {
+    var p = spec.split(":"), i = +p[0], k = +p[1], s = cur.spans[i];
+    if (!k) { s.splitOpen = false; save(); render(); return; }
+    var w = wordsOf(spanText(item, s));
+    // The choice and the question carry across. An annotator who decided how to handle a
+    // span and then noticed it held two details should not be punished for noticing. The
+    // rest was written for the whole span and is wrong for either half on its own.
+    if (s.rep.trim() || s.attr.trim() || s.expl.trim()) {
+      cur.note = "What you had written for the whole statement was cleared, because each part "
+               + "needs its own answers. Only the choice and the question carried over.";
+    }
+    var A = blankSpan(s.sid + "a", s.start, s.start + w[k - 1][1]);
+    var B = blankSpan(s.sid + "b", s.start + w[k][0], s.end);
+    var keep = {sid: s.sid, from: s.from, parent: s.parent, baseStart: s.baseStart,
+                baseEnd: s.baseEnd, adj: s.adj};
+    [A, B].forEach(function (c) {
+      c.act = s.act; c.q = s.q; c.from = s.sid; c.parent = keep;
+    });
+    cur.spans.splice(i, 1, A, B);
+    save(); render();
+  }
+  function merge(item, cur, i) {
+    var a = cur.spans[i], z = cur.spans[i + 1], p = a.parent;
+    if (a.rep.trim() && z.rep.trim()) {
+      cur.note = "Both parts had an answer. The first was kept for the statement as a whole; "
+               + "check it still says what you mean.";
+    }
+    var m = blankSpan(p.sid, a.baseStart, z.baseEnd);
+    m.baseStart = p.baseStart; m.baseEnd = p.baseEnd; m.adj = p.adj;
+    m.from = p.from; m.parent = p.parent;
+    ["act", "q", "rep", "attr", "expl", "why"].forEach(function (f) {
+      var x = a[f], y = z[f];
+      m[f] = String(x).trim() ? x : y;
+    });
+    cur.spans.splice(i, 2, m);
+    save(); render();
+  }
+
+  root.addEventListener("focusin", function (e) {
+    if (st.at < 0 || st.finished) return;
+    fieldTick();
+    var el = e.target;
+    fieldNow = el.dataset.f || (el.id === "rev" || el.id === "gram" ? el.id : null);
+    fieldSince = fieldNow ? Date.now() : 0;
+  });
+  root.addEventListener("focusout", fieldStop);
+
+  root.addEventListener("input", function (e) {
+    // A checkbox fires input before change, and painting the states here would put the
+    // tick back to what it was a moment ago. The change handler owns it.
+    if (st.at < 0 || st.finished || e.target.id === "gramok") return;
+    var t = e.target, item = curItem(), cur = curState();
+    if (cur.note) {
+      cur.note = "";
+      var n = root.querySelector(".notice");
+      if (n) n.remove();
+    }
+    if (t.dataset.f) {
+      var i = +t.dataset.i, f = t.dataset.f, s = cur.spans[i];
+      s[f] = t.value;
+      clearErr(t, f, i);
+      if (f === "adj") {
+        applyAdjust(item, cur, i);
+        document.getElementById("tgt").innerHTML = markup(item, cur);
+        document.getElementById("text" + i).innerHTML = "&ldquo;" + esc(spanText(item, s))
+          + "&rdquo;";
+        var ae = root.querySelector('[data-e="adj"][data-i="' + i + '"]');
+        if (ae) ae.classList.toggle("on", s.adjBad);
+        t.classList.toggle("needs", s.adjBad);
+      }
+      if (t.tagName === "TEXTAREA") fit(t);
+      if (f === "rep" || f === "adj") pushRevision(item, cur);
+    } else if (t.id === "rev") {
+      cur.rev = t.value; cur.revTouched = true; cur.revBase = assemble(item, cur);
+      if (!cur.gramTouched) {
+        cur.gram = cur.rev;
+        var g = document.getElementById("gram");
+        g.value = cur.gram; fit(g);
+      }
+      document.getElementById("rev_err").classList.remove("on");
+      t.classList.remove("needs");
+      fit(t);
+    } else if (t.id === "gram") {
+      cur.gram = t.value; cur.gramTouched = true; cur.gramBase = cur.rev;
+      fit(t);
+    }
+    paintStates(item, cur);
+    save();
+  });
+  function pushRevision(item, cur) {
+    sync(item, cur);
+    var r = document.getElementById("rev"), g = document.getElementById("gram");
+    if (!cur.revTouched) { r.value = cur.rev; fit(r); }
+    if (!cur.gramTouched) { g.value = cur.gram; fit(g); }
+  }
+  root.addEventListener("change", function (e) {
+    if (st.at < 0 || st.finished || e.target.id !== "gramok") return;
+    var cur = curState();
+    cur.gramOk = e.target.checked; cur.gramOkRev = cur.rev; cur.gramOkStale = false;
+    var box = document.querySelector("label.gramok");
+    if (box) box.classList.remove("needs");
+    document.getElementById("gramok_err").classList.remove("on");
+    var why = document.getElementById("gramok_stale");
+    if (why) why.hidden = true;
+    save();
+  });
+  // Pastes per field, because a paste into the attribution is the job and a paste into the
+  // explanation is a signal -- and, since the pilot, where each paste came from. Copying from
+  // the source or the summary on this page is how the attribution is meant to be filled; text
+  // from anywhere else is what a paste from another program or a model looks like. Never
+  // grounds for rejecting work; grounds for not inviting someone back.
+  function pasteOrigin(item, cur, text) {
+    var t = loose(text);
+    if (!t) return "empty";
+    if (loose(item.source).indexOf(t) !== -1) return "source";
+    if (loose(item.summary).indexOf(t) !== -1) return "summary";
+    var own = [cur.rev, cur.gram];
+    cur.spans.forEach(function (s) { own.push(s.q, s.rep, s.attr, s.expl, s.why, s.adj); });
+    if (own.some(function (v) { return v && loose(v).indexOf(t) !== -1; })) return "own";
+    return "outside";
+  }
+  root.addEventListener("paste", function (e) {
+    if (st.at < 0 || st.finished) return;
+    var cur = curState(), f = e.target.dataset.f || e.target.id;
+    if (!f) return;
+    var text = "";
+    try { text = (e.clipboardData || window.clipboardData).getData("text") || ""; } catch (x) {}
+    var from = pasteOrigin(curItem(), cur, text);
+    cur.pastes[f] = (cur.pastes[f] || 0) + 1;
+    cur.pasteFrom[f] = cur.pasteFrom[f] || {};
+    cur.pasteFrom[f][from] = (cur.pasteFrom[f][from] || 0) + 1;
+    if (from === "outside") cur.pasteOutside += text.length;
+    save();
+  });
+  root.addEventListener("keydown", function (e) {
+    if (st.at < 0 || st.finished) return;
+    if (e.target.matches("input,textarea")) curState().keys += 1;
+  });
+
+  // ---- submit ----------------------------------------------------------------
+  function ctl(f, i) { return document.getElementById("f_" + f + i); }
+  function clearErr(el, f, i) {
+    el.classList.remove("needs");
+    var m = root.querySelector('[data-e="' + f + '"][data-i="' + i + '"]');
+    if (m) m.classList.remove("on");
+  }
+  function flag(f, i, list, message) {
+    var el = ctl(f, i), m = root.querySelector('[data-e="' + f + '"][data-i="' + i + '"]');
+    if (el) { el.classList.add("needs"); list.push(el); }
+    if (m) {
+      if (message) m.textContent = message;
+      m.classList.add("on");
+    }
+  }
+  function isQuote(needle, hay) { return loose(hay).indexOf(loose(needle)) !== -1; }
+  function validate(item, cur) {
+    root.querySelectorAll(".needs").forEach(function (x) { x.classList.remove("needs"); });
+    root.querySelectorAll(".fielderr.on").forEach(function (x) { x.classList.remove("on"); });
+    var bad = [];
+    cur.spans.forEach(function (s, i) {
+      if (s.adj.trim() && s.adjBad) flag("adj", i, bad);
+      if (!s.act) {
+        var m = root.querySelector('[data-e="act"][data-i="' + i + '"]');
+        if (m) m.classList.add("on");
+        var row = root.querySelector('[data-group="act' + i + '"]');
+        if (row) bad.push(row);
+        return;
+      }
+      if (s.act === "not") {
+        if (!s.why.trim()) flag("why", i, bad);
+        return;
+      }
+      if (s.act === "replace") {
+        if (!s.q.trim()) flag("q", i, bad);
+        if (!s.rep.trim()) flag("rep", i, bad);
+        // Calling a filled-in box "required" tells them nothing about what is wrong with it.
+        if (!s.attr.trim()) {
+          flag("attr", i, bad, "Required: copy the exact sentence or phrase from the source, "
+                             + "verbatim.");
+        } else if (!isQuote(s.attr, item.source)) {
+          flag("attr", i, bad, "The text you entered does not appear in the source like this. "
+                             + "Please copy it from the source word for word.");
+        }
+      } else if (!s.expl.trim()) {
+        flag("expl", i, bad);
+      }
+    });
+    if (!cur.rev.trim()) {
+      document.getElementById("rev").classList.add("needs");
+      document.getElementById("rev_err").classList.add("on");
+      bad.push(document.getElementById("rev"));
+    }
+    if (hasEdits(item, cur) && !gramChecked(cur)) {
+      var box = document.querySelector("label.gramok");
+      if (box) { box.classList.add("needs"); bad.push(box); }
+      document.getElementById("gramok_err").classList.add("on");
+    }
+    return bad;
+  }
+  function submitItem(item, cur) {
+    var bad = validate(item, cur), err = document.getElementById("err");
+    if (bad.length) {
+      err.textContent = "Some required fields are empty or need fixing. They are marked in red.";
+      bad[0].scrollIntoView({behavior: "smooth", block: "center"});
+      return;
+    }
+    err.textContent = "";
+    var text = finalText(cur), warn = grammarWarnings(item.summary, text);
+    var rw = rewriteWarning(item, cur);
+    if (rw) warn.push(rw);
+    // Shown once per version of the text: answering "it reads correctly" is an answer, and
+    // asking again about the same words would only train people to click through.
+    if (warn.length && cur.warnedFor !== text) { showWarnings(item, cur, warn, text); return; }
+    showGate(item, cur);
+  }
+
+  // Before the gate, the spots that usually mean a broken join. Never blocking: a real
+  // sentence can trip any of these, and the annotator is the judge of their own text.
+  function showWarnings(item, cur, warn, text) {
+    fieldStop();
+    warn.forEach(function (w) {
+      if (cur.warnKinds.indexOf(w.k) === -1) cur.warnKinds.push(w.k);
+    });
+    save();
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    bg.innerHTML = '<div class="modal" id="gramwarn"><h2>Check these spots in your revision</h2>'
+      + '<p class="sub">Edits often break the sentence around them, and repairs sometimes '
+      + "change more than grammar. Each spot below has a pattern that usually means one of "
+      + "these. If you have checked it and it is right, you can continue.</p>"
+      + '<ul class="warnlist">' + warn.map(function (w) {
+        return "<li><b>" + w.say.charAt(0).toUpperCase() + w.say.slice(1) + "</b>"
+          + w.spots.map(function (s) { return '<span class="spot">' + s + "</span>"; }).join("")
+          + "</li>";
+      }).join("") + "</ul>"
+      + '<div class="row"><button type="button" class="choice" id="warnfix">Let me fix it</button>'
+      + '<button type="button" class="choice" id="warnok">It reads correctly &mdash; continue'
+      + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("warnfix").addEventListener("click", function () {
+      cur.warnOverride = false; save(); bg.remove();
+      var g = document.getElementById("gram");
+      if (g) { g.scrollIntoView({behavior: "smooth", block: "center"}); g.focus(); }
+    });
+    document.getElementById("warnok").addEventListener("click", function () {
+      cur.warnedFor = text; cur.warnOverride = true; save(); bg.remove();
+      showGate(item, cur);
+    });
+  }
+
+  // The last gate: the diff beside the original, and the one question that cannot be
+  // answered without looking at both. A tick box would be clicked without reading.
+  function showGate(item, cur) {
+    fieldStop();
+    var ops = wordDiff(item.summary, finalText(cur));
+    var changed = diffChanged(ops);
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    // Asking "did you lose anything?" over an unchanged text reads as a trick question.
+    // When nothing moved, the thing worth confirming is that nothing moved on purpose.
+    bg.innerHTML = changed
+      ? '<div class="modal"><h2>Before you continue</h2>'
+        + '<p class="lab">What you changed</p>'
+        + '<div class="diff">' + diffHtml(ops) + "</div>"
+        + '<p class="sub">Read your revision against the marked statements once more.</p>'
+        + '<p style="font-weight:600;margin:0 0 10px">Did you lose any salvageable '
+        + "faithful information?</p>"
+        + '<div class="row"><button type="button" class="choice" id="lostno">'
+        + "No &mdash; everything the statement got right is still there</button>"
+        + '<button type="button" class="choice" id="lostyes">Yes &mdash; let me fix it'
+        + "</button></div></div>"
+      : '<div class="modal"><h2>You are submitting the text unchanged</h2>'
+        + '<p class="sub">Your answers leave this summary exactly as it arrived, word for '
+        + "word. That is the right answer when every marked statement is faithful to the "
+        + "source &mdash; and the wrong one if any of them is not.</p>"
+        + '<div class="row"><button type="button" class="choice" id="lostno">'
+        + "That is my answer &mdash; continue</button>"
+        + '<button type="button" class="choice" id="lostyes">Let me look again'
+        + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("lostyes").addEventListener("click", function () {
+      cur.lost = "yes"; save(); bg.remove();
+    });
+    document.getElementById("lostno").addEventListener("click", function () {
+      cur.lost = changed ? "no" : "unchanged";
+      cur.done = true;
+      tick(); helpTick("procedure"); helpTick("guidelines");
+      save(); bg.remove();
+      HOOKS.passed(api, item, cur);
+    });
+  }
+
+  // ---- moving between items ----------------------------------------------------
+  function goTo(k) {
+    if (st.items[st.at]) st.items[st.at].note = "";
+    tick(); fieldStop();
+    helpTick("procedure"); helpTick("guidelines");
+    st.at = k;
+    var cur = st.items[k];
+    if (cur) cur.visits += 1;
+    clockFor(cur);
+    save(); render();
+    window.scrollTo({top: 0});
+  }
+  function advance() {
+    if (st.at < ITEMS.length - 1) { goTo(st.at + 1); return; }
+    finish();
+  }
+  function finish() {
+    tick(); clockAdd = null; parked = null;
+    ["procedure", "guidelines"].forEach(function (k) {
+      if (HELP[k].open) closeAid(k);
+    });
+    st.finished = true;
+    save();
+    HOOKS.finish(api);
+    closing();
+  }
+  function closing() {
+    document.getElementById("count").innerHTML = CFG.doneCount;
+    document.getElementById("fill").style.width = "100%";
+    ["task-h1", "task-intro", "llm-note", "nopid", "procbtn", "glbtn"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.hidden = true;
+    });
+    root.innerHTML = HOOKS.closing(api);
+    document.getElementById("below").innerHTML = "";
+    window.scrollTo({top: 0});
+  }
+
+  function withIds(url) {
+    try {
+      var u = new URL(url, location.href);
+      if (PRO.pid) u.searchParams.set("PROLIFIC_PID", PRO.pid);
+      if (PRO.study) u.searchParams.set("STUDY_ID", PRO.study);
+      if (PRO.session) u.searchParams.set("SESSION_ID", PRO.session);
+      return u.toString();
+    } catch (e) { return url; }
+  }
+  window.nextHref = function () { return withIds(CFG.nextPage); };   // test_chain.py reads this
+
+  function send(body) {
+    try {
+      if (navigator.sendBeacon
+          && navigator.sendBeacon(CFG.endpoint,
+                                  new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
+    } catch (e) {}
+    try {
+      fetch(CFG.endpoint, {method: "POST", keepalive: true, mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+    } catch (e) {}
+  }
+
+  // One span as the analysis needs it. Only what the chosen operation asks for is sent: a
+  // value typed before the annotator changed their mind is not an answer.
+  function spanRecord(item, s) {
+    var o = {sid: s.sid, text: spanText(item, s), start: s.start, end: s.end,
+             marked: item.summary.slice(s.baseStart, s.baseEnd), adj: s.adj.trim(),
+             split_from: s.from || null, act: s.act};
+    if (s.act === "not") { o.why = s.why; return o; }
+    if (s.act === "replace") {
+      o.q = s.q; o.rep = s.rep; o.attr = s.attr;
+      o.attr_verbatim = isQuote(s.attr, item.source);
+    } else if (s.act === "delete") {
+      o.expl = s.expl;
+    }
+    return o;
+  }
+
+  // One item as both pages post it, so the practice round and the annotation rounds are read
+  // by the same code. away_ms is time with the tab hidden, idle_ms time with it visible but
+  // no activity past IDLE_MS; answer_ms already excludes both.
+  function logOf(item, cur) {
+    return {
+      item: cur.id, answer_ms: Math.round(cur.ms), visits: cur.visits, lost_check: cur.lost,
+      pastes: cur.pastes, paste_from: cur.pasteFrom, paste_outside_chars: cur.pasteOutside,
+      keys: cur.keys, away_ms: Math.round(cur.awayMs), away_n: cur.awayN,
+      idle_ms: Math.round(cur.idleMs || 0), idle_n: cur.idleN || 0,
+      revision: cur.rev, revision_grammar: cur.gram, rev_hand_edited: cur.revTouched,
+      grammar_edited: cur.gram.trim() !== cur.rev.trim(),
+      // null where there was nothing to check: the text went out as it arrived
+      grammar_checked: hasEdits(item, cur) ? gramChecked(cur) : null,
+      grammar_warnings: cur.warnKinds, grammar_warning_overridden: cur.warnOverride,
+      help: cur.help, field_ms: fieldTimes(cur),
+      spans: cur.spans.map(function (s) { return spanRecord(item, s); })
+    };
+  }
+
+  addEventListener("pagehide", function () {
+    tick(); fieldTick(); helpTick("procedure"); helpTick("guidelines"); save();
+    if (!stale && !st.finished && HOOKS.partial) HOOKS.partial(api);
+  });
+
+  // ---- the two aids ------------------------------------------------------------
+  var proc = document.getElementById("procpanel"), procBtn = document.getElementById("procbtn");
+  var glm = document.getElementById("glmodal"), glBtn = document.getElementById("glbtn");
+  var glf = document.getElementById("glframe"), glScroll = 0;
+
+  function syncFrameTheme() {
+    try {
+      var de = glf.contentDocument.documentElement;
+      var dark = document.documentElement.getAttribute("data-theme") === "dark";
+      if (dark) de.setAttribute("data-theme", "dark"); else de.removeAttribute("data-theme");
+    } catch (e) {}
+  }
+  function closeAid(k) {
+    if (!HELP[k].open) return;
+    helpClose(k);
+    if (k === "procedure") {
+      proc.hidden = true; procBtn.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("procopen"); fitAll();
+    } else {
+      try { glScroll = glf.contentWindow.scrollY; } catch (e) {}
+      glm.hidden = true; glBtn.setAttribute("aria-expanded", "false"); glBtn.focus();
+    }
+  }
+  procBtn.addEventListener("click", function () {
+    if (HELP.procedure.open) { closeAid("procedure"); return; }
+    proc.hidden = false; procBtn.setAttribute("aria-expanded", "true");
+    document.body.classList.add("procopen"); fitAll();
+    helpOpen("procedure");
+  });
+  document.getElementById("procclose").addEventListener("click", function () {
+    closeAid("procedure");
+  });
+  glBtn.addEventListener("click", function () {
+    // Loaded on first use and then kept, so reopening returns to the same place.
+    if (!glf.getAttribute("src")) {
+      glf.addEventListener("load", syncFrameTheme);
+      // Reading the guidelines is work: activity inside the frame keeps the clocks running.
+      glf.addEventListener("load", function () {
+        try { watchActivity(glf.contentDocument); } catch (e) {}
+      });
+      glf.setAttribute("src", CFG.guidelines + "?embed=1");
+    }
+    syncFrameTheme();
+    glm.hidden = false; glBtn.setAttribute("aria-expanded", "true");
+    // Explicitly, rather than trusting the browser to keep a hidden frame's scroll: a tester
+    // in Chrome saw it come back at the top. "instant", because the guidelines page scrolls
+    // smoothly and the reader should not watch it travel.
+    if (glScroll) {
+      try { glf.contentWindow.scrollTo({top: glScroll, behavior: "instant"}); } catch (e) {}
+    }
+    helpOpen("guidelines");
+    document.getElementById("glclose").focus();
+  });
+  document.getElementById("glclose").addEventListener("click", function () {
+    closeAid("guidelines");
+  });
+  glm.addEventListener("click", function (e) { if (e.target === glm) closeAid("guidelines"); });
+  addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (HELP.guidelines.open) closeAid("guidelines");
+    else if (HELP.procedure.open) closeAid("procedure");
+  });
+  // Escape pressed inside the guidelines arrives here, since the frame has the focus.
+  addEventListener("message", function (e) {
+    if (e.origin === location.origin && e.data === "gl-close") closeAid("guidelines");
+  });
+
+  // ---- theme ---------------------------------------------------------------
+  var tb = document.getElementById("theme");
+  function paintTheme() {
+    var d = document.documentElement.getAttribute("data-theme") === "dark";
+    tb.textContent = d ? "☀ Light" : "☾ Dark";
+  }
+  tb.addEventListener("click", function () {
+    var d = document.documentElement.getAttribute("data-theme") === "dark";
+    if (d) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", "dark");
+    try { localStorage.setItem("gl-theme", d ? "light" : "dark"); } catch (e) {}
+    paintTheme(); syncFrameTheme();
+  });
+  paintTheme();
+
+  // ---- start -----------------------------------------------------------------
+  var api = {st: st, PRO: PRO, esc: esc, save: save, render: render, advance: advance,
+             send: send, withIds: withIds, wordDiff: wordDiff, diffHtml: diffHtml,
+             spanRecord: spanRecord, spanText: spanText, finalText: finalText,
+             fieldTimes: fieldTimes, logOf: logOf, grammarWarnings: grammarWarnings,
+             editedSentences: editedSentences, seamRanges: seamRanges,
+             startReview: function (cur) { clockFor(cur); }};
+  window.toolApi = api;     // test_tool.py drives the diff through this
+
+  if (!PRO.pid) {
+    var w = document.getElementById("nopid");
+    if (w) w.hidden = false;
+  }
+  if (!st.finished) {
+    var c0 = st.items[st.at];
+    if (c0) c0.visits += 1;
+    clockFor(c0);
+  }
+  render();
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Minimal factual revision - feedback on your second round</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#fbfaf8;--panel:#ffffff;--ink:#f4f2ee;--line:#e2ded7;--text:#1c1b19;
+      --dim:#6a6660;--accent:#1f4e79;--on-accent:#ffffff;--mark:#fde9a8;--mark-line:#e0c25a;
+      --ok:#2f6b45;--ok-bg:#eaf4ee;--part:#8a5a00;--part-bg:#fbf1dc;--bad:#9b2c2c;--bad-bg:#fbeaea;
+      --del:#9b2c2c;--del-bg:#fbeaea;--ins:#2f6b45;--ins-bg:#e3f2e8;color-scheme:light}
+:root[data-theme="dark"]{--bg:#15171a;--panel:#1c1f23;--ink:#22262b;--line:#2e3237;
+      --text:#e8e6e2;--dim:#9a968f;--accent:#7fb2e0;--on-accent:#10243a;--mark:#4a3f16;
+      --mark-line:#8a7322;--ok:#7fc79b;--ok-bg:#18261e;--part:#e0b25c;--part-bg:#2a2214;
+      --bad:#e88b8b;--bad-bg:#2c1a1a;--del:#e88b8b;--del-bg:#2c1a1a;--ins:#7fc79b;
+      --ins-bg:#16271d;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;
+     line-height:1.6;padding:0 0 90px}
+.wrap{max-width:800px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px))}
+header{border-bottom:1px solid var(--line);padding:12px 0}
+header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600}
+h2{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600;margin-bottom:8px}
+h3{font-family:'Newsreader',Georgia,serif;font-size:18px;font-weight:600}
+.sub,.dim{color:var(--dim)}
+.sub{font-size:12px}
+.spacer{flex:1}
+.barbtn{font:inherit;font-size:12.5px;border:1px solid var(--line);background:transparent;
+        color:var(--text);border-radius:999px;padding:5px 13px;cursor:pointer}
+.box,.card,.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+              padding:18px 20px;margin:16px 0}
+.box p,.card p,.q p{font-size:14.5px;margin-bottom:8px}
+.box ol,.box ul,.card ol,.card ul{margin:4px 0 8px 22px;font-size:14.5px}
+.box li,.card li{margin-bottom:6px}
+.btn{background:var(--accent);border:1px solid var(--accent);color:var(--on-accent);
+     border-radius:7px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;
+     text-decoration:none;display:inline-block;font-family:inherit}
+.hidden{display:none}
+
+.chead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;
+       margin-bottom:6px}
+.topic{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:13.5px;font-weight:400;
+       color:var(--dim)}
+.verdict{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;
+         border:1px solid currentColor;white-space:nowrap}
+.verdict.ok{color:var(--ok);background:var(--ok-bg)}
+.verdict.part{color:var(--part);background:var(--part-bg)}
+.verdict.bad{color:var(--bad);background:var(--bad-bg)}
+.tally{line-height:2.1}
+.tally a{color:var(--accent)}
+.lbl{font-size:11px !important;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);
+     font-weight:600;margin:16px 0 5px !important}
+.summary{font-family:'Newsreader',Georgia,serif;font-size:16.5px !important;line-height:1.65}
+mark{background:var(--mark);color:inherit;box-shadow:0 0 0 1px var(--mark-line);border-radius:2px}
+details.src{margin:6px 0 0;font-size:13.5px}
+details.src summary{cursor:pointer;color:var(--accent);font-size:13px}
+details.src p{background:var(--ink);border:1px solid var(--line);border-radius:8px;
+              padding:10px 12px;margin-top:6px;font-size:13.5px !important;white-space:pre-wrap}
+.ans{border-left:3px solid var(--line);padding:2px 0 2px 10px;margin:6px 0}
+.ah{font-size:14px}
+.act{font-weight:600}
+.fld{display:flex;gap:8px;font-size:13.5px;flex-wrap:wrap}
+.fld .k,.gram .k{color:var(--dim);min-width:92px;font-size:12px;text-transform:uppercase;
+                 letter-spacing:.04em;padding-top:2px}
+.diff{font-family:'Newsreader',Georgia,serif;font-size:16px !important;background:var(--ink);
+      border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+del{color:var(--del);background:var(--del-bg);text-decoration:line-through}
+ins{color:var(--ins);background:var(--ins-bg);text-decoration:none}
+.comment{border-left:3px solid var(--accent);padding:4px 0 4px 12px;margin:14px 0 4px}
+.gram{display:flex;gap:8px;flex-wrap:wrap;background:var(--part-bg);border-radius:8px;
+      padding:8px 12px;margin:8px 0}
+.gram p{margin:0 !important}
+.why ol{margin-left:22px}
+#review{background:var(--part-bg);color:var(--part);font-size:13px;padding:6px 12px;
+        border-radius:8px;margin-top:14px}
+footer{margin:26px 0 0;text-align:center}
+@media (max-width:560px){.box,.card{padding:14px 14px}.fld .k{min-width:0}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Minimal factual revision <span class="sub">&mdash; feedback on your second round</span></h1>
+  <span class="spacer"></span>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></header>
+<main class="wrap">
+  <p id="review" hidden>Review view: this is the page as the annotator will see it.</p>
+  <section class="box"><p>Thank you for your work in the second round. As last time, this page goes through your seven items one by one. For each item it shows your revision, the revision we looked for, and how it follows from the guidelines' procedure. Please read it before you start the next round.</p><p>Some items have more than one accepted revision. The guidelines leave room for judgement in a few places, such as whether a fact counts as common knowledge, and a revision that follows the procedure from either judgement is accepted. Where we prefer one of them, the explanation says so.</p><p>The verdict is about your decisions and replacements. Correct means they match a revision we accept. Partly correct means some match and others do not. Incorrect means they do not match. Grammar repairs you missed are shown separately.</p><p>The next round has 15 new items, again without worked solutions. It is longer than the last round, so you can take breaks: each item is saved when you continue to the next one.</p></section>
+  <section class="box" id="nopid"><p>This page was opened without a recognised Prolific ID.
+    If you came from Prolific, go back and use the study link there rather than a copied
+    address.</p></section>
+  
+<div class="who" data-who="P9" data-h="261635252ccf14ce77a0369125af772f3b3d070dadfbcaff0bc2260f4f4dd422" hidden>
+  <section class="box"><h2>Your seven items at a glance</h2><p class="tally"><span class="verdict ok">Correct</span> <a href="#P9-r1">item 1</a>, <a href="#P9-r4">item 4</a>, <a href="#P9-r5">item 5</a>, <a href="#P9-r6">item 6</a> &middot; <span class="verdict part">Partly correct</span> <a href="#P9-r2">item 2</a>, <a href="#P9-r3">item 3</a> &middot; <span class="verdict bad">Incorrect</span> <a href="#P9-r7">item 7</a></p></section>
+  <section class="box"><h2>The main points</h2><ol><li><strong>Replacing before deleting.</strong> In two items you deleted a span although the source answers a question that the span also answers, so a replacement could keep that information. In item 2, the source answers what Costner did in the miniseries: “Costner starred in the three-part miniseries”. Deleting “portrayed Devil Anse Hatfield” removed this together with the verb of the sentence. In item 3, the source answers for how long the protests had been taking place: “since 31 March”. Deleting “weeks of” removed this.<br>Before you delete, please check whether there is any faithful information in the hallucination that can be kept via a replacement. If only part of a marked span is unsupported, adjust the span to that part first.</li><li><strong>The replacement answers the question the span answers.</strong> In two items your replacement answers a different question from the one the span answered. In item 2, “Primetime” states which kind of Emmy Costner won; your replacement, “2012”, is faithful, but it states in which year he won. In item 7, “a Bonney Lake couple” states where the couple were from; your replacement, “Puyallup”, is where their church was. Write Qmax for the span itself, and take the replacement from the source's answer to that question. If the source does not answer it, look for a less specific question that both texts answer, or delete.</li><li><strong>Grammar after your edits.</strong> Two of your revisions are not grammatical where you edited them: “Costner in the miniseries "Hatfields &amp; McCoys" (2012), won” (item 2) and “Josh and Vanessa Ellis, Puyallup in their 20s” (item 7). After replacing or deleting, fix the grammar errors your edit introduced, without adding or changing any content. The grammar box marks every place you edited.</li></ol></section>
+  
+<section class="card" id="P9-r1">
+  <div class="chead"><h3>Item 1 <span class="topic">&middot; an Olympic dressage champion</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Reigning Olympic dressage champion <mark>Charlotte</mark> Dujardin says her horse will retire after Rio <mark>2016</mark>.</p>
+  <details class="src"><summary>Show the source</summary><p>Dujardin, 30, and Valegro won individual and team dressage gold for Britain at London 2012 and have since won World and European titles. But, she says, the Olympics in Brazil next summer will be the horse&#x27;s last. &quot;This will be Valegro&#x27;s retirement after Rio so I want to go out there and want to enjoy every last minute,&quot; Dujardin told BBC Points West. Media playback is not supported on this device . Dujardin partnered Valegro to victory in London as the two performed to movie themes including The Great Escape and Live And Let Die. And the Gloucestershire rider says she is hugely excited at the prospect of defending her title, while admitting the Games in Brazil represents a huge logistical challenge. &quot;He&#x27;s got to stay fit and healthy and get ready for the flight,&quot; she said. &quot;It&#x27;s a 16-hour flight and he needs to acclimatise. &quot;I&#x27;m really, really excited heading towards Rio. We get to go out in February and have a look around and fingers crossed it all goes well. &quot;Hopefully it won&#x27;t be too hot, it&#x27;s their winter time so high 20s.&quot; Dujardin also says she will not let the pressure of being Olympic champion affect her. &quot;I just take it all on board,&quot; she said. &quot;I try not to let that all bother me. Riding Valegro always makes you smile so I enjoy it.&quot;</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “Charlotte”</div><div class="fld"><span class="k">Explanation</span><span>Her first name has not been mentioned in the article.</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “2016”</div><div class="fld"><span class="k">Explanation</span><span>The article only mentions that the next summer Olympics will be in Brazil but not the year, so one cannot tell which year that would be.</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Reigning Olympic dressage champion <del>Charlotte</del> Dujardin says her horse will retire after <del>Rio 2016.</del> <ins>Rio.</ins></p>
+  <div class="comment"><p>You deleted both spans with the right reasons: the source never gives her first name or the year of the Olympics. Replacing “2016” with “next summer”, which the source does say, is accepted as well.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Reigning Olympic dressage champion <del>Charlotte</del> Dujardin says her horse will retire after <del>Rio 2016.</del> <ins>Rio.</ins></p><p class="diff">Reigning Olympic dressage champion <del>Charlotte</del> Dujardin says her horse will retire after Rio <del>2016.</del> <ins>next summer.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “Charlotte”. H: “Dujardin's first name is Charlotte.” The source calls her only “Dujardin”, so it does not answer “What is Dujardin's first name?”. The question both texts answer, “Who says her horse will retire?”, has the source answer “Dujardin”, which already remains in the sentence. Delete “Charlotte”.</li><li>Span “2016”. H: “The Rio Olympics are in 2016.” Q1: “When are the Rio Olympics?” Both texts answer it: the summary with “2016”, the source with “next summer” (“the Olympics in Brazil next summer will be the horse's last”). The source never gives the year, so Q1 is the most specific question both answer, and its answer in the source is “next summer”.</li><li>Replacing “2016” with “next summer” keeps the time of the retirement. Deleting “2016” is also accepted, since “after Rio” already places the retirement after the Olympics.</li></ol></div>
+</section>
+<section class="card" id="P9-r2">
+  <div class="chead"><h3>Item 2 <span class="topic">&middot; an actor&#x27;s television role</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">On television, Costner <mark>portrayed Devil Anse Hatfield</mark> in the miniseries &quot;Hatfields &amp; McCoys&quot; (2012), winning the <mark>Primetime</mark> Emmy Award for Outstanding Lead Actor in a <mark>Limited or Anthology Series</mark> or Movie.</p>
+  <details class="src"><summary>Show the source</summary><p>Costner starred in the three-part miniseries &quot;Hatfields &amp; McCoys&quot;, which premiered on May 28, 2012, on the History Channel. The role earned Costner the 2012 Emmy Award for Outstanding Lead Actor in a Miniseries or a Movie, the 2013 Screen Actors Guild Award for Outstanding Performance by a Male Actor in a Miniseries or Television Movie, and the 2013 Golden Globe Award for Best Performance by an Actor in a Limited Series or a Motion Picture Made for Television.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “portrayed Devil Anse Hatfield”</div><div class="fld"><span class="k">Explanation</span><span>Whom did Costner portray  in the miniseries &quot;Hatfields &amp; McCoys&quot; ( 2012), winning an Emmy Award? the source only states that he had won an Emmy Award but does not state what character he played.</span></div></div><div class="ans"><div class="ah"><span class="act">Replace</span> “Primetime”</div><div class="fld"><span class="k">Question</span><span>What Emmy Award did Costner win for the miniseries &quot;Hatfields &amp; McCoys&quot;(2012)?</span></div><div class="fld"><span class="k">Source sentence</span><span>The role earned Costner the 2012 Emmy Award for Outstanding Lead Actor in a Miniseries or a Movie</span></div></div><div class="ans"><div class="ah"><span class="act">Replace</span> “Limited or Anthology Series”</div><div class="fld"><span class="k">Question</span><span>For what category did Costner win an Emmy Award for Outstanding Lead Actor in for his role in the &quot;Hatfields &amp; McCoys&quot;(2012) miniseries?</span></div><div class="fld"><span class="k">Source sentence</span><span>The role earned Costner the 2012 Emmy Award for Outstanding Lead Actor in a Miniseries or a Movie</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">On television, Costner <del>portrayed Devil Anse Hatfield</del> in the miniseries &quot;Hatfields &amp; McCoys&quot; (2012), <del>winning</del> <ins>won</ins> the <del>Primetime</del> <ins>2012</ins> Emmy Award for Outstanding Lead Actor in a <del>Limited</del> <ins>Miniseries</ins> or <del>Anthology Series or</del> <ins>a</ins> Movie.</p>
+  <div class="comment"><p>Your replacement for “Limited or Anthology Series” is the one we looked for. For “portrayed Devil Anse Hatfield”, your question, “Whom did Costner portray…?”, was the right first question, and the source does not answer it. The step that was missing is the less specific question, what Costner did in the miniseries, which the source answers with “starred in”. For “Primetime”, “2012” is faithful, since the source says “the 2012 Emmy Award”, but it answers in which year he won, not which kind of Emmy. The source does not answer that question, so “Primetime” is deleted.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>After you deleted “portrayed Devil Anse Hatfield”, the sentence reads “Costner in the miniseries "Hatfields &amp; McCoys" (2012), won …”. Within your choice, a comma after “Costner” makes it grammatical: “Costner, in the miniseries "Hatfields &amp; McCoys" (2012), won …”.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">On television, Costner <del>portrayed Devil Anse Hatfield</del> <ins>starred</ins> in the miniseries &quot;Hatfields &amp; McCoys&quot; (2012), winning the <del>Primetime</del> Emmy Award for Outstanding Lead Actor in a <del>Limited or Anthology Series</del> <ins>Miniseries</ins> or Movie.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “portrayed Devil Anse Hatfield”. H: “Costner portrayed Devil Anse Hatfield in the miniseries.” Q1: “Whom did Costner play in the miniseries?” The source does not answer it: it never names his character.</li><li>A less specific question is answered by both texts: “What did Costner do in the miniseries?” The source answers: “Costner starred in the three-part miniseries”. This is Qmax. Replace the span with “starred in”.</li><li>Span “Primetime”. H: “The award was a Primetime Emmy.” Q1: “Which kind of Emmy did Costner win?” The source says only “the 2012 Emmy Award”. The question both texts answer, “Which award did he win?”, has the source answer “the Emmy Award”, which already remains in the sentence. Delete “Primetime”.</li><li>Span “Limited or Anthology Series”. H: “The category was Outstanding Lead Actor in a Limited or Anthology Series or Movie.” Q1: “In which category did Costner win the Emmy?” The source answers it in the Emmy's own words: “the 2012 Emmy Award for Outstanding Lead Actor in a Miniseries or a Movie”. Replace the span with “Miniseries”.</li><li>The same sentence of the source also lists a Golden Globe, “for Best Performance by an Actor in a Limited Series or a Motion Picture Made for Television”. That is a different award, so its wording does not answer a question about the Emmy.</li></ol></div>
+</section>
+<section class="card" id="P9-r3">
+  <div class="chead"><h3>Item 3 <span class="topic">&middot; a French aid package for young people</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>French Prime Minister Manuel</mark> Valls has announced a new aid package for young people in response to <mark>weeks of</mark> protests against his labour reforms.</p>
+  <details class="src"><summary>Show the source</summary><p>The subsidies for job-seeking graduates and other state support for youngsters are worth €400-500m (£321-401m). The Nuit Debout movement has organised nightly rallies since 31 March against Mr Valls&#x27; labour market reforms. Early on Monday police cleared away a protest camp on a central Paris square. Wooden structures erected on Place de la Republique were dismantled and about 100 protesters dispersed peacefully. The Nuit Debout activists, organised through social media, are mainly left-wing, and their activism has been compared to the Spanish Indignados citizens&#x27; movement and the Occupy anti-globalisation movement. Mr Valls announced the new aid package during a meeting with student leaders on Monday. It includes a four-month subsidy for graduates who face financial hardship while seeking work. There will also be a state housing guarantee for people under 30, which could apply to 300,000 people renting property. The leader of France&#x27;s main student organisation Unef, William Martinet, welcomed Mr Valls&#x27; package but said the protests against the labour bill would continue. The labour bill would remove some of the protection workers enjoy against being laid off, in a bid to encourage businesses to hire more people. It envisages giving employers more flexibility in setting the hours that their staff work; lowering the current high barriers to dismissal of staff; and new rules on industrial tribunal payouts. The Socialist government is striving to push the unemployment rate below 10%. Many Socialist voters see the current labour protections and 35-hour working week as key achievements that must not be sacrificed for a pro-business economic agenda.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “French Prime Minister”</div><div class="fld"><span class="k">Explanation</span><span>Is Mr Valls the Prime Minister of of France? the source mentions him a couple of times but does not attribute the title of Prime minister to him.</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “Manuel”</div><div class="fld"><span class="k">Explanation</span><span>What is Mr Valls&#x27; first name? it has not been mentioned in the source, it only calls him Me Valls.</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “weeks of”</div><div class="fld"><span class="k">Explanation</span><span>How frequent were the protests against Mr Valls&#x27; labour reforms?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff"><del>French Prime Minister Manuel</del> Valls has announced a new aid package for young people in response to <del>weeks of</del> protests against his labour reforms.</p>
+  <div class="comment"><p>Deleting the title and the first name is right. Deleting “French” as well is accepted, though we prefer keeping it, since it is a reasonable inference from the article. For “weeks of”, your question asked how frequent the protests were. The span states how long they had been going on, and the source answers that question with “since 31 March”, so the span needed a replacement, not a deletion.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff"><del>French Prime Minister Manuel</del> <ins>France&#x27;s Mr</ins> Valls has announced a new aid package for young people in response to <del>weeks of</del> protests <ins>since 31 March</ins> against his labour reforms.</p><p class="diff"><del>French Prime Minister Manuel</del> <ins>Mr</ins> Valls has announced a new aid package for young people in response to <del>weeks of</del> protests against his labour <del>reforms.</del> <ins>reforms that have been taking place since 31 March.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “French Prime Minister Manuel”. “French” is a reasonable inference: the whole article is about France and the French government's reforms. We prefer to adjust the span to “Prime Minister Manuel” and keep “French”; deleting it with the rest is also accepted.</li><li>H: “Valls is Prime Minister, and his first name is Manuel.” The source calls him only “Mr Valls”, and it never gives his title or his first name. The question both texts answer, “Who announced the package?”, has the source answer “Mr Valls”, which already remains in the sentence. Delete “Prime Minister Manuel”. The grammar step then turns “French Valls” into “France's Mr Valls”.</li><li>Span “weeks of”. H: “The protests had been going on for weeks.” Q1: “For how long had the protests been taking place?” The source answers: “The Nuit Debout movement has organised nightly rallies since 31 March”. It gives no date for the announcement, so it does not say that this was weeks. Its answer is “since 31 March”. Replace “weeks of” with it, placed where the sentence reads naturally: “protests since 31 March”.</li></ol></div>
+</section>
+<section class="card" id="P9-r4">
+  <div class="chead"><h3>Item 4 <span class="topic">&middot; a Turkish opposition party</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">However, this is viewed with suspicion by some, &quot;who see it as an opportunistic move against the main opposition party, the <mark>secular</mark> CHP.&quot;</p>
+  <details class="src"><summary>Show the source</summary><p>His comments were pointedly directed at opposition leader Kemal Kılıçdaroğlu (who in fact is from Tunceli). Erdogan reminded his audience that Kılıçdaroğlu&#x27;s party, the CHP, had been in power at the time of the massacre, then the only political party in Turkey.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “secular”</div><div class="fld"><span class="k">Explanation</span><span>is CHP a secular party? I had to delete because it is not stated by the source</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">However, this is viewed with suspicion by some, &quot;who see it as an opportunistic move against the main opposition party, the <del>secular</del> CHP.&quot;</p>
+  <div class="comment"><p>You deleted “secular” because the source does not state it. That is the revision we looked for.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">However, this is viewed with suspicion by some, &quot;who see it as an opportunistic move against the main opposition party, the <del>secular</del> CHP.&quot;</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “secular”. H: “The CHP is secular.” Q1: “What is the CHP's ideology?” The source never describes the party's ideology, at any level of detail.</li><li>The question both texts answer, “Which party is it?”, has the source answer “the CHP”, which already remains in the sentence. Delete “secular”.</li></ol></div>
+</section>
+<section class="card" id="P9-r5">
+  <div class="chead"><h3>Item 5 <span class="topic">&middot; a snooker match</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>World</mark> champion <mark>Mark</mark> Selby lost <mark>10-6</mark> to Ding Junhui in the <mark>first</mark> round of the Shanghai Masters.</p>
+  <details class="src"><summary>Show the source</summary><p>England&#x27;s Selby, 33, who beat Ding 18-14 in May&#x27;s Crucible final, took a 3-1 lead before his Chinese opponent hit back, knocking in a 75 break for a 6-3 advantage going into the interval. Back came Selby with a 76 and century before he levelled the match at 6-6. But Ding, 29, took control once more, recording breaks of 97 and 63 en route to completing his win on home soil. All results from the Shanghai Masters here.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “World”</div><div class="fld"><span class="k">Explanation</span><span>What title does Selby hold? the attributed world championship is not mentioned in the source</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “Mark”</div><div class="fld"><span class="k">Explanation</span><span>What is Selby&#x27;s first name? not mentioned in source</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “10-6”</div><div class="fld"><span class="k">Explanation</span><span>By what points did Selby beat Ding in a round of the Shanghai Masters?</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “first”</div><div class="fld"><span class="k">Explanation</span><span>In which round did Selby beat Ding in the Shanghai Masters?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff"><del>World champion Mark</del> <ins>Champion</ins> Selby lost <del>10-6</del> to Ding Junhui in <del>the first</del> <ins>a</ins> round of the Shanghai Masters.</p>
+  <div class="comment"><p>You deleted all four spans, each for the right reason, and you repaired “the round” into “a round”. This is one of the revisions we accept.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff"><del>World champion Mark</del> <ins>Champion</ins> Selby lost <del>10-6</del> to Ding Junhui in <del>the first</del> <ins>a</ins> round of the Shanghai Masters.</p><p class="diff"><del>World</del> <ins>Crucible</ins> champion <del>Mark</del> Selby lost <del>10-6</del> to Ding Junhui in <del>the first</del> <ins>a</ins> round of the Shanghai Masters.</p><p class="diff"><del>World champion Mark</del> <ins>Champion</ins> Selby lost <del>10-6</del> to Ding Junhui in the <del>first round of the</del> Shanghai Masters.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “World”. H: “Selby is the world champion.” Q1: “Which title does Selby hold?” The source says that he “beat Ding 18-14 in May's Crucible final”. It never names the championship that the Crucible final decides, so knowing that it is the World Championship needs outside knowledge.</li><li>Deleting “World” keeps what the source does support, that Selby is a champion: “Champion Selby”. Replacing “World” with the source's own word, “Crucible”, is also accepted: it answers which title he holds, in the source's words.</li><li>Span “Mark”. The source calls him only “Selby”. Delete “Mark”.</li><li>Span “10-6”. Q1: “What was the final score?” The last score the source reports is 6-6, after which it says only that Ding completed his win. Delete “10-6”.</li><li>Span “first”. The source does not say which round the match was in. Delete “first”; the grammar step then turns “in the round” into “in a round”, or removes “the round of”.</li></ol></div>
+</section>
+<section class="card" id="P9-r6">
+  <div class="chead"><h3>Item 6 <span class="topic">&middot; the anniversary of an uprising in Egypt</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Egyptians are <mark>marking</mark> the fifth anniversary of the uprising that overthrew <mark>President Hosni</mark> Mubarak.</p>
+  <details class="src"><summary>Show the source</summary><p>Police are deployed near Tahrir Square, the symbolic centre of the uprising. Thousands of homes have been raided, as the authorities look for people who might be planning protests against President Abdul Fattah al-Sisi. Local and international human rights activists say the situation in the country has never been worse. Mr Sisi led the military&#x27;s overthrow of Mubarak&#x27;s Islamist successor, Mohammed Morsi, in 2013 following mass protests. Since then, more than 1,000 people have been killed and 40,000 are believed to have been jailed in a sweeping crackdown on dissent. Most of them have been supporters of the outlawed Muslim Brotherhood, but secular activists have also been prosecuted for breaking an anti-protest law. There is little trace of the revolution that swept an autocrat from power five years ago, and Egypt&#x27;s latest strongman is keen to keep it that way, reports the BBC&#x27;s Orla Guerin in Cairo. Mr Sisi, a retired field marshal who was elected president in 2014, has vowed that there will be a firm response to any unrest on the anniversary. &quot;The security and stability of nations are not to be toyed with,&quot; he said in a speech over the weekend at a ceremony marking Police Day, which also falls on Monday. Our correspondent says protests are already virtually banned. And in recent days police have raided about 5,000 homes in central Cairo, looking for anyone who might be planning to take to the streets. The faces of Egypt&#x27;s revolution - where are they now? Egypt&#x27;s 18-day revolution . Spotlight on human rights in Egypt . Some activists have been arrested, others driven into hiding. Many icons of the revolution are already behind bars, our correspondent adds. An interior ministry official told the AFP news agency that the raids were not aimed at &quot;squeezing the youths but avoiding chaos and infiltration of rioters among them&quot;. The Muslim Brotherhood has called for protests on Monday. But one leading activist told the BBC that he and many others would be staying home, rather than trying to return to Tahrir Square. &quot;People who protest are going to pay with their lives for, or be sentenced to over 20 years in jail,&quot; he said. &quot;The price is too high.&quot; Amnesty International warned on Sunday that Egypt was now &quot;mired in a human rights crisis of huge proportions&quot;, as the country &quot;reverts back to a police state&quot;. &quot;Peaceful protesters, politicians and journalists have borne the brunt of a ruthless campaign against legitimate dissent by the government and state security forces,&quot; said Said Boumedouha, the group&#x27;s deputy Middle East and North Africa director. &quot;Tens of thousands have been arrested and the country&#x27;s prisons are now overflowing, with widespread reports of torture and hundreds held without charge or trial,&quot; Mr Boumedouha added .</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Not a hallucination</span> “marking”</div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “President Hosni”</div><div class="fld"><span class="k">Explanation</span><span>What is the first name of Mubarak?</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Egyptians are marking the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p>
+  <div class="comment"><p>You kept “marking”, which is accepted, and deleted “President Hosni”, which the source does not support. This is one of the revisions we accept. Since the source never says that Egyptians mark the day, “It is the fifth anniversary of …” keeps even closer to it, and replacing “marking” with “facing” would also be a good revision, since the anniversary is near.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff"><del>Egyptians are marking</del> <ins>It is</ins> the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p><p class="diff">Egyptians are <del>marking</del> <ins>facing</ins> the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p><p class="diff">Egyptians are marking the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “marking”. H: “Egyptians are marking the anniversary.” The source never says that Egyptians mark the day. It describes the day approaching and the authorities preparing for it: the president vowed a firm response to any unrest on the anniversary, and protests are “virtually banned”.</li><li>A revision that states only that the day has come keeps to what the source says: “It is the fifth anniversary of …”, or “Egyptians are facing the fifth anniversary of …”. Keeping “marking” (Not a hallucination) is also accepted, but it says a little more than the source does.</li><li>Span “President Hosni”. H: “Mubarak was president, and his first name is Hosni.” The source mentions him only as “Mubarak” (“Mubarak's Islamist successor”), and it never gives his title or his first name. No question about either is answered by the source, so delete “President Hosni”.</li></ol></div>
+</section>
+<section class="card" id="P9-r7">
+  <div class="chead"><h3>Item 7 <span class="topic">&middot; a highway accident</span></h3>
+    <span class="verdict bad">Incorrect</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Josh and Vanessa Ellis, <mark>a Bonney Lake couple</mark> in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said. Police said a side jersey barrier came loose and landed directly on the vehicle’s roof. The damage was so severe crews needed nine hours to determine all three victims. Witnesses described hearing cracking sounds before the collapse. The Ellis family served at EastPointe Foursquare Church in nearby Puyallup, whose pastor said the congregation was shocked and grieving.</p>
+  <details class="src"><summary>Show the source</summary><p>A couple in their 20s, who led a youth ministry, and their baby boy were driving underneath a highway overpass in Bonney Lake, a Seattle suburb, when other motorists heard the crackle of a pending collapse. Concrete from a construction project crashed onto the family&#x27;s car, killing Josh and Vanessa Ellis and their 8-month-old son, Hudson, authorities said. &quot;The damage was so severe it was impossible to tell how many victims were in the vehicle. The only thing we had was we could tell there was one victim,&quot; said Officer Todd Green of Bonney Lake Police Department, according to CNN affiliate KOMO. It took nine hours Monday for crews to remove enough debris to discover the death toll on Angeline Road underneath State Route 410, authorities said. Authorities continued their investigation Tuesday, but initial findings were that there was an ongoing construction project on the highway and a side jersey barrier &quot;came loose and fell onto the roadway,&quot; Green told the station. &quot;When it fell off the overpass, it landed square on the roof of the vehicle,&quot; Green added. Josh and Vanessa Ellis were youth pastors at the EastPointe Foursquare Church in Puyallup, near Bonney Lake, the church said. The couple earlier wrote a short autobiography on the church website: &quot;We love to laugh. We are passionate about seeing young people discover the love and grace that Jesus abundantly pours out on them. &quot;We get really excited about good coffee, quality time with friends and Seattle welcoming an NBA basketball team back to our city,&quot; the couple wrote. &quot;We love drive-in movies, frozen yogurt, dates to IKEA and trips to the beach.&quot; Lead Pastor James Ludlow said his church was reeling. &quot;We are stunned! Shocked! Wounded, broken and dismayed. But we know one thing for sure ... they are in glory in the loving arms of our King Jesus!&quot; Ludlow said on the church&#x27;s Facebook page. Motorist Dawn Nelson was driving behind the Ellis&#x27; vehicle. &quot;I was just a second or two behind him,&quot; Nelson told KOMO. &quot;I could hear the three crunch sounds and then it just came down.&quot; Neighbors recounted a violent collapse. &quot;I thought a semi had come down the guardrail here in front,&quot; neighbor Katie Vance told the station. She felt the crash inside her home. &quot;It was a metal sound and a very heavy sound ... it was through your feet - like a guttural. It shook the whole house,&quot; she told the affiliate. CNN&#x27;s Amanda Watts contributed to this story.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “a Bonney Lake couple”</div><div class="fld"><span class="k">Question</span><span>where did the couple, Josh and Vanessa come from?</span></div><div class="fld"><span class="k">Source sentence</span><span>Josh and Vanessa Ellis were youth pastors at the EastPointe Foursquare Church in Puyallup, near Bonney Lake</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Josh and Vanessa Ellis, <del>a Bonney Lake couple</del> <ins>Puyallup</ins> in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said.</p>
+  <div class="comment"><p>Your question, “Where did the couple, Josh and Vanessa, come from?”, was the right question. The sentence you used, “Josh and Vanessa Ellis were youth pastors at the EastPointe Foursquare Church in Puyallup”, says where their church was, not where they were from. The source's answer comes from what the couple wrote: Seattle is “our city”, and Bonney Lake is a Seattle suburb.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>Your replacement took out “a … couple” together with the place, which left “Josh and Vanessa Ellis, Puyallup in their 20s”. Replacing only the place keeps the phrase grammatical: “a Puyallup couple”.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Josh and Vanessa Ellis, a <del>Bonney Lake</del> <ins>Seattle-area</ins> couple in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed <del>when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said. Police said a side jersey barrier came loose and landed directly on the vehicle’s roof. The damage was so severe crews needed nine hours to determine all three victims. Witnesses described hearing cracking sounds before the collapse. The Ellis family served at EastPointe Foursquare Church in nearby Puyallup, whose pastor said the congregation was shocked and grieving.</del> <ins>…</ins></p><p class="diff">Josh and Vanessa Ellis, a <del>Bonney Lake</del> couple in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed <del>when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said. Police said a side jersey barrier came loose and landed directly on the vehicle’s roof. The damage was so severe crews needed nine hours to determine all three victims. Witnesses described hearing cracking sounds before the collapse. The Ellis family served at EastPointe Foursquare Church in nearby Puyallup, whose pastor said the congregation was shocked and grieving.</del> <ins>…</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “a Bonney Lake couple”. H: “The couple were from Bonney Lake.” The source says only that they were driving under an overpass in Bonney Lake, not that they lived there.</li><li>Q1: “Where were the couple from?” The source answers it at a less specific level: the couple wrote about “Seattle welcoming an NBA basketball team back to our city”, and the source calls Bonney Lake “a Seattle suburb”. Its answer is the Seattle area. Replace the place with it: “a Seattle-area couple”.</li><li>Deleting the place, “a couple in their 20s”, is also accepted, if you read “our city” as support for the team rather than as where they lived. We prefer “a Seattle-area couple”, which keeps where the couple were from.</li><li>Puyallup is where their church was (“youth pastors at the EastPointe Foursquare Church in Puyallup”). That answers a different question.</li></ol></div>
+</section>
+</div>
+<div class="who" data-who="P10" data-h="30cbedaf7bd101d1ae74506593bdc493336ac6d8fdd208bcc48205a701b20b77" hidden>
+  <section class="box"><h2>Your seven items at a glance</h2><p class="tally"><span class="verdict ok">Correct</span> <a href="#P10-r1">item 1</a>, <a href="#P10-r4">item 4</a>, <a href="#P10-r5">item 5</a>, <a href="#P10-r6">item 6</a>, <a href="#P10-r7">item 7</a> &middot; <span class="verdict part">Partly correct</span> <a href="#P10-r2">item 2</a> &middot; <span class="verdict bad">Incorrect</span> <a href="#P10-r3">item 3</a></p></section>
+  <section class="box"><h2>The main points</h2><ol><li><strong>The replacement is the source's answer about the same fact.</strong> In two items your replacement came from a different fact rather than from the source's answer to the span's question. In item 2, the summary names the Emmy, but you took the category from the Golden Globe in the next part of the same sentence. In item 3, “with the Socialist Government” answers which government Mr Valls belongs to, which the span did not state. Before you replace, write Qmax for the span, find the sentence in the source that answers that question, and take the replacement from that sentence.</li><li><strong>Time for each span.</strong> Each of your items in the last round took between 1 and 5 minutes. Every marked span needs the whole procedure: read the part of the source it concerns, write Qmax, find the sentence that answers it, and check the grammar of the revised text. We expect an item with two or three spans to take about 10 to 15 minutes, and we prefer a careful revision to a fast one.</li></ol></section>
+  
+<section class="card" id="P10-r1">
+  <div class="chead"><h3>Item 1 <span class="topic">&middot; an Olympic dressage champion</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Reigning Olympic dressage champion <mark>Charlotte</mark> Dujardin says her horse will retire after Rio <mark>2016</mark>.</p>
+  <details class="src"><summary>Show the source</summary><p>Dujardin, 30, and Valegro won individual and team dressage gold for Britain at London 2012 and have since won World and European titles. But, she says, the Olympics in Brazil next summer will be the horse&#x27;s last. &quot;This will be Valegro&#x27;s retirement after Rio so I want to go out there and want to enjoy every last minute,&quot; Dujardin told BBC Points West. Media playback is not supported on this device . Dujardin partnered Valegro to victory in London as the two performed to movie themes including The Great Escape and Live And Let Die. And the Gloucestershire rider says she is hugely excited at the prospect of defending her title, while admitting the Games in Brazil represents a huge logistical challenge. &quot;He&#x27;s got to stay fit and healthy and get ready for the flight,&quot; she said. &quot;It&#x27;s a 16-hour flight and he needs to acclimatise. &quot;I&#x27;m really, really excited heading towards Rio. We get to go out in February and have a look around and fingers crossed it all goes well. &quot;Hopefully it won&#x27;t be too hot, it&#x27;s their winter time so high 20s.&quot; Dujardin also says she will not let the pressure of being Olympic champion affect her. &quot;I just take it all on board,&quot; she said. &quot;I try not to let that all bother me. Riding Valegro always makes you smile so I enjoy it.&quot;</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “Charlotte”</div><div class="fld"><span class="k">Explanation</span><span>The name Charlotte is never mentionned, only Dujardin</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “2016”</div><div class="fld"><span class="k">Explanation</span><span>Does not specify year of the next Olympics</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Reigning Olympic dressage champion <del>Charlotte</del> Dujardin says her horse will retire after <del>Rio 2016.</del> <ins>Rio.</ins></p>
+  <div class="comment"><p>You deleted both spans, and both reasons are right: the source calls her only Dujardin, and it does not give the year of the next Olympics. Replacing “2016” with “next summer”, which the source does say, is accepted as well.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Reigning Olympic dressage champion <del>Charlotte</del> Dujardin says her horse will retire after <del>Rio 2016.</del> <ins>Rio.</ins></p><p class="diff">Reigning Olympic dressage champion <del>Charlotte</del> Dujardin says her horse will retire after Rio <del>2016.</del> <ins>next summer.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “Charlotte”. H: “Dujardin's first name is Charlotte.” The source calls her only “Dujardin”, so it does not answer “What is Dujardin's first name?”. The question both texts answer, “Who says her horse will retire?”, has the source answer “Dujardin”, which already remains in the sentence. Delete “Charlotte”.</li><li>Span “2016”. H: “The Rio Olympics are in 2016.” Q1: “When are the Rio Olympics?” Both texts answer it: the summary with “2016”, the source with “next summer” (“the Olympics in Brazil next summer will be the horse's last”). The source never gives the year, so Q1 is the most specific question both answer, and its answer in the source is “next summer”.</li><li>Replacing “2016” with “next summer” keeps the time of the retirement. Deleting “2016” is also accepted, since “after Rio” already places the retirement after the Olympics.</li></ol></div>
+</section>
+<section class="card" id="P10-r2">
+  <div class="chead"><h3>Item 2 <span class="topic">&middot; an actor&#x27;s television role</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">On television, Costner <mark>portrayed Devil Anse Hatfield</mark> in the miniseries &quot;Hatfields &amp; McCoys&quot; (2012), winning the <mark>Primetime</mark> Emmy Award for Outstanding Lead Actor in a <mark>Limited or Anthology Series</mark> or Movie.</p>
+  <details class="src"><summary>Show the source</summary><p>Costner starred in the three-part miniseries &quot;Hatfields &amp; McCoys&quot;, which premiered on May 28, 2012, on the History Channel. The role earned Costner the 2012 Emmy Award for Outstanding Lead Actor in a Miniseries or a Movie, the 2013 Screen Actors Guild Award for Outstanding Performance by a Male Actor in a Miniseries or Television Movie, and the 2013 Golden Globe Award for Best Performance by an Actor in a Limited Series or a Motion Picture Made for Television.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “portrayed Devil Anse Hatfield”</div><div class="fld"><span class="k">Question</span><span>What role did Costner play in the series?</span></div><div class="fld"><span class="k">Source sentence</span><span>Costner starred in the three-part miniseries &quot;Hatfields &amp; McCoys&quot;</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “Primetime”</div><div class="fld"><span class="k">Explanation</span><span>Primetime label is not mentionned in relation to the Emmy award</span></div></div><div class="ans"><div class="ah"><span class="act">Replace</span> “Limited or Anthology Series”</div><div class="fld"><span class="k">Question</span><span>What is the award listed in the text?</span></div><div class="fld"><span class="k">Source sentence</span><span> Best Performance by an Actor in a Limited Series or a Motion Picture</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">On television, Costner <del>portrayed Devil Anse Hatfield</del> <ins>starred</ins> in the miniseries &quot;Hatfields &amp; McCoys&quot; (2012), winning the <del>Primetime</del> Emmy Award for Outstanding Lead Actor in a Limited <del>or Anthology</del> Series or Movie.</p>
+  <div class="comment"><p>Your replacement “starred in” and your deletion of “Primetime” are the ones we looked for. For the category, your question, “What is the award listed in the text?”, did not name the Emmy, and the source lists three awards. You took “Limited Series” from the Golden Globe's category. The summary is about the Emmy, and the source gives the Emmy's category: “Outstanding Lead Actor in a Miniseries or a Movie”.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">On television, Costner <del>portrayed Devil Anse Hatfield</del> <ins>starred</ins> in the miniseries &quot;Hatfields &amp; McCoys&quot; (2012), winning the <del>Primetime</del> Emmy Award for Outstanding Lead Actor in a <del>Limited or Anthology Series</del> <ins>Miniseries</ins> or Movie.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “portrayed Devil Anse Hatfield”. H: “Costner portrayed Devil Anse Hatfield in the miniseries.” Q1: “Whom did Costner play in the miniseries?” The source does not answer it: it never names his character.</li><li>A less specific question is answered by both texts: “What did Costner do in the miniseries?” The source answers: “Costner starred in the three-part miniseries”. This is Qmax. Replace the span with “starred in”.</li><li>Span “Primetime”. H: “The award was a Primetime Emmy.” Q1: “Which kind of Emmy did Costner win?” The source says only “the 2012 Emmy Award”. The question both texts answer, “Which award did he win?”, has the source answer “the Emmy Award”, which already remains in the sentence. Delete “Primetime”.</li><li>Span “Limited or Anthology Series”. H: “The category was Outstanding Lead Actor in a Limited or Anthology Series or Movie.” Q1: “In which category did Costner win the Emmy?” The source answers it in the Emmy's own words: “the 2012 Emmy Award for Outstanding Lead Actor in a Miniseries or a Movie”. Replace the span with “Miniseries”.</li><li>The same sentence of the source also lists a Golden Globe, “for Best Performance by an Actor in a Limited Series or a Motion Picture Made for Television”. That is a different award, so its wording does not answer a question about the Emmy.</li></ol></div>
+</section>
+<section class="card" id="P10-r3">
+  <div class="chead"><h3>Item 3 <span class="topic">&middot; a French aid package for young people</span></h3>
+    <span class="verdict bad">Incorrect</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>French Prime Minister Manuel</mark> Valls has announced a new aid package for young people in response to <mark>weeks of</mark> protests against his labour reforms.</p>
+  <details class="src"><summary>Show the source</summary><p>The subsidies for job-seeking graduates and other state support for youngsters are worth €400-500m (£321-401m). The Nuit Debout movement has organised nightly rallies since 31 March against Mr Valls&#x27; labour market reforms. Early on Monday police cleared away a protest camp on a central Paris square. Wooden structures erected on Place de la Republique were dismantled and about 100 protesters dispersed peacefully. The Nuit Debout activists, organised through social media, are mainly left-wing, and their activism has been compared to the Spanish Indignados citizens&#x27; movement and the Occupy anti-globalisation movement. Mr Valls announced the new aid package during a meeting with student leaders on Monday. It includes a four-month subsidy for graduates who face financial hardship while seeking work. There will also be a state housing guarantee for people under 30, which could apply to 300,000 people renting property. The leader of France&#x27;s main student organisation Unef, William Martinet, welcomed Mr Valls&#x27; package but said the protests against the labour bill would continue. The labour bill would remove some of the protection workers enjoy against being laid off, in a bid to encourage businesses to hire more people. It envisages giving employers more flexibility in setting the hours that their staff work; lowering the current high barriers to dismissal of staff; and new rules on industrial tribunal payouts. The Socialist government is striving to push the unemployment rate below 10%. Many Socialist voters see the current labour protections and 35-hour working week as key achievements that must not be sacrificed for a pro-business economic agenda.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “French Prime Minister Manuel”</div><div class="fld"><span class="k">Question</span><span>What is the name of this political person in the text?</span></div><div class="fld"><span class="k">Source sentence</span><span>Mr Valls&#x27; labour market reforms</span></div></div><div class="ans"><div class="ah"><span class="act">Not a hallucination</span> “weeks of”</div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff"><del>French Prime Minister Manuel</del> <ins>Mr.</ins> Valls <ins>with the Socialist Government</ins> has announced a new aid package for young people in response to weeks of protests against his labour reforms.</p>
+  <div class="comment"><p>You marked “weeks of” as not a hallucination. The source never says how long the protests had lasted when the package was announced; it says that they began on 31 March. For “French Prime Minister Manuel”, keeping “Mr. Valls” is right, but your replacement adds “with the Socialist Government”. The span stated his nationality, title and first name, and which government he belongs to is a different question. Delete the unsupported title and first name instead.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff"><del>French Prime Minister Manuel</del> <ins>France&#x27;s Mr</ins> Valls has announced a new aid package for young people in response to <del>weeks of</del> protests <ins>since 31 March</ins> against his labour reforms.</p><p class="diff"><del>French Prime Minister Manuel</del> <ins>Mr</ins> Valls has announced a new aid package for young people in response to <del>weeks of</del> protests against his labour <del>reforms.</del> <ins>reforms that have been taking place since 31 March.</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “French Prime Minister Manuel”. “French” is a reasonable inference: the whole article is about France and the French government's reforms. We prefer to adjust the span to “Prime Minister Manuel” and keep “French”; deleting it with the rest is also accepted.</li><li>H: “Valls is Prime Minister, and his first name is Manuel.” The source calls him only “Mr Valls”, and it never gives his title or his first name. The question both texts answer, “Who announced the package?”, has the source answer “Mr Valls”, which already remains in the sentence. Delete “Prime Minister Manuel”. The grammar step then turns “French Valls” into “France's Mr Valls”.</li><li>Span “weeks of”. H: “The protests had been going on for weeks.” Q1: “For how long had the protests been taking place?” The source answers: “The Nuit Debout movement has organised nightly rallies since 31 March”. It gives no date for the announcement, so it does not say that this was weeks. Its answer is “since 31 March”. Replace “weeks of” with it, placed where the sentence reads naturally: “protests since 31 March”.</li></ol></div>
+</section>
+<section class="card" id="P10-r4">
+  <div class="chead"><h3>Item 4 <span class="topic">&middot; a Turkish opposition party</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">However, this is viewed with suspicion by some, &quot;who see it as an opportunistic move against the main opposition party, the <mark>secular</mark> CHP.&quot;</p>
+  <details class="src"><summary>Show the source</summary><p>His comments were pointedly directed at opposition leader Kemal Kılıçdaroğlu (who in fact is from Tunceli). Erdogan reminded his audience that Kılıçdaroğlu&#x27;s party, the CHP, had been in power at the time of the massacre, then the only political party in Turkey.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “secular”</div><div class="fld"><span class="k">Explanation</span><span>the source doesn&#x27;t describe the party as secular</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">However, this is viewed with suspicion by some, &quot;who see it as an opportunistic move against the main opposition party, the <del>secular</del> CHP.&quot;</p>
+  <div class="comment"><p>You deleted “secular” because the source does not describe the party as secular. That is the revision we looked for.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">However, this is viewed with suspicion by some, &quot;who see it as an opportunistic move against the main opposition party, the <del>secular</del> CHP.&quot;</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “secular”. H: “The CHP is secular.” Q1: “What is the CHP's ideology?” The source never describes the party's ideology, at any level of detail.</li><li>The question both texts answer, “Which party is it?”, has the source answer “the CHP”, which already remains in the sentence. Delete “secular”.</li></ol></div>
+</section>
+<section class="card" id="P10-r5">
+  <div class="chead"><h3>Item 5 <span class="topic">&middot; a snooker match</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>World</mark> champion <mark>Mark</mark> Selby lost <mark>10-6</mark> to Ding Junhui in the <mark>first</mark> round of the Shanghai Masters.</p>
+  <details class="src"><summary>Show the source</summary><p>England&#x27;s Selby, 33, who beat Ding 18-14 in May&#x27;s Crucible final, took a 3-1 lead before his Chinese opponent hit back, knocking in a 75 break for a 6-3 advantage going into the interval. Back came Selby with a 76 and century before he levelled the match at 6-6. But Ding, 29, took control once more, recording breaks of 97 and 63 en route to completing his win on home soil. All results from the Shanghai Masters here.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “World”</div><div class="fld"><span class="k">Question</span><span>What championship did Selby achieve?</span></div><div class="fld"><span class="k">Source sentence</span><span>England&#x27;s Selby, 33, who beat Ding 18-14 in May&#x27;s Crucible final</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “Mark”</div><div class="fld"><span class="k">Explanation</span><span>source only names the person by his last name, Selby</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “10-6”</div><div class="fld"><span class="k">Explanation</span><span>source does not provide the final score</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “first”</div><div class="fld"><span class="k">Explanation</span><span>source does not specify which round this is</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff"><del>World</del> <ins>Crucible</ins> champion <del>Mark</del> Selby lost <del>10-6</del> to Ding Junhui in the <del>first</del> round of the Shanghai Masters.</p>
+  <div class="comment"><p>Your deletions of “Mark”, “10-6” and “first” are right. Replacing “World” with “Crucible” is accepted: it takes the source's own words, “May's Crucible final”, and keeps which title Selby holds.</p></div>
+  <div class="gram"><span class="k">Grammar</span><p>After you deleted “first”, “in the round of the Shanghai Masters” refers to a round that the sentence never identifies. Change “the” into “a”: “in a round of the Shanghai Masters”.</p></div>
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff"><del>World champion Mark</del> <ins>Champion</ins> Selby lost <del>10-6</del> to Ding Junhui in <del>the first</del> <ins>a</ins> round of the Shanghai Masters.</p><p class="diff"><del>World</del> <ins>Crucible</ins> champion <del>Mark</del> Selby lost <del>10-6</del> to Ding Junhui in <del>the first</del> <ins>a</ins> round of the Shanghai Masters.</p><p class="diff"><del>World champion Mark</del> <ins>Champion</ins> Selby lost <del>10-6</del> to Ding Junhui in the <del>first round of the</del> Shanghai Masters.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “World”. H: “Selby is the world champion.” Q1: “Which title does Selby hold?” The source says that he “beat Ding 18-14 in May's Crucible final”. It never names the championship that the Crucible final decides, so knowing that it is the World Championship needs outside knowledge.</li><li>Deleting “World” keeps what the source does support, that Selby is a champion: “Champion Selby”. Replacing “World” with the source's own word, “Crucible”, is also accepted: it answers which title he holds, in the source's words.</li><li>Span “Mark”. The source calls him only “Selby”. Delete “Mark”.</li><li>Span “10-6”. Q1: “What was the final score?” The last score the source reports is 6-6, after which it says only that Ding completed his win. Delete “10-6”.</li><li>Span “first”. The source does not say which round the match was in. Delete “first”; the grammar step then turns “in the round” into “in a round”, or removes “the round of”.</li></ol></div>
+</section>
+<section class="card" id="P10-r6">
+  <div class="chead"><h3>Item 6 <span class="topic">&middot; the anniversary of an uprising in Egypt</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Egyptians are <mark>marking</mark> the fifth anniversary of the uprising that overthrew <mark>President Hosni</mark> Mubarak.</p>
+  <details class="src"><summary>Show the source</summary><p>Police are deployed near Tahrir Square, the symbolic centre of the uprising. Thousands of homes have been raided, as the authorities look for people who might be planning protests against President Abdul Fattah al-Sisi. Local and international human rights activists say the situation in the country has never been worse. Mr Sisi led the military&#x27;s overthrow of Mubarak&#x27;s Islamist successor, Mohammed Morsi, in 2013 following mass protests. Since then, more than 1,000 people have been killed and 40,000 are believed to have been jailed in a sweeping crackdown on dissent. Most of them have been supporters of the outlawed Muslim Brotherhood, but secular activists have also been prosecuted for breaking an anti-protest law. There is little trace of the revolution that swept an autocrat from power five years ago, and Egypt&#x27;s latest strongman is keen to keep it that way, reports the BBC&#x27;s Orla Guerin in Cairo. Mr Sisi, a retired field marshal who was elected president in 2014, has vowed that there will be a firm response to any unrest on the anniversary. &quot;The security and stability of nations are not to be toyed with,&quot; he said in a speech over the weekend at a ceremony marking Police Day, which also falls on Monday. Our correspondent says protests are already virtually banned. And in recent days police have raided about 5,000 homes in central Cairo, looking for anyone who might be planning to take to the streets. The faces of Egypt&#x27;s revolution - where are they now? Egypt&#x27;s 18-day revolution . Spotlight on human rights in Egypt . Some activists have been arrested, others driven into hiding. Many icons of the revolution are already behind bars, our correspondent adds. An interior ministry official told the AFP news agency that the raids were not aimed at &quot;squeezing the youths but avoiding chaos and infiltration of rioters among them&quot;. The Muslim Brotherhood has called for protests on Monday. But one leading activist told the BBC that he and many others would be staying home, rather than trying to return to Tahrir Square. &quot;People who protest are going to pay with their lives for, or be sentenced to over 20 years in jail,&quot; he said. &quot;The price is too high.&quot; Amnesty International warned on Sunday that Egypt was now &quot;mired in a human rights crisis of huge proportions&quot;, as the country &quot;reverts back to a police state&quot;. &quot;Peaceful protesters, politicians and journalists have borne the brunt of a ruthless campaign against legitimate dissent by the government and state security forces,&quot; said Said Boumedouha, the group&#x27;s deputy Middle East and North Africa director. &quot;Tens of thousands have been arrested and the country&#x27;s prisons are now overflowing, with widespread reports of torture and hundreds held without charge or trial,&quot; Mr Boumedouha added .</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “marking”</div><div class="fld"><span class="k">Question</span><span>what is the Egyptians relationship to this anniversary?</span></div><div class="fld"><span class="k">Source sentence</span><span>human rights activists say the situation in the country has never been worse</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “President Hosni”</div><div class="fld"><span class="k">Explanation</span><span>The source doesn&#x27;t mention President or Hosni, only Mubarak</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Egyptians are <del>marking</del> <ins>facing</ins> the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p>
+  <div class="comment"><p>Your deletion of “President Hosni” is right, and “facing” is accepted: the anniversary is near, and the source never says that Egyptians mark it. The sentence you gave as its source, “human rights activists say the situation in the country has never been worse”, is about the situation in the country, not about the anniversary. The sentence that supports “facing” is “Mr Sisi, a retired field marshal who was elected president in 2014, has vowed that there will be a firm response to any unrest on the anniversary”.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff"><del>Egyptians are marking</del> <ins>It is</ins> the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p><p class="diff">Egyptians are <del>marking</del> <ins>facing</ins> the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p><p class="diff">Egyptians are marking the fifth anniversary of the uprising that overthrew <del>President Hosni</del> Mubarak.</p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “marking”. H: “Egyptians are marking the anniversary.” The source never says that Egyptians mark the day. It describes the day approaching and the authorities preparing for it: the president vowed a firm response to any unrest on the anniversary, and protests are “virtually banned”.</li><li>A revision that states only that the day has come keeps to what the source says: “It is the fifth anniversary of …”, or “Egyptians are facing the fifth anniversary of …”. Keeping “marking” (Not a hallucination) is also accepted, but it says a little more than the source does.</li><li>Span “President Hosni”. H: “Mubarak was president, and his first name is Hosni.” The source mentions him only as “Mubarak” (“Mubarak's Islamist successor”), and it never gives his title or his first name. No question about either is answered by the source, so delete “President Hosni”.</li></ol></div>
+</section>
+<section class="card" id="P10-r7">
+  <div class="chead"><h3>Item 7 <span class="topic">&middot; a highway accident</span></h3>
+    <span class="verdict ok">Correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Josh and Vanessa Ellis, <mark>a Bonney Lake couple</mark> in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said. Police said a side jersey barrier came loose and landed directly on the vehicle’s roof. The damage was so severe crews needed nine hours to determine all three victims. Witnesses described hearing cracking sounds before the collapse. The Ellis family served at EastPointe Foursquare Church in nearby Puyallup, whose pastor said the congregation was shocked and grieving.</p>
+  <details class="src"><summary>Show the source</summary><p>A couple in their 20s, who led a youth ministry, and their baby boy were driving underneath a highway overpass in Bonney Lake, a Seattle suburb, when other motorists heard the crackle of a pending collapse. Concrete from a construction project crashed onto the family&#x27;s car, killing Josh and Vanessa Ellis and their 8-month-old son, Hudson, authorities said. &quot;The damage was so severe it was impossible to tell how many victims were in the vehicle. The only thing we had was we could tell there was one victim,&quot; said Officer Todd Green of Bonney Lake Police Department, according to CNN affiliate KOMO. It took nine hours Monday for crews to remove enough debris to discover the death toll on Angeline Road underneath State Route 410, authorities said. Authorities continued their investigation Tuesday, but initial findings were that there was an ongoing construction project on the highway and a side jersey barrier &quot;came loose and fell onto the roadway,&quot; Green told the station. &quot;When it fell off the overpass, it landed square on the roof of the vehicle,&quot; Green added. Josh and Vanessa Ellis were youth pastors at the EastPointe Foursquare Church in Puyallup, near Bonney Lake, the church said. The couple earlier wrote a short autobiography on the church website: &quot;We love to laugh. We are passionate about seeing young people discover the love and grace that Jesus abundantly pours out on them. &quot;We get really excited about good coffee, quality time with friends and Seattle welcoming an NBA basketball team back to our city,&quot; the couple wrote. &quot;We love drive-in movies, frozen yogurt, dates to IKEA and trips to the beach.&quot; Lead Pastor James Ludlow said his church was reeling. &quot;We are stunned! Shocked! Wounded, broken and dismayed. But we know one thing for sure ... they are in glory in the loving arms of our King Jesus!&quot; Ludlow said on the church&#x27;s Facebook page. Motorist Dawn Nelson was driving behind the Ellis&#x27; vehicle. &quot;I was just a second or two behind him,&quot; Nelson told KOMO. &quot;I could hear the three crunch sounds and then it just came down.&quot; Neighbors recounted a violent collapse. &quot;I thought a semi had come down the guardrail here in front,&quot; neighbor Katie Vance told the station. She felt the crash inside her home. &quot;It was a metal sound and a very heavy sound ... it was through your feet - like a guttural. It shook the whole house,&quot; she told the affiliate. CNN&#x27;s Amanda Watts contributed to this story.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “a Bonney Lake couple”</div><div class="fld"><span class="k">Question</span><span>Where was the couple from?</span></div><div class="fld"><span class="k">Source sentence</span><span>A couple in their 20s</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Josh and Vanessa Ellis, a <del>Bonney Lake</del> couple in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said.</p>
+  <div class="comment"><p>Deleting the place, “a couple in their 20s”, is accepted. Your question, “Where was the couple from?”, does have an answer in the source at a less specific level: the couple call Seattle “our city”, and Bonney Lake is a Seattle suburb. “A Seattle-area couple” keeps that information, and we prefer it.</p></div>
+  
+  <p class="lbl">The revision we looked for</p>
+  <p class="diff">Josh and Vanessa Ellis, a <del>Bonney Lake</del> <ins>Seattle-area</ins> couple in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed <del>when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said. Police said a side jersey barrier came loose and landed directly on the vehicle’s roof. The damage was so severe crews needed nine hours to determine all three victims. Witnesses described hearing cracking sounds before the collapse. The Ellis family served at EastPointe Foursquare Church in nearby Puyallup, whose pastor said the congregation was shocked and grieving.</del> <ins>…</ins></p><p class="diff">Josh and Vanessa Ellis, a <del>Bonney Lake</del> couple in their 20s who led a youth ministry, and their 8-month-old son, Hudson, were killed <del>when concrete from a highway construction project fell onto their car beneath a State Route 410 overpass, authorities said. Police said a side jersey barrier came loose and landed directly on the vehicle’s roof. The damage was so severe crews needed nine hours to determine all three victims. Witnesses described hearing cracking sounds before the collapse. The Ellis family served at EastPointe Foursquare Church in nearby Puyallup, whose pastor said the congregation was shocked and grieving.</del> <ins>…</ins></p>
+  <p class="lbl">How the guidelines lead to it</p>
+  <div class="why"><ol><li>Span “a Bonney Lake couple”. H: “The couple were from Bonney Lake.” The source says only that they were driving under an overpass in Bonney Lake, not that they lived there.</li><li>Q1: “Where were the couple from?” The source answers it at a less specific level: the couple wrote about “Seattle welcoming an NBA basketball team back to our city”, and the source calls Bonney Lake “a Seattle suburb”. Its answer is the Seattle area. Replace the place with it: “a Seattle-area couple”.</li><li>Deleting the place, “a couple in their 20s”, is also accepted, if you read “our city” as support for the team rather than as where they lived. We prefer “a Seattle-area couple”, which keeps where the couple were from.</li><li>Puyallup is where their church was (“youth pastors at the EastPointe Foursquare Church in Puyallup”). That answers a different question.</li></ol></div>
+</section>
+</div>
+  <div id="after" hidden>
+    <section class="box"><h2>Before you start: what changed in the tool</h2><p>The tool is the same as in the last round.</p></section>
+    <footer><a class="btn" id="go" href="annotate.html">Continue to the next round</a></footer>
+  </div>
+</main>
+<script>var ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec"; var VERSION = "round3-feedback-v1"; var SALT = "round3-feedback:";</script>
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  var PRO = {pid: q.get("PROLIFIC_PID") || "", study: q.get("STUDY_ID") || "",
+             session: q.get("SESSION_ID") || ""};
+  var who = null, visibleMs = 0, since = document.hidden ? 0 : Date.now(), deepest = 0;
+  var opened = Date.now(), posted = false;
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { if (since) visibleMs += Date.now() - since; since = 0; }
+    else since = Date.now();
+  });
+  addEventListener("scroll", function () {
+    var h = document.documentElement.scrollHeight - innerHeight;
+    if (h > 0) deepest = Math.max(deepest, Math.round(100 * scrollY / h));
+  }, {passive: true});
+  function hex(buf) {
+    return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+      return ("0" + b.toString(16)).slice(-2); }).join("");
+  }
+  function show(label, review) {
+    who = label;
+    document.querySelectorAll(".who").forEach(function (el) {
+      el.hidden = el.getAttribute("data-who") !== label; });
+    document.getElementById("nopid").hidden = true;
+    document.getElementById("after").hidden = false;
+    if (review) document.getElementById("review").hidden = false;
+  }
+  var view = q.get("view");
+  if (view && document.querySelector('.who[data-who="' + view + '"]')) show(view, true);
+  else if (PRO.pid && window.crypto && crypto.subtle) {
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(SALT + PRO.pid)).then(function (d) {
+      var h = hex(d), el = document.querySelector('.who[data-h="' + h + '"]');
+      if (el) show(el.getAttribute("data-who"), false);
+    });
+  }
+  function withIds(url) {
+    var u = new URL(url, location.href);
+    if (PRO.pid) u.searchParams.set("PROLIFIC_PID", PRO.pid);
+    if (PRO.study) u.searchParams.set("STUDY_ID", PRO.study);
+    if (PRO.session) u.searchParams.set("SESSION_ID", PRO.session);
+    return u.toString();
+  }
+  var go = document.getElementById("go");
+  go.href = withIds("annotate.html");
+  function report(partial) {
+    if (posted || !PRO.pid || !ENDPOINT) return;
+    if (!partial) posted = true;
+    if (since) { visibleMs += Date.now() - since; since = document.hidden ? 0 : Date.now(); }
+    var body = JSON.stringify({tool: VERSION, stage: "round3_feedback", partial: !!partial,
+      prolific: PRO, prolific_pid: PRO.pid, study_id: PRO.study, session_id: PRO.session,
+      who: who, read_s: Math.round(visibleMs / 1000),
+      wall_s: Math.round((Date.now() - opened) / 1000), scrolled_pct: deepest,
+      submitted_at: new Date().toISOString()});
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(ENDPOINT,
+          new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
+      fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+    } catch (e) {}
+  }
+  go.addEventListener("click", function () { report(false); });
+  addEventListener("pagehide", function () { report(true); });
+  var themeBtn = document.getElementById("theme");
+  function paint() {
+    themeBtn.textContent = document.documentElement.getAttribute("data-theme") === "dark"
+      ? "\u2600 Light" : "\u263E Dark";
+  }
+  themeBtn.addEventListener("click", function () {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (dark) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", "dark");
+    try { localStorage.setItem("gl-theme", dark ? "light" : "dark"); } catch (e) {}
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
