@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Minimal factual revision - short screening task</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#fbfaf8;--panel:#ffffff;--ink:#f4f2ee;--line:#e2ded7;--text:#1c1b19;
+      --dim:#6a6660;--accent:#1f4e79;--on-accent:#ffffff;--mark:#fde9a8;--mark-line:#e0c25a;
+      --ok:#2f6b45;--ok-bg:#eaf4ee;--part:#8a5a00;--part-bg:#fbf1dc;--bad:#9b2c2c;--bad-bg:#fbeaea;
+      --del:#9b2c2c;--del-bg:#fbeaea;--ins:#2f6b45;--ins-bg:#e3f2e8;color-scheme:light}
+:root[data-theme="dark"]{--bg:#15171a;--panel:#1c1f23;--ink:#22262b;--line:#2e3237;
+      --text:#e8e6e2;--dim:#9a968f;--accent:#7fb2e0;--on-accent:#10243a;--mark:#4a3f16;
+      --mark-line:#8a7322;--ok:#7fc79b;--ok-bg:#18261e;--part:#e0b25c;--part-bg:#2a2214;
+      --bad:#e88b8b;--bad-bg:#2c1a1a;--del:#e88b8b;--del-bg:#2c1a1a;--ins:#7fc79b;
+      --ins-bg:#16271d;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;
+     line-height:1.6;padding:0 0 90px}
+.wrap{max-width:800px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px))}
+header{border-bottom:1px solid var(--line);padding:12px 0}
+header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600}
+h2{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600;margin-bottom:8px}
+h3{font-family:'Newsreader',Georgia,serif;font-size:18px;font-weight:600}
+.sub,.dim{color:var(--dim)}
+.sub{font-size:12px}
+.spacer{flex:1}
+.barbtn{font:inherit;font-size:12.5px;border:1px solid var(--line);background:transparent;
+        color:var(--text);border-radius:999px;padding:5px 13px;cursor:pointer}
+.box,.card,.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+              padding:18px 20px;margin:16px 0}
+.box p,.card p,.q p{font-size:14.5px;margin-bottom:8px}
+.box ol,.box ul,.card ol,.card ul{margin:4px 0 8px 22px;font-size:14.5px}
+.box li,.card li{margin-bottom:6px}
+.btn{background:var(--accent);border:1px solid var(--accent);color:var(--on-accent);
+     border-radius:7px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;
+     text-decoration:none;display:inline-block;font-family:inherit}
+.hidden{display:none}
+
+.lead{font-size:15.5px !important}
+.rules{margin:6px 0 8px 22px;font-size:14.5px}
+.rules li{margin-bottom:6px}
+.ex{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:8px 0;
+    font-size:14px}
+.ex p{margin:2px 0 !important;font-size:14px !important}
+.qh{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.qh .n{font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums;min-width:5ch}
+.lbl{font-size:11px !important;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);
+     font-weight:600;margin:10px 0 3px !important}
+.art{background:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 12px;
+     font-size:14.5px !important}
+.sum{font-family:'Newsreader',Georgia,serif;font-size:17px !important;line-height:1.55}
+mark{background:var(--mark);color:inherit;box-shadow:0 0 0 1px var(--mark-line);border-radius:2px}
+.intro{font-size:14.5px !important}
+.opts{display:grid;gap:7px;margin-top:10px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;
+     padding:9px 12px;cursor:pointer;background:var(--panel);font-size:14.5px}
+.opt:hover{border-color:var(--accent)}
+.opt input{margin-top:4px;accent-color:var(--accent)}
+.opt.on{border-color:var(--accent);background:var(--ink)}
+.bg label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+.bg select{width:100%;max-width:460px;background:var(--ink);color:var(--text);border:1px solid var(--line);
+  border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit}
+footer{margin:24px 0 0;text-align:center}
+#left{font-size:13px;color:var(--dim);margin-top:10px}
+.done{background:var(--ok-bg);border:1px solid var(--ok);border-radius:10px;padding:20px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Minimal factual revision <span class="sub">&mdash; short screening task</span></h1>
+  <span class="spacer"></span>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></header>
+<main class="wrap">
+  <section class="box" id="nopid" hidden><p>This page was opened without a Prolific ID, and your
+    submission depends on it. If you came from Prolific, go back and use the study link there rather
+    than a copied address.</p></section>
+  <div id="form">
+  
+<section class="box">
+  <h2>What this study is</h2>
+  <p class="lead">You will read short excerpts from news articles, each with a one-sentence summary.
+    Some summaries contain a statement the article does not support. You will judge such statements
+    and choose the best way to fix them. It takes about 20 minutes.</p>
+  <p>Three rules decide the answers:</p>
+  <ol class="rules">
+    <li><strong>Supported</strong> means the article states it, says it in other words, or it follows
+      from the article with common knowledge (a building near the Eiffel Tower is in Paris). A detail
+      the article never gives is not supported, however likely it sounds.</li>
+    <li><strong>The best fix</strong> answers the same question the unsupported part answered, with
+      the article's information, at the level of detail closest to the summary's. If the article
+      does not answer that question at all, the unsupported part is deleted.</li>
+    <li><strong>A fix changes as little as possible</strong>, and the sentence must stay grammatical.
+      A grammar repair never adds or changes content.</li>
+  </ol>
+  <div class="ex">
+    <p><span class="dim">Article:</span> Lennon was born in Liverpool.</p>
+    <p><span class="dim">Summary:</span> Lennon was born in <mark>Germany</mark>.</p>
+    <p><span class="dim">Best fix:</span> Lennon was born in England. It answers the same question,
+      in which country, from the article. “Liverpool” would be more specific than the
+      summary, and “Europe” less specific.</p>
+  </div>
+  <p>There are 14 questions, and a few optional questions about your background at the end. Please
+    answer on your own and do not use AI tools. You will not be told which answers are correct.</p>
+</section>
+  
+<section class="q" id="q1" data-shuffle="0">
+  <div class="qh"><span class="n">1 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">Firefighters were called to a warehouse fire in Leeds on Tuesday night. Three crews tackled the blaze, which started shortly after 22:00. One worker was treated at the scene for smoke inhalation.</p>
+  <p class="lbl">Summary</p><p class="sum"><mark>Five crews</mark> tackled a warehouse fire in Leeds.</p>
+  <p class="intro">Is the highlighted statement supported by the article?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q1" value="0"><span>Supported by the article</span></label><label class="opt" data-i="1"><input type="radio" name="q1" value="1"><span>Not supported by the article</span></label></div>
+</section>
+<section class="q" id="q2" data-shuffle="0">
+  <div class="qh"><span class="n">2 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">The museum, which stands a short walk from the Eiffel Tower, will reopen on 3 March after a two-year renovation.</p>
+  <p class="lbl">Summary</p><p class="sum">A museum <mark>in Paris</mark> will reopen in March after a renovation.</p>
+  <p class="intro">Is the highlighted statement supported by the article?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q2" value="0"><span>Supported by the article</span></label><label class="opt" data-i="1"><input type="radio" name="q2" value="1"><span>Not supported by the article</span></label></div>
+</section>
+<section class="q" id="q3" data-shuffle="0">
+  <div class="qh"><span class="n">3 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">The singer cancelled the rest of her tour on Friday, saying she needed time to recover. She did not give further details.</p>
+  <p class="lbl">Summary</p><p class="sum">The singer cancelled her tour <mark>because of a throat infection</mark>.</p>
+  <p class="intro">Is the highlighted statement supported by the article?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q3" value="0"><span>Supported by the article</span></label><label class="opt" data-i="1"><input type="radio" name="q3" value="1"><span>Not supported by the article</span></label></div>
+</section>
+<section class="q" id="q4" data-shuffle="0">
+  <div class="qh"><span class="n">4 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">Ms Okafor, 34, was appointed head coach on Monday. She has spent the last three years in charge of the club&#x27;s under-21 team.</p>
+  <p class="lbl">Summary</p><p class="sum">The new head coach <mark>previously led the club&#x27;s under-21 side</mark>.</p>
+  <p class="intro">Is the highlighted statement supported by the article?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q4" value="0"><span>Supported by the article</span></label><label class="opt" data-i="1"><input type="radio" name="q4" value="1"><span>Not supported by the article</span></label></div>
+</section>
+<section class="q" id="q5" data-shuffle="0">
+  <div class="qh"><span class="n">5 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">Mr Hernandez told reporters that the company would open two new factories next year.</p>
+  <p class="lbl">Summary</p><p class="sum"><mark>Chief executive Luis</mark> Hernandez said the company would open two factories next year.</p>
+  <p class="intro">Is the highlighted statement supported by the article?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q5" value="0"><span>Supported by the article</span></label><label class="opt" data-i="1"><input type="radio" name="q5" value="1"><span>Not supported by the article</span></label></div>
+</section>
+<section class="q" id="a1" data-shuffle="0">
+  <div class="qh"><span class="n">6 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">This question checks that you are reading the instructions carefully.</p>
+  <p class="lbl">Summary</p><p class="sum">For this question, please select “Not supported by the article”.</p>
+  
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="a1" value="0"><span>Supported by the article</span></label><label class="opt" data-i="1"><input type="radio" name="a1" value="1"><span>Not supported by the article</span></label></div>
+</section>
+<section class="q" id="q6" data-shuffle="1">
+  <div class="qh"><span class="n">7 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">The attack happened outside a bar on Castle Street in Dumbarton at about 01:30 on Sunday. A 22-year-old man was taken to hospital with serious injuries.</p>
+  <p class="lbl">Summary</p><p class="sum">A man was seriously injured in an assault in <mark>Glasgow</mark>.</p>
+  <p class="intro">The highlighted part is not supported by the article. Which revision is best?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q6" value="0"><span>A man was seriously injured in an assault on Castle Street in Dumbarton.</span></label><label class="opt" data-i="1"><input type="radio" name="q6" value="1"><span>A man was seriously injured in an assault in Dumbarton.</span></label><label class="opt" data-i="2"><input type="radio" name="q6" value="2"><span>A man was seriously injured in an assault.</span></label></div>
+</section>
+<section class="q" id="q7" data-shuffle="1">
+  <div class="qh"><span class="n">8 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">The 19-year-old striker scored twice on his debut for the club.</p>
+  <p class="lbl">Summary</p><p class="sum">The <mark>21-year-old</mark> striker scored twice on his debut.</p>
+  <p class="intro">The highlighted part is not supported by the article. Which revision is best?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q7" value="0"><span>The 19-year-old striker scored twice on his debut.</span></label><label class="opt" data-i="1"><input type="radio" name="q7" value="1"><span>The teenage striker scored twice on his debut.</span></label><label class="opt" data-i="2"><input type="radio" name="q7" value="2"><span>The striker scored twice on his debut.</span></label></div>
+</section>
+<section class="q" id="q8" data-shuffle="1">
+  <div class="qh"><span class="n">9 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">The council said the bridge would remain closed while engineers assess the damage.</p>
+  <p class="lbl">Summary</p><p class="sum">The bridge will remain closed <mark>for six weeks</mark> while engineers assess the damage.</p>
+  <p class="intro">The highlighted part is not supported by the article. Which revision is best?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q8" value="0"><span>The bridge will remain closed for some time while engineers assess the damage.</span></label><label class="opt" data-i="1"><input type="radio" name="q8" value="1"><span>The bridge will remain closed while engineers assess the damage.</span></label><label class="opt" data-i="2"><input type="radio" name="q8" value="2"><span>The bridge will remain closed for two months while engineers assess the damage.</span></label></div>
+</section>
+<section class="q" id="q9" data-shuffle="1">
+  <div class="qh"><span class="n">10 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">The two horses became stuck in mud on the beach near the pier at about 10:30 on Sunday. Both were freed by coastguard teams.</p>
+  <p class="lbl">Summary</p><p class="sum">Two horses were rescued from <mark>the River Wyre</mark>.</p>
+  <p class="intro">The highlighted part is not supported by the article. Which revision is best?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q9" value="0"><span>Two horses were rescued on Sunday.</span></label><label class="opt" data-i="1"><input type="radio" name="q9" value="1"><span>Two horses were rescued from a beach near the pier.</span></label><label class="opt" data-i="2"><input type="radio" name="q9" value="2"><span>Two horses were rescued by coastguard teams.</span></label></div>
+</section>
+<section class="q" id="a2" data-shuffle="0">
+  <div class="qh"><span class="n">11 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">This question checks that you are reading the instructions carefully.</p>
+  <p class="lbl">Summary</p><p class="sum">To show that you are paying attention, please choose the third option below.</p>
+  
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="a2" value="0"><span>Option one</span></label><label class="opt" data-i="1"><input type="radio" name="a2" value="1"><span>Option two</span></label><label class="opt" data-i="2"><input type="radio" name="a2" value="2"><span>Option three</span></label></div>
+</section>
+<section class="q" id="q10" data-shuffle="1">
+  <div class="qh"><span class="n">12 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">Police said four people were arrested at the stadium after the match. Others were arrested later in the city centre, but police did not say how many.</p>
+  <p class="lbl">Summary</p><p class="sum"><mark>Ten</mark> people were arrested after the match.</p>
+  <p class="intro">The highlighted part is not supported by the article. Which revision is best?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q10" value="0"><span>Four people were arrested after the match.</span></label><label class="opt" data-i="1"><input type="radio" name="q10" value="1"><span>More than four people were arrested after the match.</span></label><label class="opt" data-i="2"><input type="radio" name="q10" value="2"><span>People were arrested after the match.</span></label></div>
+</section>
+<section class="q" id="q11" data-shuffle="1">
+  <div class="qh"><span class="n">13 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">The film was released in May.</p>
+  <p class="lbl">Summary</p><p class="sum">The film, <mark>which won three awards</mark>, was released in May.</p>
+  <p class="intro">The marked part was deleted, which left: “The film, , was released in May.” Which version fixes the sentence without adding or changing any content?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q11" value="0"><span>The film, , was released in May.</span></label><label class="opt" data-i="1"><input type="radio" name="q11" value="1"><span>The film was released in May.</span></label><label class="opt" data-i="2"><input type="radio" name="q11" value="2"><span>The film, which was popular, was released in May.</span></label></div>
+</section>
+<section class="q" id="q12" data-shuffle="1">
+  <div class="qh"><span class="n">14 of 14</span></div>
+  <p class="lbl">Article</p><p class="art">Ms Byrne, an Irish politician, was praised for her work on the treaty.</p>
+  <p class="lbl">Summary</p><p class="sum">A <mark>British</mark> politician was praised for her work on the treaty.</p>
+  <p class="intro">“British” was replaced with “Irish”, which left: “A Irish politician was praised for her work on the treaty.” Which version fixes the sentence without adding or changing any content?</p>
+  <div class="opts"><label class="opt" data-i="0"><input type="radio" name="q12" value="0"><span>A Irish politician was praised for her work on the treaty.</span></label><label class="opt" data-i="1"><input type="radio" name="q12" value="1"><span>An Irish politician was praised for her work on the treaty.</span></label><label class="opt" data-i="2"><input type="radio" name="q12" value="2"><span>An Irish politician was widely praised for her work on the treaty.</span></label></div>
+</section>
+  <section class="box bg"><h2>About you (optional)</h2>
+    <p>These help us understand who finds this kind of task a good fit. You may skip any of them.</p>
+    <label for="bg-edu">Highest level of education you have completed</label><select id="bg-edu" data-bg="edu"><option value="">— optional —</option><option value="Secondary school">Secondary school</option><option value="Some university">Some university</option><option value="Undergraduate degree">Undergraduate degree</option><option value="Master&#x27;s degree">Master&#x27;s degree</option><option value="Doctorate">Doctorate</option><option value="Prefer not to say">Prefer not to say</option></select><label for="bg-field">Your main field of study or work</label><select id="bg-field" data-bg="field"><option value="">— optional —</option><option value="Languages, linguistics or literature">Languages, linguistics or literature</option><option value="Journalism or media">Journalism or media</option><option value="Law">Law</option><option value="Other humanities or social sciences">Other humanities or social sciences</option><option value="Science, technology or medicine">Science, technology or medicine</option><option value="Business">Business</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select><label for="bg-exp">Have you done editing, proofreading, fact-checking or annotation work before?</label><select id="bg-exp" data-bg="exp"><option value="">— optional —</option><option value="Yes, professionally">Yes, professionally</option><option value="Yes, occasionally">Yes, occasionally</option><option value="No">No</option><option value="Prefer not to say">Prefer not to say</option></select></section>
+  <footer><button class="btn" id="go" type="button">Submit and return to Prolific</button>
+    <p id="left" aria-live="polite"></p></footer>
+  </div>
+  <div id="thanks" class="done" hidden><h2>Thank you &mdash; your answers are recorded</h2>
+    <p id="thanksbody"></p></div>
+</main>
+<script>
+(function () {
+  "use strict";
+  var ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", VERSION = "prescreen-v1", CODE = "REPLACE_ME";
+  var LIVE = false, IDS = ["q1", "q2", "q3", "q4", "q5", "a1", "q6", "q7", "q8", "q9", "a2", "q10", "q11", "q12"];
+  var qs = new URLSearchParams(location.search);
+  var PRO = {pid: qs.get("PROLIFIC_PID") || "", study: qs.get("STUDY_ID") || "",
+             session: qs.get("SESSION_ID") || ""};
+  if (!PRO.pid) document.getElementById("nopid").hidden = false;
+  var started = Date.now(), visibleMs = 0, since = document.hidden ? 0 : Date.now(), posted = false;
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { if (since) visibleMs += Date.now() - since; since = 0; }
+    else since = Date.now();
+  });
+  // A small seeded shuffle, so a reload shows the same order.
+  function rng(seed) { var h = 2166136261; for (var i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return function () { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 100000) / 100000; }; }
+  var order = {};
+  document.querySelectorAll(".q").forEach(function (q) {
+    var box = q.querySelector(".opts"), items = Array.prototype.slice.call(box.children);
+    if (q.dataset.shuffle === "1") {
+      var r = rng((PRO.pid || "anon") + ":" + q.id);
+      for (var i = items.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1));
+        var t = items[i]; items[i] = items[j]; items[j] = t; }
+      items.forEach(function (el) { box.appendChild(el); });
+    }
+    order[q.id] = items.map(function (el) { return +el.dataset.i; });
+  });
+  var answers = {}, at = {};
+  document.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.type === "radio") {
+      answers[t.name] = +t.value; at[t.name] = Date.now() - started;
+      t.closest(".opts").querySelectorAll(".opt").forEach(function (o) {
+        o.classList.toggle("on", o.contains(t)); });
+      left();
+    }
+  });
+  function missing() { return IDS.filter(function (id) { return !(id in answers); }); }
+  function left() {
+    var m = missing();
+    document.getElementById("left").textContent = m.length ? (m.length + " question"
+      + (m.length > 1 ? "s" : "") + " still to answer") : "";
+  }
+  function payload(partial) {
+    if (since) { visibleMs += Date.now() - since; since = document.hidden ? 0 : Date.now(); }
+    var bg = {};
+    document.querySelectorAll("[data-bg]").forEach(function (s) { bg[s.dataset.bg] = s.value; });
+    return JSON.stringify({tool: VERSION, stage: "prescreen", partial: !!partial, prolific: PRO,
+      prolific_pid: PRO.pid, study_id: PRO.study, session_id: PRO.session,
+      answers: answers, order: order, answered_at_ms: at, background: bg,
+      visible_s: Math.round(visibleMs / 1000), wall_s: Math.round((Date.now() - started) / 1000),
+      submitted_at: new Date().toISOString()});
+  }
+  function send(body) {
+    if (!PRO.pid || !ENDPOINT) return;
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(ENDPOINT,
+          new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
+      fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+    } catch (e) {}
+  }
+  addEventListener("pagehide", function () { if (!posted) send(payload(true)); });
+  document.getElementById("go").addEventListener("click", function () {
+    var m = missing();
+    if (m.length) {
+      left();
+      var el = document.getElementById(m[0]); el.scrollIntoView({behavior: "smooth", block: "center"});
+      return;
+    }
+    posted = true; send(payload(false));
+    if (LIVE) { location.href = "https://app.prolific.com/submissions/complete?cc=" + CODE; return; }
+    document.getElementById("form").hidden = true; document.getElementById("thanks").hidden = false;
+    document.getElementById("thanksbody").textContent = "Your answers are recorded. The completion "
+      + "link will be added here when the study is created.";
+    scrollTo(0, 0);
+  });
+  var t = document.getElementById("theme");
+  function paint() { t.textContent = document.documentElement.getAttribute("data-theme")
+    === "dark" ? "\u2600 Light" : "\u263E Dark"; }
+  t.addEventListener("click", function () {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (dark) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", "dark");
+    try { localStorage.setItem("gl-theme", dark ? "light" : "dark"); } catch (e) {}
+    paint();
+  });
+  paint(); left();
+})();
+</script>
+</body>
+</html>
