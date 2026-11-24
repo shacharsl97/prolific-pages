@@ -65,7 +65,13 @@ mark{background:var(--mark);color:inherit;box-shadow:0 0 0 1px var(--mark-line);
 .bg select{width:100%;max-width:460px;background:var(--ink);color:var(--text);border:1px solid var(--line);
   border-radius:8px;padding:8px 10px;font-size:14px;font-family:inherit}
 footer{margin:24px 0 0;text-align:center}
-#left{font-size:13px;color:var(--dim);margin-top:10px}
+#left,#saving{font-size:13px;color:var(--dim);margin-top:10px}
+.field{width:100%;max-width:460px;background:var(--ink);color:var(--text);border:1px solid var(--line);
+  border-radius:8px;padding:8px 10px;font-size:14px;font-family:ui-monospace,Consolas,monospace}
+#piderr{color:var(--bad);font-size:13.5px !important}
+#fail{border-color:var(--bad);background:var(--bad-bg)}
+#fail .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+#code{resize:none;height:4.2em}
 .done{background:var(--ok-bg);border:1px solid var(--ok);border-radius:10px;padding:20px;text-align:center}
 </style>
 </head>
@@ -76,9 +82,12 @@ footer{margin:24px 0 0;text-align:center}
   <button type="button" class="barbtn" id="theme"></button>
 </div></header>
 <main class="wrap">
-  <section class="box" id="nopid" hidden><p>This page was opened without a Prolific ID, and your
-    submission depends on it. If you came from Prolific, go back and use the study link there rather
-    than a copied address.</p></section>
+  <section class="box" id="nopid" hidden><p>This page was opened without your Prolific ID, and we need
+    it to record your answers. Please enter your Prolific ID here (it is shown in your Prolific
+    account):</p>
+    <input class="field" id="pidbox" type="text" autocomplete="off" spellcheck="false"
+      placeholder="24 letters and digits" aria-label="Your Prolific ID">
+    <p id="piderr" aria-live="polite"></p></section>
   <div id="form">
   
 <section class="box">
@@ -217,7 +226,18 @@ footer{margin:24px 0 0;text-align:center}
     <p>These help us understand who finds this kind of task a good fit. You may skip any of them.</p>
     <label for="bg-edu">Highest level of education you have completed</label><select id="bg-edu" data-bg="edu"><option value="">— optional —</option><option value="Secondary school">Secondary school</option><option value="Some university">Some university</option><option value="Undergraduate degree">Undergraduate degree</option><option value="Master&#x27;s degree">Master&#x27;s degree</option><option value="Doctorate">Doctorate</option><option value="Prefer not to say">Prefer not to say</option></select><label for="bg-field">Your main field of study or work</label><select id="bg-field" data-bg="field"><option value="">— optional —</option><option value="Languages, linguistics or literature">Languages, linguistics or literature</option><option value="Journalism or media">Journalism or media</option><option value="Law">Law</option><option value="Other humanities or social sciences">Other humanities or social sciences</option><option value="Science, technology or medicine">Science, technology or medicine</option><option value="Business">Business</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select><label for="bg-exp">Have you done editing, proofreading, fact-checking or annotation work before?</label><select id="bg-exp" data-bg="exp"><option value="">— optional —</option><option value="Yes, professionally">Yes, professionally</option><option value="Yes, occasionally">Yes, occasionally</option><option value="No">No</option><option value="Prefer not to say">Prefer not to say</option></select></section>
   <footer><button class="btn" id="go" type="button">Submit and return to Prolific</button>
-    <p id="left" aria-live="polite"></p></footer>
+    <p id="left" aria-live="polite"></p><p id="saving" aria-live="polite"></p></footer>
+  <section class="box" id="fail" hidden>
+    <h2>Your answers have not been saved yet</h2>
+    <p>Our server did not confirm them. This is often caused by an ad blocker or privacy extension:
+      please pause it for this page and press <strong>Try again</strong>.</p>
+    <div class="row"><button class="btn" id="retry" type="button">Try again</button></div>
+    <p>If it still fails, copy the code below and send it to us through Prolific&rsquo;s messages,
+      then complete the study with the link underneath. You will be paid as normal.</p>
+    <textarea class="field" id="code" readonly aria-label="Your answer code"></textarea>
+    <div class="row"><button class="barbtn" id="copy" type="button">Copy the code</button>
+      <a id="manual" href="#">Return to Prolific and complete the study</a></div>
+  </section>
   </div>
   <div id="thanks" class="done" hidden><h2>Thank you &mdash; your answers are recorded</h2>
     <p id="thanksbody"></p></div>
@@ -226,11 +246,25 @@ footer{margin:24px 0 0;text-align:center}
 (function () {
   "use strict";
   var ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec", VERSION = "prescreen-v3", CODE = "C1BQWVKC";
-  var LIVE = true, IDS = ["q1", "q2", "q3", "q4", "q5", "a1", "q6", "q7", "q8", "q9", "a2", "q10", "q11", "q12"];
+  var LIVE = true, IDS = ["q1", "q2", "q3", "q4", "q5", "a1", "q6", "q7", "q8", "q9", "a2", "q10", "q11", "q12"], PAGE = "2";
+  var DONE_URL = "https://app.prolific.com/submissions/complete?cc=" + CODE;
   var qs = new URLSearchParams(location.search);
   var PRO = {pid: qs.get("PROLIFIC_PID") || "", study: qs.get("STUDY_ID") || "",
              session: qs.get("SESSION_ID") || ""};
-  if (!PRO.pid) document.getElementById("nopid").hidden = false;
+  // Without an id in the link, the participant types it: a submission without one cannot be
+  // matched to a Prolific submission, so it is never sent.
+  var typedPid = !PRO.pid, pidbox = document.getElementById("pidbox");
+  if (typedPid) document.getElementById("nopid").hidden = false;
+  function pidOk() {
+    if (!typedPid) return true;
+    var v = pidbox.value.trim();
+    var ok = /^[0-9a-f]{24}$/i.test(v);
+    document.getElementById("piderr").textContent = ok ? "" : (v ? "A Prolific ID is 24 letters "
+      + "and digits. Please check it." : "Please enter your Prolific ID before submitting.");
+    PRO.pid = ok ? v.toLowerCase() : "";
+    return ok;
+  }
+  pidbox.addEventListener("change", pidOk);
   var started = Date.now(), visibleMs = 0, since = document.hidden ? 0 : Date.now(), posted = false;
   document.addEventListener("visibilitychange", function () {
     if (document.hidden) { if (since) visibleMs += Date.now() - since; since = 0; }
@@ -271,8 +305,9 @@ footer{margin:24px 0 0;text-align:center}
     if (since) { visibleMs += Date.now() - since; since = document.hidden ? 0 : Date.now(); }
     var bg = {};
     document.querySelectorAll("[data-bg]").forEach(function (s) { bg[s.dataset.bg] = s.value; });
-    return JSON.stringify({tool: VERSION, stage: "prescreen", partial: !!partial, prolific: PRO,
-      prolific_pid: PRO.pid, study_id: PRO.study, session_id: PRO.session,
+    return JSON.stringify({tool: VERSION, page: PAGE, stage: "prescreen", partial: !!partial,
+      prolific: PRO, prolific_pid: PRO.pid, study_id: PRO.study, session_id: PRO.session,
+      pid_typed: typedPid,
       answers: answers, order: order, answered_at_ms: at, background: bg,
       visible_s: Math.round(visibleMs / 1000), wall_s: Math.round((Date.now() - started) / 1000),
       submitted_at: new Date().toISOString()});
@@ -286,20 +321,73 @@ footer{margin:24px 0 0;text-align:center}
         headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
     } catch (e) {}
   }
-  addEventListener("pagehide", function () { if (!posted) send(payload(true)); });
-  document.getElementById("go").addEventListener("click", function () {
+  // The final submission waits for the sheet's own {"ok":true} before leaving the page. The
+  // reply is readable cross-origin (Apps Script sends Access-Control-Allow-Origin: *). A
+  // fire-and-forget beacon lost one of the first ten submissions without a trace.
+  function confirmSave(body, ms) {
+    return new Promise(function (res) {
+      var fin = false, timer = setTimeout(function () { end(false); }, ms);
+      function end(v) { if (!fin) { fin = true; clearTimeout(timer); res(v); } }
+      try {
+        fetch(ENDPOINT, {method: "POST", headers: {"Content-Type": "text/plain;charset=utf-8"},
+                         body: body})
+          .then(function (r) { return r.json(); })
+          .then(function (j) { end(!!(j && j.ok)); }, function () { end(false); });
+      } catch (e) { end(false); }
+    });
+  }
+  // Leaving without a confirmed save sends the finished answers once more, as a beacon.
+  var finalBody = null;
+  addEventListener("pagehide", function () {
+    if (posted) return;
+    if (finalBody) send(finalBody); else send(payload(true));
+  });
+  var go = document.getElementById("go"), saving = document.getElementById("saving");
+  function finish() {
+    posted = true;
+    if (LIVE) { location.href = DONE_URL; return; }
+    document.getElementById("form").hidden = true; document.getElementById("thanks").hidden = false;
+    document.getElementById("thanksbody").textContent = "Your answers are recorded. The completion "
+      + "link will be added here when the study is created.";
+    scrollTo(0, 0);
+  }
+  function answerCode() {
+    return [VERSION, PRO.pid, IDS.map(function (id) { return answers[id]; }).join(""),
+            JSON.parse(finalBody).visible_s].join("|");
+  }
+  function attempt(btn) {
+    btn.disabled = true; saving.textContent = "Saving your answers\u2026";
+    confirmSave(finalBody, 20000).then(function (ok) {
+      btn.disabled = false; saving.textContent = "";
+      if (ok) { finish(); return; }
+      var f = document.getElementById("fail");
+      document.getElementById("code").value = answerCode();
+      document.getElementById("manual").href = DONE_URL;
+      f.hidden = false; f.scrollIntoView({behavior: "smooth", block: "center"});
+    });
+  }
+  go.addEventListener("click", function () {
     var m = missing();
     if (m.length) {
       left();
       var el = document.getElementById(m[0]); el.scrollIntoView({behavior: "smooth", block: "center"});
       return;
     }
-    posted = true; send(payload(false));
-    if (LIVE) { location.href = "https://app.prolific.com/submissions/complete?cc=" + CODE; return; }
-    document.getElementById("form").hidden = true; document.getElementById("thanks").hidden = false;
-    document.getElementById("thanksbody").textContent = "Your answers are recorded. The completion "
-      + "link will be added here when the study is created.";
-    scrollTo(0, 0);
+    if (!pidOk()) {
+      document.getElementById("nopid").scrollIntoView({behavior: "smooth", block: "center"});
+      pidbox.focus(); return;
+    }
+    if (!finalBody) finalBody = payload(false);   // retries resend the same submission
+    attempt(go);
+  });
+  document.getElementById("retry").addEventListener("click", function () {
+    attempt(document.getElementById("retry"));
+  });
+  document.getElementById("copy").addEventListener("click", function () {
+    var c = document.getElementById("code");
+    c.select();
+    try { navigator.clipboard.writeText(c.value).catch(function () { document.execCommand("copy"); }); }
+    catch (e) { try { document.execCommand("copy"); } catch (e2) {} }
   });
   var t = document.getElementById("theme");
   function paint() { t.textContent = document.documentElement.getAttribute("data-theme")
