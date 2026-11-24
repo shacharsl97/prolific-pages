@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minimal factual revision - feedback</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  /* The same palette and type as the tool, and the same gl-theme setting: this is the last
+     screen of one study, not a separate site. */
+  :root{--bg:#fbfaf8;--panel:#ffffff;--ink:#fbfaf8;--line:#e2ded7;--text:#1c1b19;
+        --dim:#6a6660;--accent:#1f4e79;--good:#2f6b45;--on-accent:#ffffff;
+        --done-bg:#eaf4ee;--done-line:#2f6b45;color-scheme:light}
+  :root[data-theme="dark"]{--bg:#15171a;--panel:#1c1f23;--ink:#15171a;
+        --line:#2e3237;--text:#e8e6e2;--dim:#9a968f;--accent:#7fb2e0;
+        --good:#7fc79b;--on-accent:#10243a;--done-bg:#18261e;--done-line:#2f5540;
+        color-scheme:dark}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;
+       line-height:1.6;padding:0 0 90px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px}
+  header{background:var(--bg);border-bottom:1px solid var(--line);padding:12px 0}
+  header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  h1{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600}
+  .sub{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:12px;font-weight:400;
+       color:var(--dim)}
+  .spacer{flex:1}
+  .barbtn{font:inherit;font-size:12.5px;border:1px solid var(--line);background:transparent;
+          color:var(--text);border-radius:999px;padding:5px 13px;cursor:pointer;
+          white-space:nowrap}
+  .barbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .intro h2,.done h2{font-family:'Newsreader',Georgia,serif;font-weight:600}
+  .intro{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+          padding:18px 20px;margin:22px 0 14px}
+  .intro h2{font-size:19px;margin-bottom:8px}
+  .intro p{font-size:14px;margin-bottom:8px}
+  .intro p:last-child{margin-bottom:0}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+      padding:17px 20px;margin:12px 0}
+  .q h3{font-size:15px;margin-bottom:4px}
+  .q .hint{font-size:12.8px;color:var(--dim);margin-bottom:10px}
+  label.sl{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.04em;
+           color:var(--dim);font-weight:700;margin:10px 0 4px}
+  select,textarea{width:100%;background:var(--ink);color:var(--text);
+      border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13.8px;
+      font-family:inherit}
+  textarea{min-height:84px;resize:vertical}
+  select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  .pair{display:flex;gap:10px;flex-wrap:wrap}
+  .pair select{flex:1 1 220px;min-width:0}
+  .scale{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .scale label{display:flex;align-items:center;gap:7px;background:var(--ink);
+      border:1px solid var(--line);border-radius:8px;padding:8px 13px;cursor:pointer;
+      font-size:13.4px}
+  .scale label:hover{border-color:var(--accent)}
+  .scale input{accent-color:var(--accent)}
+  .ends{display:flex;justify-content:space-between;font-size:11.5px;color:var(--dim);
+        margin-top:5px}
+  footer{margin:22px 0 0;text-align:center}
+  .btn{background:var(--accent);border:1px solid var(--accent);color:var(--on-accent);
+       border-radius:7px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;
+       text-decoration:none;display:inline-block;font-family:inherit}
+  .btn:hover{filter:brightness(1.08)}
+  .fnote{font-size:12px;color:var(--dim);margin-top:10px}
+  .done{background:var(--done-bg);border:1px solid var(--done-line);border-radius:10px;padding:20px;
+         text-align:center}
+  .done h2{font-size:18px;color:var(--good);margin-bottom:8px}
+  code{background:var(--ink);border:1px solid var(--line);border-radius:5px;
+       padding:2px 7px;font-size:14px}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+
+<header><div class="wrap">
+  <h1>Minimal factual revision <span class="sub">&mdash; a few questions before you finish</span></h1>
+  <span class="spacer"></span>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></header>
+
+<main class="wrap">
+  <div id="form">
+    <div class="intro">
+      <h2>That's the annotation done &mdash; thank you</h2>
+      <p>Before you go, we would like to hear your opinion on the guidelines, the practice
+         round and the tool. Please take a little time to tell us where the gaps are and what
+         could be improved.</p>
+      <p>Everything below is optional. Be direct: your answers will only be used to improve
+         our system, and not to evaluate you as an annotator. Please do not include your name
+         or other personal details.</p>
+    </div>
+
+    <div class="q">
+      <h3>What exactly would you improve?</h3>
+      <p class="hint">Be as specific as you can, and leave blank anything you have no view
+         on.</p>
+      <label class="sl" for="improve_guidelines">The guidelines</label>
+      <textarea id="improve_guidelines" placeholder="Optional"></textarea>
+      <label class="sl" for="improve_demo">The practice round</label>
+      <textarea id="improve_demo" placeholder="Optional"></textarea>
+      <label class="sl" for="improve_tool">The annotation tool</label>
+      <textarea id="improve_tool" placeholder="Optional"></textarea>
+    </div>
+
+    <div class="q">
+      <h3>Was anything in the guidelines unclear, or hard to apply?</h3>
+      <p class="hint">Point at the part it was about, if you can, and say what went wrong.</p>
+      <div class="pair"><select id="unclear_sec"><option value="">— choose the part this is about —</option><option value="terminology">Terminology</option><option value="revision">Revision guidelines</option><option value="intent">Informational intent</option><option value="common-knowledge">Common knowledge</option><option value="answerability">Answerability</option><option value="specificity">Specificity</option><option value="deletion">Deletion</option><option value="preliminaries">Preliminaries: adjusting and splitting spans</option><option value="workflow-main">Workflow</option><option value="additional">Additional points</option><option value="none">None in particular / something else</option></select></div>
+      <textarea id="unclear" placeholder="What was unclear, and what did you do about it?"></textarea>
+      <label class="sl">Anything else unclear, in a different part?</label>
+      <div class="pair"><select id="unclear2_sec"><option value="">— choose the part this is about —</option><option value="terminology">Terminology</option><option value="revision">Revision guidelines</option><option value="intent">Informational intent</option><option value="common-knowledge">Common knowledge</option><option value="answerability">Answerability</option><option value="specificity">Specificity</option><option value="deletion">Deletion</option><option value="preliminaries">Preliminaries: adjusting and splitting spans</option><option value="workflow-main">Workflow</option><option value="additional">Additional points</option><option value="none">None in particular / something else</option></select></div>
+      <textarea id="unclear2" placeholder="Optional"></textarea>
+    </div>
+
+    <div class="q">
+      <h3>Did you hit a case the guidelines simply do not cover?</h3>
+      <p class="hint">A situation where you had to invent a rule, or where two rules pulled
+         in different directions and nothing said which wins.</p>
+      <textarea id="uncovered" placeholder="What happened, and what did you decide?"></textarea>
+    </div>
+
+    <div class="q">
+      <h3>Is there anything in the guidelines you think is actually wrong?</h3>
+      <p class="hint">A rule that produced a revision you thought was worse than the
+         obvious alternative, or advice that worked against itself. Disagreeing with us is
+         useful; we would rather hear it now.</p>
+      <div class="pair"><select id="wrong_sec"><option value="">— choose the part this is about —</option><option value="terminology">Terminology</option><option value="revision">Revision guidelines</option><option value="intent">Informational intent</option><option value="common-knowledge">Common knowledge</option><option value="answerability">Answerability</option><option value="specificity">Specificity</option><option value="deletion">Deletion</option><option value="preliminaries">Preliminaries: adjusting and splitting spans</option><option value="workflow-main">Workflow</option><option value="additional">Additional points</option><option value="none">None in particular / something else</option></select></div>
+      <textarea id="wrong" placeholder="Which rule, and what did it make you do?"></textarea>
+    </div>
+
+    <div class="q">
+      <h3>Which item was the hardest, and what made it hard?</h3>
+      <p class="hint">Each item is listed with its topic and the statements that were marked
+         in it.</p>
+      <div class="pair"><select id="hard_item"><option value="">— choose an item —</option><option value="q1">Item 1: arrests over slavery offences (“26 men”)</option><option value="q2">Item 2: a football team leaving for France (“Wales”, “Euro 2016”)</option><option value="q3">Item 3: a police appeal over an acid attack (“CCTV images”, “in east London”)</option><option value="q4">Item 4: a band&#x27;s later records (“heavier”)</option><option value="q5">Item 5: an Olympic dressage champion (“Charlotte”, “2016”)</option><option value="q6">Item 6: an actor&#x27;s television role (“portrayed Devil Anse Hatfield”, “Primetime”, “Limited or Anthology Series”)</option><option value="q7">Item 7: a French aid package for young people (“French Prime Minister Manuel”, “weeks of”)</option><option value="q8">Item 8: a Turkish opposition party (“secular”)</option><option value="q9">Item 9: a snooker match (“World”, “Mark”, “10-6”, “first”)</option><option value="q10">Item 10: the anniversary of an uprising in Egypt (“marking”, “President Hosni”)</option><option value="none">None stood out</option></select></div>
+      <textarea id="hard" placeholder="What made it hard?"></textarea>
+    </div>
+
+    <div class="q">
+      <h3>Overall, how confident are you that your revisions match what we asked for?</h3>
+      <p class="hint">An honest low number here is more useful to us than a high one, and
+         it has no effect on your payment or your eligibility for future studies.</p>
+      <div class="scale" id="conf">
+        <label><input type="radio" name="conf" value="1"> 1</label>
+        <label><input type="radio" name="conf" value="2"> 2</label>
+        <label><input type="radio" name="conf" value="3"> 3</label>
+        <label><input type="radio" name="conf" value="4"> 4</label>
+        <label><input type="radio" name="conf" value="5"> 5</label>
+      </div>
+      <div class="ends"><span>1 &mdash; mostly guessing</span>
+        <span>5 &mdash; confident throughout</span></div>
+    </div>
+
+    <div class="q">
+      <h3>Anything else?</h3>
+      <p class="hint">The interface, the length, the pay, the examples &mdash; whatever you
+         would tell us if we were in the room.</p>
+      <textarea id="other" placeholder="Optional"></textarea>
+    </div>
+
+    <footer><a class="btn" id="go" href="https://app.prolific.com/submissions/complete?cc=C1C9IVB8">Submit and return to Prolific</a></footer>
+  </div>
+
+  <div id="thanks" class="done hidden">
+    <h2>Thank you &mdash; your feedback is recorded</h2>
+    <p id="thanksbody"></p>
+  </div>
+</main>
+
+<script>
+/* Feedback is posted as its own row, stage "debrief", so it joins to the annotation and
+   guidelines rows on prolific_pid without being tangled up in either. It is sent before
+   the browser leaves for Prolific, and again from pagehide for anyone who closes the tab
+   instead of clicking through -- someone who wrote a page of useful criticism and then
+   closed the tab should not lose it.                                                   */
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec";
+const TOOL_VERSION = "qual-debrief-v1";
+const COMPLETION_CODE = "C1C9IVB8";
+const LIVE = true;
+const QS = new URLSearchParams(location.search);
+const PROLIFIC = {
+  pid: QS.get("PROLIFIC_PID") || "",
+  study: QS.get("STUDY_ID") || "",
+  session: QS.get("SESSION_ID") || ""
+};
+const SKEY = "revdebrief:" + TOOL_VERSION + ":" + (PROLIFIC.pid || "anon");
+const started = Date.now();
+
+const FIELDS = ["improve_guidelines", "improve_demo", "improve_tool", "unclear_sec", "unclear", "unclear2_sec", "unclear2", "uncovered",
+                "wrong_sec", "wrong", "hard_item", "hard", "other"];
+const $ = (id) => document.getElementById(id);
+
+/* A long answer typed into a box and lost to a stray reload is the most annoying thing
+   this page could do, so every field is restored from local storage as it is typed. */
+function save() {
+  const d = {};
+  FIELDS.forEach((f) => { d[f] = $(f).value; });
+  const c = document.querySelector('input[name="conf"]:checked');
+  d.conf = c ? c.value : "";
+  try { localStorage.setItem(SKEY, JSON.stringify(d)); } catch (e) {}
+}
+try {
+  const d = JSON.parse(localStorage.getItem(SKEY) || "null");
+  if (d) {
+    FIELDS.forEach((f) => { if (d[f]) $(f).value = d[f]; });
+    if (d.conf) {
+      const el = document.querySelector('input[name="conf"][value="' + d.conf + '"]');
+      if (el) el.checked = true;
+    }
+  }
+} catch (e) {}
+FIELDS.forEach((f) => $(f).addEventListener("input", save));
+document.querySelectorAll('input[name="conf"]').forEach((el) =>
+  el.addEventListener("change", save));
+
+function payload(partial) {
+  const d = {
+    tool: TOOL_VERSION, stage: "debrief", partial: !!partial,
+    prolific: {pid: PROLIFIC.pid, study: PROLIFIC.study, session: PROLIFIC.session},
+    prolific_pid: PROLIFIC.pid, study_id: PROLIFIC.study, session_id: PROLIFIC.session,
+    debrief_s: Math.round((Date.now() - started) / 1000)
+  };
+  FIELDS.forEach((f) => { d[f] = $(f).value.trim(); });
+  const c = document.querySelector('input[name="conf"]:checked');
+  d.conf = c ? Number(c.value) : null;
+  d.chars = ["improve_guidelines", "improve_demo", "improve_tool", "unclear", "unclear2",
+             "uncovered", "wrong", "hard", "other"]
+    .reduce((n, f) => n + d[f].length, 0);
+  return d;
+}
+
+let posted = false;
+function report(partial) {
+  if (posted && !partial) return;
+  if (!partial) posted = true;
+  const body = JSON.stringify(payload(partial));
+  try {
+    if (navigator.sendBeacon &&
+        navigator.sendBeacon(ENDPOINT, new Blob([body], {type: "text/plain;charset=utf-8"})))
+      return;
+    fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
+                     headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+  } catch (e) { /* fire and forget: nobody is held up by our collection failing */ }
+}
+addEventListener("pagehide", () => { if (!posted) report(true); });
+
+$("go").addEventListener("click", (e) => {
+  report(false);
+  try { localStorage.removeItem(SKEY); } catch (err) {}
+  if (LIVE) return;                      // the real completion link navigates on its own
+  e.preventDefault();
+  $("form").classList.add("hidden");
+  $("thanks").classList.remove("hidden");
+  $("thanksbody").textContent = COMPLETION_CODE === "REPLACE_ME"
+    ? "Your feedback is recorded. This page has no completion code yet -- it is minted "
+      + "when the study is created. Close this tab if you were testing the page."
+    : "Your Prolific completion code is " + COMPLETION_CODE + ". Paste it into Prolific "
+      + "to finish, or close this tab if you were testing the page.";
+  scrollTo(0, 0);
+});
+
+const themeBtn = $("theme");
+function paintTheme() {
+  themeBtn.textContent = document.documentElement.getAttribute("data-theme") === "dark"
+    ? "☀ Light" : "☾ Dark";
+}
+themeBtn.addEventListener("click", () => {
+  const dark = document.documentElement.getAttribute("data-theme") === "dark";
+  if (dark) document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", "dark");
+  try { localStorage.setItem("gl-theme", dark ? "light" : "dark"); } catch (e) {}
+  paintTheme();
+});
+paintTheme();
+</script>
+</body>
+</html>
