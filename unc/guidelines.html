@@ -333,22 +333,31 @@ a{color:var(--accent)}
 </svg><figcaption>One intent, answered with two different types of information.</figcaption></figure></div></div></section><section class="sec lvl4" id="deletion" data-sec="deletion"><div class="card wide"><h4>Deletion</h4><div class="body"><p>If we can not find a meaningful question answerable by both the target and the source, there is no valid intent-preserving replacement for the hallucinated content.</p>
 <p>In this case - we delete the hallucinated clause completely.</p>
 <ul>
-<li>Example: the target says “The blond man quit his job”. The source says he is 50, but never mentions his hair colour or anything else about his appearance. There is no question about his appearance that both texts can answer, so delete the word: “The man quit his job”. Do not put his age in its place (“The 50-year-old man quit his job”): it answers only “What is a characteristic of the man?”, a question so general that almost any detail would answer it, and not what the author meant to tell us. Keep to concrete questions about what the span said.</li>
+<li>Example:</li>
+<ul>
+<li><strong>Source:</strong> “The 50-year-old man quit his job.”</li>
+<li><strong>Target:</strong> “The blond man quit his job.”</li>
+<li>The source never mentions his hair colour, or anything more general about his appearance. A tempting question might be “What is a characteristic of the man?”, which the source does answer (“50-year-old”). But this question is too general: a question this broad can be written for almost any kind of information, and it does not reflect the information the author intended to give in this sentence. Keep to concrete questions about what the span said, ones that accurately capture the author’s intent. In this case, the most minimal fix is to delete the detail, giving “The man quit his job.”</li>
+<li>Where a question becomes too general is, like what counts as common knowledge, a judgement call for you to make. When in doubt, ask whether the author would recognise it as the question they meant to answer.</li>
+</ul>
 <li class="callout"><strong>Grammar comes last, and applies to both branches.</strong> Deleting a span, or replacing it with a fact from the source, can leave the sentence ungrammatical or awkward to read. The final step before you submit is a cosmetic repair to grammar and flow — adding no content of any kind.</li>
-</ul></div><div class="marginfig"><figure><svg viewBox="0 0 430 272" width="100%" role="img" aria-label="A hallucinated modifier deleted rather than replaced by a source fact of a different kind, the man&#x27;s age" xmlns="http://www.w3.org/2000/svg">
-<text x="8" y="18" class="svg-lab">TARGET</text>
+</ul></div><div class="marginfig"><figure><svg viewBox="0 0 430 332" width="100%" role="img" aria-label="A hallucinated modifier deleted rather than replaced by a source fact of a different kind, the man&#x27;s age" xmlns="http://www.w3.org/2000/svg">
+<text x="8" y="18" class="svg-lab">SOURCE</text>
 <rect x="8" y="28" width="412" height="32" rx="3" fill="var(--raised)" stroke="var(--rule)"/>
-<text x="20" y="49" class="svg-t">The <tspan class="svg-k" fill="var(--dis)">blond</tspan> man quit his job.</text>
-<text x="8" y="82" class="svg-cap">The source says he is 50, but never mentions his</text>
-<text x="8" y="97" class="svg-cap">hair or anything else about his appearance.</text>
-<rect x="8" y="110" width="412" height="70" rx="3" fill="var(--dis-bg)" stroke="var(--dis)"/>
-<text x="20" y="128" class="svg-lab" fill="var(--dis)">REVISION A &#8212; SUBOPTIMAL</text>
-<text x="20" y="150" class="svg-t">The <tspan text-decoration="line-through" opacity="0.55">blond</tspan> <tspan class="svg-k">50-year-old</tspan> man quit his job.</text>
-<text x="20" y="170" class="svg-cap">answers <tspan class="svg-k">what is a characteristic of the man?</tspan> &#8212; too general</text>
-<rect x="8" y="192" width="412" height="70" rx="3" fill="var(--ok-bg)" stroke="var(--ok)"/>
-<text x="20" y="210" class="svg-lab" fill="var(--ok)">REVISION B &#8212; OPTIMAL</text>
-<text x="20" y="232" class="svg-t">The <tspan text-decoration="line-through" opacity="0.55">blond</tspan> man quit his job.</text>
-<text x="20" y="252" class="svg-cap">no question about his appearance has a source answer</text>
+<text x="20" y="49" class="svg-t">The 50-year-old man quit his job.</text>
+<text x="8" y="80" class="svg-lab">TARGET</text>
+<rect x="8" y="90" width="412" height="32" rx="3" fill="var(--raised)" stroke="var(--rule)"/>
+<text x="20" y="111" class="svg-t">The <tspan class="svg-k" fill="var(--dis)">blond</tspan> man quit his job.</text>
+<text x="8" y="143" class="svg-cap">The source never mentions his hair, or anything</text>
+<text x="8" y="158" class="svg-cap">more general about his appearance.</text>
+<rect x="8" y="170" width="412" height="70" rx="3" fill="var(--dis-bg)" stroke="var(--dis)"/>
+<text x="20" y="188" class="svg-lab" fill="var(--dis)">REVISION A &#8212; SUBOPTIMAL</text>
+<text x="20" y="210" class="svg-t">The <tspan text-decoration="line-through" opacity="0.55">blond</tspan> <tspan class="svg-k">50-year-old</tspan> man quit his job.</text>
+<text x="20" y="230" class="svg-cap">answers <tspan class="svg-k">what is a characteristic of the man?</tspan> &#8212; too general</text>
+<rect x="8" y="252" width="412" height="70" rx="3" fill="var(--ok-bg)" stroke="var(--ok)"/>
+<text x="20" y="270" class="svg-lab" fill="var(--ok)">REVISION B &#8212; OPTIMAL</text>
+<text x="20" y="292" class="svg-t">The <tspan text-decoration="line-through" opacity="0.55">blond</tspan> man quit his job.</text>
+<text x="20" y="312" class="svg-cap">no concrete question about his appearance has a source answer</text>
 </svg><figcaption>When no question answerable by both the source and target exists, delete.</figcaption></figure></div></div></section><section class="sec lvl2" id="workflow" data-sec="workflow"><div class="card"><h2><span class="n">3</span>Annotation Workflow</h2><div class="body"><p>You will be provided with the source text, and a target text with different <strong>marked hallucinations</strong> (already detected)</p></div></div></section><section class="sec lvl4" id="preliminaries" data-sec="preliminaries"><div class="card wide"><h4>Preliminaries</h4><div class="body"><ol>
 <li value="1">As noted above, the marked spans may not be perfectly aligned, in which case we should adjust the span to be minimal and only later revise.</li>
 <ol>
@@ -392,7 +401,10 @@ a{color:var(--accent)}
 <li value="2">Attempt to find Q1, a specific question answerable from both H and the source text.</li>
 <ol>
 <li value="1">The answer to the question should be <strong>exactly H</strong>, in complete.</li>
-<li value="2">If no such question comes to mind, start from a question only H answers (“From which river were the horses rescued?”) and <strong>widen it one step at a time</strong>, staying in the same facet (“From which place were they rescued?”), until the source answers it too; that is your Q1. If the question becomes too general to reflect what the author meant before the source answers it (“What colour was the man’s hair?” → “What did he look like?” → “What is a characteristic of the man?”: the source answers only the last, with his age, which is not what the author meant; see Deletion), go to step 3.</li>
+<li value="2">If no such question comes to mind, start from a question only H answers (“From which river were the horses rescued?”) and <strong>widen it one step at a time</strong>, staying in the same facet (“From which place were they rescued?”), until the source answers it too; that is your Q1.</li>
+<ul>
+<li>If the question becomes too general to reflect what the author meant before the source answers it, go to step 3. For example, in “What colour was the man’s hair?” → “What did he look like?” → “What is a characteristic of the man?”, the source answers only the last, with his age, but it is too broad a question to reflect the author’s intent correctly, so we would go to step 3.</li>
+</ul>
 <li value="3">If Q1 was found, inspect its specificity and the candidate source answers and if needed, continue to find more and more specific questions, until finding Qmax, the most specific question answerable by both the target and the source.</li>
 <li value="4">Answer Qmax from the source. That answer is a <strong>complete sentence</strong>, so replace <strong>the marked span</strong> with only the part of it that fits the span&#x27;s slot, leaving the rest of the sentence intact. You will type Qmax into the question field in the tool.</li>
 </ol>
@@ -426,8 +438,8 @@ a{color:var(--accent)}
 </div>
 <script>
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec';
-var TOOL_VERSION = 'guidelines-v6';
-var SOURCE_SHA = '4a9d0de048ce2a71';
+var TOOL_VERSION = 'guidelines-v7';
+var SOURCE_SHA = 'c4b930824d259902';
 
 (function () {
   var root = document.documentElement, btn = document.getElementById("theme");
