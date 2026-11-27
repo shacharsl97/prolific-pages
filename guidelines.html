@@ -388,8 +388,9 @@ a{color:var(--accent)}
 <li value="2">Attempt to find Q1, a specific question answerable from both H and the source text.</li>
 <ol>
 <li value="1">The answer to the question should be <strong>exactly H</strong>, in complete.</li>
-<li value="2">If Q1 was found, inspect its specificity and the candidate source answers and if needed, continue to find more and more specific questions, until finding Qmax, the most specific question answerable by both the target and the source.</li>
-<li value="3">Answer Qmax from the source. That answer is a <strong>complete sentence</strong>, so replace <strong>the marked span</strong> with only the part of it that fits the span&#x27;s slot, leaving the rest of the sentence intact. You will type Qmax into the question field in the tool.</li>
+<li value="2">If no such question comes to mind, start from a question only H answers (“From which river were the horses rescued?”) and <strong>widen it one step at a time</strong>, staying in the same facet (“From which place were they rescued?”), until the source answers it too; that is your Q1. If the question becomes too general to reflect what the author meant before the source answers it (“What colour was the man’s hair?” → “What did he look like?”: the source answers neither, and any wider question is no longer about his looks), go to step 3.</li>
+<li value="3">If Q1 was found, inspect its specificity and the candidate source answers and if needed, continue to find more and more specific questions, until finding Qmax, the most specific question answerable by both the target and the source.</li>
+<li value="4">Answer Qmax from the source. That answer is a <strong>complete sentence</strong>, so replace <strong>the marked span</strong> with only the part of it that fits the span&#x27;s slot, leaving the rest of the sentence intact. You will type Qmax into the question field in the tool.</li>
 </ol>
 <li value="3">If no meaningful Q exists, remove the span related to H from the target completely.</li>
 </ol>
@@ -404,7 +405,7 @@ a{color:var(--accent)}
 </ol>
 <p>After revising, validate that you positively answer these questions:</p>
 <ul>
-<li>Is this replacement the same <strong>type</strong> and same <strong>specificity level</strong> of H?</li>
+<li>Is this replacement the same <strong>type</strong> and same <strong>specificity level</strong> as H — or as close to them as the source allows?</li>
 <li>Did the author really intend to answer the chosen question when writing the target text?</li>
 </ul></div></div></section><section class="sec lvl4" id="additional" data-sec="additional"><div class="card"><h4>Additional points</h4><div class="body"><ul>
 <li>Before submitting, check the revised text against the hallucination again: <strong>did you lose any salvageable faithful information?</strong> We aim to keep <strong>all faithful information</strong> that was entailed by the hallucinated text. In such a case, look for a question whose answer will preserve this faithful information from the target, if one exists.</li>
@@ -421,8 +422,8 @@ a{color:var(--accent)}
 </div>
 <script>
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec';
-var TOOL_VERSION = 'guidelines-v4';
-var SOURCE_SHA = '98f3a21abc0dc6b7';
+var TOOL_VERSION = 'guidelines-v5';
+var SOURCE_SHA = '80f9ecc51c75b064';
 
 // Theme toggle. The page is light for everyone by default; this only remembers a
 // reader who asked for dark. localStorage can throw in a private window, so every
