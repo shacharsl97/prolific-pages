@@ -334,17 +334,22 @@ a{color:var(--accent)}
 </svg><figcaption>One intent, answered with two different types of information.</figcaption></figure></div></div></section><section class="sec lvl4" id="deletion" data-sec="deletion"><div class="card wide"><h4>Deletion</h4><div class="body"><p>If we can not find a meaningful question answerable by both the target and the source, there is no valid intent-preserving replacement for the hallucinated content.</p>
 <p>In this case - we delete the hallucinated clause completely.</p>
 <ul>
-<li>Example: the target says “The 50-year-old blond man quit his job”, but the source never mentions his hair colour, and offers no other description of his appearance that could take its place. There is no question about his appearance that both texts can answer, so delete the word: “The 50-year-old man quit his job”.</li>
+<li>Example: the target says “The blond man quit his job”. The source says he is 50, but never mentions his hair colour or anything else about his appearance. There is no question about his appearance that both texts can answer, so delete the word: “The man quit his job”. Do not put his age in its place (“The 50-year-old man quit his job”): it answers only “What is a characteristic of the man?”, a question so general that almost any detail would answer it, and not what the author meant to tell us. Keep to concrete questions about what the span said.</li>
 <li class="callout"><strong>Grammar comes last, and applies to both branches.</strong> Deleting a span, or replacing it with a fact from the source, can leave the sentence ungrammatical or awkward to read. The final step before you submit is a cosmetic repair to grammar and flow — adding no content of any kind.</li>
-</ul></div><div class="marginfig"><figure><svg viewBox="0 0 430 182" width="100%" role="img" aria-label="A hallucinated modifier deleted, leaving a grammatical sentence with nothing put in its place" xmlns="http://www.w3.org/2000/svg">
+</ul></div><div class="marginfig"><figure><svg viewBox="0 0 430 272" width="100%" role="img" aria-label="A hallucinated modifier deleted rather than replaced by a source fact of a different kind, the man&#x27;s age" xmlns="http://www.w3.org/2000/svg">
 <text x="8" y="18" class="svg-lab">TARGET</text>
-<rect x="8" y="28" width="412" height="32" rx="3" fill="var(--dis-bg)" stroke="var(--dis)"/>
-<text x="20" y="49" class="svg-t">The 50-year-old <tspan class="svg-k" fill="var(--dis)">blond</tspan> man quit his job.</text>
-<text x="8" y="82" class="svg-cap">The source never mentions his hair, and offers</text>
-<text x="8" y="97" class="svg-cap">nothing about his appearance to put there instead.</text>
-<text x="8" y="128" class="svg-lab">REVISION</text>
-<rect x="8" y="138" width="412" height="32" rx="3" fill="var(--ok-bg)" stroke="var(--ok)"/>
-<text x="20" y="159" class="svg-t">The 50-year-old man quit his job.</text>
+<rect x="8" y="28" width="412" height="32" rx="3" fill="var(--raised)" stroke="var(--rule)"/>
+<text x="20" y="49" class="svg-t">The <tspan class="svg-k" fill="var(--dis)">blond</tspan> man quit his job.</text>
+<text x="8" y="82" class="svg-cap">The source says he is 50, but never mentions his</text>
+<text x="8" y="97" class="svg-cap">hair or anything else about his appearance.</text>
+<rect x="8" y="110" width="412" height="70" rx="3" fill="var(--dis-bg)" stroke="var(--dis)"/>
+<text x="20" y="128" class="svg-lab" fill="var(--dis)">REVISION A &#8212; SUBOPTIMAL</text>
+<text x="20" y="150" class="svg-t">The <tspan text-decoration="line-through" opacity="0.55">blond</tspan> <tspan class="svg-k">50-year-old</tspan> man quit his job.</text>
+<text x="20" y="170" class="svg-cap">answers <tspan class="svg-k">what is a characteristic of the man?</tspan> &#8212; too general</text>
+<rect x="8" y="192" width="412" height="70" rx="3" fill="var(--ok-bg)" stroke="var(--ok)"/>
+<text x="20" y="210" class="svg-lab" fill="var(--ok)">REVISION B &#8212; OPTIMAL</text>
+<text x="20" y="232" class="svg-t">The <tspan text-decoration="line-through" opacity="0.55">blond</tspan> man quit his job.</text>
+<text x="20" y="252" class="svg-cap">no question about his appearance has a source answer</text>
 </svg><figcaption>When no question answerable by both the source and target exists, delete.</figcaption></figure></div></div></section><section class="sec lvl2" id="workflow" data-sec="workflow"><div class="card"><h2><span class="n">3</span>Annotation Workflow</h2><div class="body"><p>You will be provided with the source text, and a target text with different <strong>marked hallucinations</strong> (already detected)</p></div></div></section><section class="sec lvl4" id="preliminaries" data-sec="preliminaries"><div class="card wide"><h4>Preliminaries</h4><div class="body"><ol>
 <li value="1">As noted above, the marked spans may not be perfectly aligned, in which case we should adjust the span to be minimal and only later revise.</li>
 <ol>
@@ -388,8 +393,9 @@ a{color:var(--accent)}
 <li value="2">Attempt to find Q1, a specific question answerable from both H and the source text.</li>
 <ol>
 <li value="1">The answer to the question should be <strong>exactly H</strong>, in complete.</li>
-<li value="2">If Q1 was found, inspect its specificity and the candidate source answers and if needed, continue to find more and more specific questions, until finding Qmax, the most specific question answerable by both the target and the source.</li>
-<li value="3">Answer Qmax from the source. That answer is a <strong>complete sentence</strong>, so replace <strong>the marked span</strong> with only the part of it that fits the span&#x27;s slot, leaving the rest of the sentence intact. You will type Qmax into the question field in the tool.</li>
+<li value="2">If no such question comes to mind, start from a question only H answers (“From which river were the horses rescued?”) and <strong>widen it one step at a time</strong>, staying in the same facet (“From which place were they rescued?”), until the source answers it too; that is your Q1. If the question becomes too general to reflect what the author meant before the source answers it (“What colour was the man’s hair?” → “What did he look like?” → “What is a characteristic of the man?”: the source answers only the last, with his age, which is not what the author meant; see Deletion), go to step 3.</li>
+<li value="3">If Q1 was found, inspect its specificity and the candidate source answers and if needed, continue to find more and more specific questions, until finding Qmax, the most specific question answerable by both the target and the source.</li>
+<li value="4">Answer Qmax from the source. That answer is a <strong>complete sentence</strong>, so replace <strong>the marked span</strong> with only the part of it that fits the span&#x27;s slot, leaving the rest of the sentence intact. You will type Qmax into the question field in the tool.</li>
 </ol>
 <li value="3">If no meaningful Q exists, remove the span related to H from the target completely.</li>
 </ol>
@@ -404,7 +410,7 @@ a{color:var(--accent)}
 </ol>
 <p>After revising, validate that you positively answer these questions:</p>
 <ul>
-<li>Is this replacement the same <strong>type</strong> and same <strong>specificity level</strong> of H?</li>
+<li>Is this replacement the same <strong>type</strong> and same <strong>specificity level</strong> as H — or as close to them as the source allows?</li>
 <li>Did the author really intend to answer the chosen question when writing the target text?</li>
 </ul></div></div></section><section class="sec lvl4" id="additional" data-sec="additional"><div class="card"><h4>Additional points</h4><div class="body"><ul>
 <li>Before submitting, check the revised text against the hallucination again: <strong>did you lose any salvageable faithful information?</strong> We aim to keep <strong>all faithful information</strong> that was entailed by the hallucinated text. In such a case, look for a question whose answer will preserve this faithful information from the target, if one exists.</li>
@@ -421,8 +427,8 @@ a{color:var(--accent)}
 </div>
 <script>
 var ENDPOINT = 'https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec';
-var TOOL_VERSION = 'guidelines-v4';
-var SOURCE_SHA = '98f3a21abc0dc6b7';
+var TOOL_VERSION = 'guidelines-v6';
+var SOURCE_SHA = '4a9d0de048ce2a71';
 
 (function () {
   var root = document.documentElement, btn = document.getElementById("theme");
