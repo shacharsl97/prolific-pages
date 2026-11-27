@@ -226,7 +226,7 @@ footer{margin:18px 0 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
       + "<span>A</span><div class=\"opts\">" + opt("fa", "yes", "Yes", a.fa) + opt("fa", "no", "No", a.fa) + "</div>"
       + "<span>B</span><div class=\"opts\">" + opt("fb", "yes", "Yes", a.fb) + opt("fb", "no", "No", a.fb) + "</div></div></div>"
       + '<div class="qq"><p>2. Which revision is the more minimal fix of the original summary?</p>'
-      + '<p class="hint">Whose intent is more similar to the original summary\'s?</p>'
+      + '<p class="hint">Whose intent is more similar to the original summary\'s? Answer this regardless of your answers on faithfulness.</p>'
       + '<div class="opts">' + opt("min", "A", "A", a.min) + opt("min", "same", "About the same", a.min) + opt("min", "B", "B", a.min) + "</div></div>"
       + '<div class="qq"><p>3. Are A and B semantically equivalent? Do they convey the same information, whatever their wording?</p><div class="opts col">'
       + LADDER.map(function (l) { return opt("equiv", l[0], "<b>" + l[0] + "</b> &mdash; " + l[1], a.equiv); }).join("") + "</div></div>"
