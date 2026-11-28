@@ -87,6 +87,7 @@ mark.sp sup{font-size:10px;font-weight:700;color:var(--muted);margin-left:1px;li
 .choice[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);
   color:var(--on-accent);font-weight:600}
 .choice.small{font-size:12px;padding:3px 10px}
+.resetrow{display:flex;justify-content:flex-end;margin:0 0 8px}
 label.fl{display:block;font-size:12.5px;font-weight:600;margin:12px 0 4px}
 label.fl .opt{font-weight:400;color:var(--muted)}
 input[type=text],textarea{font:inherit;font-size:15px;width:100%;color:var(--ink);
@@ -985,6 +986,11 @@ window.TOOL_HOOKS = {
     sync(item, cur);
     var last = st.at === ITEMS.length - 1;
     var cards = cur.spans.map(function (s, i) { return card(item, cur, s, i); }).join("");
+    var canReset = !(HOOKS.reviewing && HOOKS.reviewing(cur));
+    var resetRow = canReset
+      ? '<div class="resetrow"><button type="button" class="choice small" id="resetItem">'
+        + "Start this item over</button></div>"
+      : "";
     var main = HOOKS.mainButton(cur, last);
     var prevBtn = '<button type="button" class="ghost" id="prev"'
       + (st.at === 0 ? " hidden" : "") + ">&larr; Previous</button>";
@@ -996,7 +1002,8 @@ window.TOOL_HOOKS = {
       + 'highlighted; click one to jump to it</p><div class="doc" id="tgt">'
       + markup(item, cur) + "</div></div>"
       + '<div style="margin-top:18px">'
-      + (cur.note ? '<p class="notice">' + esc(cur.note) + "</p>" : "") + cards + "</div>"
+      + (cur.note ? '<p class="notice">' + esc(cur.note) + "</p>" : "") + resetRow + cards
+      + "</div>"
       + '<div class="pane" style="margin-top:4px">'
       + '<label class="lab" for="rev">Revision <span class="opt">&mdash; written once for the '
       + "whole summary, with every span correction applied</span></label>"
@@ -1110,6 +1117,8 @@ window.TOOL_HOOKS = {
       cur.revTouched = false; sync(item, cur); save(); render();
     } else if (t.id === "copyrev") {
       cur.gramTouched = false; sync(item, cur); save(); render();
+    } else if (t.id === "resetItem") {
+      askReset(item, cur);
     } else if (t.id === "next") {
       submitItem(item, cur);
     } else if (t.id === "prev") {
@@ -1403,6 +1412,35 @@ window.TOOL_HOOKS = {
     });
   }
 
+  function askReset(item, cur) {
+    var bg = document.createElement("div");
+    bg.className = "modalbg";
+    bg.innerHTML = '<div class="modal" id="resetmodal"><h2>Start this item over?</h2>'
+      + '<p class="sub">This clears everything you have entered on this item: the operation '
+      + "chosen for each marked statement, span adjustments and splits, questions, replacements, "
+      + "attributions and explanations, and both revision boxes. The marked statements go back "
+      + "to how they first appeared. Your other items are not affected.</p>"
+      + '<div class="row"><button type="button" class="choice" id="resetYes">Clear this item '
+      + 'and start again</button><button type="button" class="choice" id="resetNo">Cancel'
+      + "</button></div></div>";
+    document.body.appendChild(bg);
+    document.getElementById("resetNo").addEventListener("click", function () { bg.remove(); });
+    document.getElementById("resetYes").addEventListener("click", function () {
+      bg.remove(); resetItem(item, cur);
+    });
+  }
+  function resetItem(item, cur) {
+    var f = freshItem(item);
+    ["spans", "rev", "revTouched", "revBase", "gram", "gramTouched", "gramBase", "lost", "done",
+     "gramOk", "gramOkRev", "gramOkStale", "warnKinds", "warnedFor", "warnOverride"]
+      .forEach(function (k) { cur[k] = f[k]; });
+    cur.resets = (cur.resets || 0) + 1;
+    cur.note = "Your answers on this item were cleared, and the marked statements are back as "
+      + "they first appeared.";
+    sync(item, cur); save(); render();
+    window.scrollTo({top: 0});
+  }
+
   function goTo(k) {
     if (st.items[st.at]) st.items[st.at].note = "";
     tick(); fieldStop();
@@ -1561,7 +1599,7 @@ window.TOOL_HOOKS = {
       grammar_edited: cur.gram.trim() !== cur.rev.trim(),
       grammar_checked: hasEdits(item, cur) ? gramChecked(cur) : null,
       grammar_warnings: cur.warnKinds, grammar_warning_overridden: cur.warnOverride,
-      help: cur.help, field_ms: fieldTimes(cur),
+      help: cur.help, field_ms: fieldTimes(cur), resets: cur.resets || 0,
       spans: cur.spans.map(function (s) { return spanRecord(item, s); })
     };
   }
