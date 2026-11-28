@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Minimal factual revision - feedback on your last round</title>
+<script>try{if(localStorage.getItem("gl-theme")==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#fbfaf8;--panel:#ffffff;--ink:#f4f2ee;--line:#e2ded7;--text:#1c1b19;
+      --dim:#6a6660;--accent:#1f4e79;--on-accent:#ffffff;--mark:#fde9a8;--mark-line:#e0c25a;
+      --ok:#2f6b45;--ok-bg:#eaf4ee;--part:#8a5a00;--part-bg:#fbf1dc;--bad:#9b2c2c;--bad-bg:#fbeaea;
+      --del:#9b2c2c;--del-bg:#fbeaea;--ins:#2f6b45;--ins-bg:#e3f2e8;color-scheme:light}
+:root[data-theme="dark"]{--bg:#15171a;--panel:#1c1f23;--ink:#22262b;--line:#2e3237;
+      --text:#e8e6e2;--dim:#9a968f;--accent:#7fb2e0;--on-accent:#10243a;--mark:#4a3f16;
+      --mark-line:#8a7322;--ok:#7fc79b;--ok-bg:#18261e;--part:#e0b25c;--part-bg:#2a2214;
+      --bad:#e88b8b;--bad-bg:#2c1a1a;--del:#e88b8b;--del-bg:#2c1a1a;--ins:#7fc79b;
+      --ins-bg:#16271d;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',system-ui,sans-serif;
+     line-height:1.6;padding:0 0 90px}
+.wrap{max-width:800px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px))}
+header{border-bottom:1px solid var(--line);padding:12px 0}
+header .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600}
+h2{font-family:'Newsreader',Georgia,serif;font-size:19px;font-weight:600;margin-bottom:8px}
+h3{font-family:'Newsreader',Georgia,serif;font-size:18px;font-weight:600}
+.sub,.dim{color:var(--dim)}
+.sub{font-size:12px}
+.spacer{flex:1}
+.barbtn{font:inherit;font-size:12.5px;border:1px solid var(--line);background:transparent;
+        color:var(--text);border-radius:999px;padding:5px 13px;cursor:pointer}
+.box,.card,.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+              padding:18px 20px;margin:16px 0}
+.box p,.card p,.q p{font-size:14.5px;margin-bottom:8px}
+.box ol,.box ul,.card ol,.card ul{margin:4px 0 8px 22px;font-size:14.5px}
+.box li,.card li{margin-bottom:6px}
+.btn{background:var(--accent);border:1px solid var(--accent);color:var(--on-accent);
+     border-radius:7px;padding:11px 22px;font-size:14px;font-weight:700;cursor:pointer;
+     text-decoration:none;display:inline-block;font-family:inherit}
+.hidden{display:none}
+
+.chead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;
+       margin-bottom:6px}
+.topic{font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:13.5px;font-weight:400;
+       color:var(--dim)}
+.verdict{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;
+         border:1px solid currentColor;white-space:nowrap}
+.verdict.ok{color:var(--ok);background:var(--ok-bg)}
+.verdict.part{color:var(--part);background:var(--part-bg)}
+.verdict.bad{color:var(--bad);background:var(--bad-bg)}
+.tally{line-height:2.1}
+.tally a{color:var(--accent)}
+.lbl{font-size:11px !important;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);
+     font-weight:600;margin:16px 0 5px !important}
+.summary{font-family:'Newsreader',Georgia,serif;font-size:16.5px !important;line-height:1.65}
+mark{background:var(--mark);color:inherit;box-shadow:0 0 0 1px var(--mark-line);border-radius:2px}
+details.src{margin:6px 0 0;font-size:13.5px}
+details.src summary{cursor:pointer;color:var(--accent);font-size:13px}
+details.src p{background:var(--ink);border:1px solid var(--line);border-radius:8px;
+              padding:10px 12px;margin-top:6px;font-size:13.5px !important;white-space:pre-wrap}
+.ans{border-left:3px solid var(--line);padding:2px 0 2px 10px;margin:6px 0}
+.ah{font-size:14px}
+.act{font-weight:600}
+.fld{display:flex;gap:8px;font-size:13.5px;flex-wrap:wrap}
+.fld .k,.gram .k{color:var(--dim);min-width:92px;font-size:12px;text-transform:uppercase;
+                 letter-spacing:.04em;padding-top:2px}
+.diff{font-family:'Newsreader',Georgia,serif;font-size:16px !important;background:var(--ink);
+      border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+del{color:var(--del);background:var(--del-bg);text-decoration:line-through}
+ins{color:var(--ins);background:var(--ins-bg);text-decoration:none}
+.comment{border-left:3px solid var(--accent);padding:4px 0 4px 12px;margin:14px 0 4px}
+.gram{display:flex;gap:8px;flex-wrap:wrap;background:var(--part-bg);border-radius:8px;
+      padding:8px 12px;margin:8px 0}
+.gram p{margin:0 !important}
+.why ol{margin-left:22px}
+#review{background:var(--part-bg);color:var(--part);font-size:13px;padding:6px 12px;
+        border-radius:8px;margin-top:14px}
+footer{margin:26px 0 0;text-align:center}
+@media (max-width:560px){.box,.card{padding:14px 14px}.fld .k{min-width:0}}
+
+.said{margin:12px 0 6px;padding:8px 12px;border-left:3px solid var(--line);background:var(--panel);
+      border-radius:0 6px 6px 0}
+.said p{margin:0;font-style:italic;color:var(--dim)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1>Minimal factual revision <span class="sub">&mdash; feedback on your last round</span></h1>
+  <span class="spacer"></span>
+  <button type="button" class="barbtn" id="theme"></button>
+</div></header>
+<main class="wrap">
+  <p id="review" hidden>Review view: this is the page as the annotator will see it.</p>
+  <section class="box"><p>Thank you for your work in the last round. Most of your revisions were ones we accept. This page answers your comments and goes through the items where we would have revised differently. Please read it before you start the ten new items.</p></section>
+  <section class="box" id="nopid"><p>This page was opened without a recognised Prolific ID.
+    If you came from Prolific, go back and use the study link there rather than a copied
+    address.</p></section>
+  
+<div class="who" data-who="a" data-h="62382e78688af4bf4f272d74011c06e3cdac1db4c7b7af5e50ad048654889a6d" hidden>
+  <section class="box"><h2>About your comments</h2><blockquote class="said"><p>I think the main area that could be improved is the distinction between common knowledge and specialist knowledge. It might seem obvious to some people but not be obvious to others.</p></blockquote><p>Thank you. While it is inherently a fuzzy point, we hope the practical test in the guidelines could help you: would the author expect their intended reader to know it without looking it up? If you would have to look it up, treat it as unsupported. Where careful readers can disagree, as with the full name of TfL in the Night Tube item, we accept either decision when your explanation gives logical reasoning.</p><blockquote class="said"><p>There was a few questions where I wasn't sure how much to broaden the question before deciding to delete the information.</p></blockquote><p>Widen one step at a time, and stop at the first question the source answers. Delete only when that question has become too general to reflect what the author was telling the reader. This is step 2.2 of the workflow in the guidelines, which is new: it was added after you did the practice round and the last round, so please read it before you start.</p><blockquote class="said"><p>The TfL article didn't provide an exact monetary amount but just said it was a huge amount of money. It wasn't clear whether it was best to replace a factual figure with someone's assessment was appropriate, or whether deleting it was the best option. … There was three different issues to consider with this. The amount spent wasn't provided, the number of staff wasn't clear and I had to consider whether the full name of TfL would count as common knowledge or not.</p></blockquote><p>Your hesitation was right. “A huge amount of money” is Val Shawcross's opinion, and the source quotes it as hers. Written without attribution, it becomes a statement of fact that the source does not make, so it is better to just use “money” here. Your “more than 307” was a good catch, it is correct, and TfL is indeed a grey area, but we agree with your judgement.</p><blockquote class="said"><p>I really enjoyed the study, it was nice to receive an explanation as to whether improvements could be made rather than just saying it's incorrect.</p></blockquote><p>Thanks. We are glad the explanations were useful, and we will keep writing them.</p></section>
+  <section class="box"><h2>Items to look at again</h2><p>The 2 items where we would have revised differently. Your other revisions are ones we accept.</p></section>
+  
+<section class="card" id="a-s1">
+  <div class="chead"><h3>Item 1 <span class="topic">&middot; Jon Stewart has hosted his final…</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Jon Stewart has hosted his final edition of the US satirical news show The Daily Show <mark>after 16 years</mark>.</p>
+  <details class="src"><summary>Show the source</summary><p>A host of stars joined him for the final show, including the singer Bruce Springsteen. There were also video messages from US Secretary of State John Kerry and Republican Senator John McCain. Stewart took over the show in 1999 and established himself as one of the most influential satirists in the US and the voice of liberal America. He is being replaced by the South African comedian Trevor Noah. The Daily Show, broadcast on Comedy Central, has often been cited as a leading news source for young people, with an average audience of one million viewers. In his final monologue, Stewart thanked colleagues, fans and family. &quot;Nothing ends. It&#x27;s just a continuation. It&#x27;s a pause in the conversation,&quot; he said. &quot;So rather than saying goodbye or good night, I&#x27;m just going to say I&#x27;m gonna go get a drink,&quot; he said. The Daily Show has also helped to launch several well-known comic performers, including Steve Carell and John Oliver, as well as Stephen Colbert who is to be David Letterman&#x27;s replacement on CBS&#x27;s Late Show. The hashtag #JonVoyage was trending on Twitter as Stewart bid farewell to the Daily Show, with famous fans paying tribute. For John McCain, it was a chance for a spot of gentle revenge. Stewart had once mocked him using a puppet resembling the Republican senator.</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Replace</span> “after 16 years”</div><div class="fld"><span class="k">Question</span><span>When did Stewart begin hosting the Daily Show?</span></div><div class="fld"><span class="k">Source sentence</span><span>Stewart took over the show in 1999 and established himself as one of the most influential satirists in the US and the voice of liberal America.</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Jon Stewart has hosted his final edition of the US satirical news show The Daily Show <del>after 16 years.</del> <ins>having hosted it since 1999.</ins></p>
+  <p class="lbl">A revision we accept</p>
+  <p class="diff">Jon Stewart has hosted his final edition of the US satirical news show The Daily Show <del>after 16 years.</del> <ins>since 1999.</ins></p>
+  <p class="lbl">Why</p>
+  <div class="why"><p>Faithful and the right question, but “having hosted it” repeats what the sentence already says, so “since 1999” is enough.</p></div>
+</section>
+<section class="card" id="a-s11">
+  <div class="chead"><h3>Item 7 <span class="topic">&middot; Transport for London (TfL) has spent…</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>Transport for London</mark> (TfL) has spent <mark>more than £2m</mark> on <mark>413</mark> extra staff for the Night Tube, it has emerged.</p>
+  <details class="src"><summary>Show the source</summary><p>The staff were hired for the launch of the 24-hour Underground service which was was originally scheduled for September. It has been delayed until 2016 due to a dispute over pay and conditions. TfL said it is &quot;operationally ready&quot; for the Night Tube and the extra staff are now working across the network. More on this story and news from London . The planned September start date was pushed back until 2016, because TfL and unions were unable to reach an agreement on staffing arrangements. Unions took industrial action during the summer having called for increased pay and a limit on how many all-night shifts their members would be asked to do. Talks at the conciliatory service Acas are due to resume this week. TfL said it is not wasting money as the staff are fully employed. It added 307 are in part-time station positions and the rest work in engineering or service control, adding that some of these staff will be used to replace those that leave or retire. But Val Shawcross, Labour&#x27;s transport spokeswoman on the London Assembly, said: &quot;It&#x27;s a huge amount of money that must be blowing their plans. &quot;They&#x27;ve obviously pressed the button too soon in terms of putting them on the payroll.&quot;</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “Transport for London”</div><div class="fld"><span class="k">Explanation</span><span>The source refers to the organisation at TfL but does not provide its full name. The abbreviation is already included in the summary.</span></div></div><div class="ans"><div class="ah"><span class="act">Replace</span> “more than £2m”</div><div class="fld"><span class="k">Question</span><span>How much money has been spent on the extra staff?</span></div><div class="fld"><span class="k">Source sentence</span><span>&quot;It&#x27;s a huge amount of money that must be blowing their plans.</span></div></div><div class="ans"><div class="ah"><span class="act">Replace</span> “413”</div><div class="fld"><span class="k">Question</span><span>How many extra staff have been hired for the Night Tube?</span></div><div class="fld"><span class="k">Source sentence</span><span>It added 307 are in part-time station positions and the rest work in engineering or service control, adding that some of these staff will be used to replace those that leave or retire.</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff"><del>Transport for London (TfL)</del> <ins>TfL</ins> has spent <ins>a huge amount of money on</ins> more than <del>£2m on 413</del> <ins>307</ins> extra staff for the Night Tube, it has emerged.</p>
+  <p class="lbl">A revision we accept</p>
+  <p class="diff"><del>Transport for London (TfL)</del> <ins>TfL</ins> has spent <ins>money on</ins> more than <del>£2m on 413</del> <ins>307</ins> extra staff for the Night Tube, it has emerged.</p><p class="diff">Transport for London (TfL) has spent <ins>money on</ins> more than <del>£2m on 413</del> <ins>307</ins> extra staff for the Night Tube, it has emerged.</p>
+  <p class="lbl">Why</p>
+  <div class="why"><p>“A huge amount of money” is Val Shawcross's opinion, quoted in the source as hers. Written without attribution it becomes a statement of fact the source does not make; writing simply “money” is more faithful to the source. Your “more than 307” is right (307 part-time positions plus “the rest”).</p></div>
+</section>
+</div>
+<div class="who" data-who="e" data-h="3907e1401f7645fd68522a33b783233eb752f7de7def095006cfb2c481ce6fdc" hidden>
+  <section class="box"><h2>About your comments</h2><p>Two of your explanations raised points we want to answer.</p><blockquote class="said"><p>[Item 8, deleting “in Calais”] For the question "where is the jungle camp?" the source never says where, therefore I chose delete. I dont quite consider this to be common knowledge, though it is almost on the boundary.</p></blockquote><p>We agree, this does not seem like common knowledge for the average reader.</p><blockquote class="said"><p>[Item 7, keeping “Transport for London”] While the source only states TfL and does not write out what the acronym stands for, in my opinion this is a common knowledge inference. It is common knowledge that TfL stands for Transport for London (especially to the average reader of this news source and contextaul clues e.g. 'Tube', 'Underground' and that it mentions London a few times)</p></blockquote><p>We accepted this. Your reasoning, based on what the source's own readers would know, is how the guidelines ask you to judge common knowledge.</p></section>
+  <section class="box"><h2>Items to look at again</h2><p>The 2 items where we would have revised differently. Your other revisions are ones we accept.</p></section>
+  
+<section class="card" id="e-s10">
+  <div class="chead"><h3>Item 6 <span class="topic">&middot; Chelsea manager Antonio Conte says there…</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary">Chelsea <mark>manager</mark> <mark>Antonio</mark> Conte says there are six teams capable of winning the <mark>Premier League</mark> title this season.</p>
+  <details class="src"><summary>Show the source</summary><p>Media playback is not supported on this device . The Blues lead the top flight with 59 points with 14 games remaining. Second-placed Tottenham lead the chasing pack with 50 points, and just five points separate them in second and Manchester United in sixth. &quot;I think there are six teams who are very strong and can fight to win the title,&quot; said Conte. Third-placed Manchester City, Arsenal, in fourth, and fifth-placed Liverpool make up the top six. &quot;Manchester United? Yes. They have a great squad,&quot; added Conte. &quot;There are 14 games to play and five teams as well as us who can fight to win it. It&#x27;s important we don&#x27;t make mistakes in the race.&quot; Chelsea face a trip to Burnley on Sunday for a 13:30 GMT kick-off. The Clarets have won their last seven games at home in all competitions with 28 of their 29 league points so far this season coming at Turf Moor. &quot;There are teams at the bottom who win and draw so you must have the right concentration,&quot; said Conte. &quot;If your ambition is to stay in the top four or top six, you can have highs and lows. &quot;If you want to win [the title] you must have concentration and focus and know that in every game you can lose points.&quot;</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Delete</span> “manager”</div><div class="fld"><span class="k">Explanation</span><span>For the question &quot;What is Conte&#x27;s role?&quot; The source never actually says, so I chose delete as its not substantiated.</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “Antonio”</div><div class="fld"><span class="k">Explanation</span><span>For &quot;What is Conte&#x27;s first name?&quot; this is not written in the source at all, so I chose delete.</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “Premier League”</div><div class="fld"><span class="k">Explanation</span><span>For question &quot;which league is it?&quot; the source only refers to it as [the title] and top flight. It is not clear what these are, so therefore I&#x27;m choosing delete as the source doesnt state or (or at least from these terms i dont think it can be considered common knowledge)</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff"><del>Chelsea manager Antonio</del> <ins>Chelsea&#x27;s</ins> Conte says there are six teams capable of winning the <del>Premier League</del> title this season.</p>
+  <p class="lbl">A revision we accept</p>
+  <p class="diff"><del>Chelsea manager Antonio</del> <ins>Chelsea&#x27;s</ins> Conte says there are six teams capable of winning the <del>Premier League</del> <ins>top-flight</ins> title this season.</p>
+  <p class="lbl">Why</p>
+  <div class="why"><p>You were right not to treat “Premier League” as common knowledge. But “top flight” needs no outside knowledge: it is the source's own name for the league Chelsea lead (“The Blues lead the top flight with 59 points”), one step more general than “Premier League”. Replacing with it keeps a bit more of the summary than deleting.</p></div>
+</section>
+<section class="card" id="e-s11">
+  <div class="chead"><h3>Item 7 <span class="topic">&middot; Transport for London (TfL) has spent…</span></h3>
+    <span class="verdict part">Partly correct</span></div>
+  <p class="lbl">The summary, with the marked statements</p>
+  <p class="summary"><mark>Transport for London</mark> (TfL) has spent <mark>more than £2m</mark> on <mark>413</mark> extra staff for the Night Tube, it has emerged.</p>
+  <details class="src"><summary>Show the source</summary><p>The staff were hired for the launch of the 24-hour Underground service which was was originally scheduled for September. It has been delayed until 2016 due to a dispute over pay and conditions. TfL said it is &quot;operationally ready&quot; for the Night Tube and the extra staff are now working across the network. More on this story and news from London . The planned September start date was pushed back until 2016, because TfL and unions were unable to reach an agreement on staffing arrangements. Unions took industrial action during the summer having called for increased pay and a limit on how many all-night shifts their members would be asked to do. Talks at the conciliatory service Acas are due to resume this week. TfL said it is not wasting money as the staff are fully employed. It added 307 are in part-time station positions and the rest work in engineering or service control, adding that some of these staff will be used to replace those that leave or retire. But Val Shawcross, Labour&#x27;s transport spokeswoman on the London Assembly, said: &quot;It&#x27;s a huge amount of money that must be blowing their plans. &quot;They&#x27;ve obviously pressed the button too soon in terms of putting them on the payroll.&quot;</p></details>
+  <p class="lbl">Your answers</p>
+  <div class="ans"><div class="ah"><span class="act">Not a hallucination</span> “Transport for London”</div><div class="fld"><span class="k">Reason</span><span>While the source only states TfL and does not write out what the acronym stands for, in my opinion this is a common knowledge inference. It is common knowledge that TfL stands for Transport for London (especially to the average reader of this news source and contextaul clues e.g. &#x27;Tube&#x27;, &#x27;Underground&#x27; and that it mentions London a few times)</span></div></div><div class="ans"><div class="ah"><span class="act">Replace</span> “spent more than £2m on” <span class="dim">(you adjusted it from “more than £2m”)</span></div><div class="fld"><span class="k">Question</span><span>How have TfL prepared for the night tube launch?</span></div><div class="fld"><span class="k">Source sentence</span><span>The staff were hired for the launch of the 24-hour Underground service</span></div></div><div class="ans"><div class="ah"><span class="act">Delete</span> “413”</div><div class="fld"><span class="k">Explanation</span><span>For the question &quot;how many extra staff were hired in total&quot; the source only says that 307 were added in part time positions, while others were added in other areas. So with no actual total I chose delete.</span></div></div>
+  <p class="lbl">Your revision</p>
+  <p class="diff">Transport for London (TfL) has <del>spent more than £2m on 413</del> <ins>hired</ins> extra staff for the Night Tube, it has emerged.</p>
+  <p class="lbl">A revision we accept</p>
+  <p class="diff"><del>Transport for London (TfL)</del> <ins>TfL</ins> has spent <ins>money on</ins> more than <del>£2m on 413</del> <ins>307</ins> extra staff for the Night Tube, it has emerged.</p><p class="diff">Transport for London (TfL) has spent <ins>money on</ins> more than <del>£2m on 413</del> <ins>307</ins> extra staff for the Night Tube, it has emerged.</p>
+  <p class="lbl">Why</p>
+  <div class="why"><p>Two points. First, your question was widened a bit too far: “How have TfL prepared for the night tube launch?” no longer asks about spending, so “hired” changes what the sentence reports. One step wider than “How much did TfL spend on the extra staff?” is “What has TfL spent on the extra staff?”, which the source answers: TfL says it is not wasting money because the staff are fully employed. Second, your own reading gives the number: 307 part-time staff plus “the rest” is more than 307, and “more than 307” needs no exact total.</p></div>
+</section>
+</div>
+  <div id="after" hidden>
+    <section class="box"><h2>Before you start</h2><p>The guidelines are linked from the top of the tool, as before. The tool has one new button, “Start this item over”, which clears every answer on the item you are working on, so you can begin it again. Some of the new targets are longer summaries written by AI systems, and one source is an encyclopedia article; the task is the same.</p></section>
+    <footer><a class="btn" id="go" href="annotate.html">Continue to the ten new items</a></footer>
+  </div>
+</main>
+<script>var ENDPOINT = "https://script.google.com/macros/s/AKfycbwW1q-aBotpPdp28ihaqczpgxUK_xDIMX9TADWKoZivepqBMMGwh9Ww7RI81xf1X9d9KA/exec"; var VERSION = "prod-b2-feedback-v1"; var SALT = "prod-feedback:";</script>
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  var PRO = {pid: q.get("PROLIFIC_PID") || "", study: q.get("STUDY_ID") || "",
+             session: q.get("SESSION_ID") || ""};
+  var who = null, visibleMs = 0, since = document.hidden ? 0 : Date.now(), deepest = 0;
+  var opened = Date.now(), posted = false;
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { if (since) visibleMs += Date.now() - since; since = 0; }
+    else since = Date.now();
+  });
+  addEventListener("scroll", function () {
+    var h = document.documentElement.scrollHeight - innerHeight;
+    if (h > 0) deepest = Math.max(deepest, Math.round(100 * scrollY / h));
+  }, {passive: true});
+  function hex(buf) {
+    return Array.prototype.map.call(new Uint8Array(buf), function (b) {
+      return ("0" + b.toString(16)).slice(-2); }).join("");
+  }
+  function show(label, review) {
+    who = label;
+    document.querySelectorAll(".who").forEach(function (el) {
+      el.hidden = el.getAttribute("data-who") !== label; });
+    document.getElementById("nopid").hidden = true;
+    document.getElementById("after").hidden = false;
+    if (review) document.getElementById("review").hidden = false;
+  }
+  var view = q.get("view");
+  if (view && document.querySelector('.who[data-who="' + view + '"]')) show(view, true);
+  else if (PRO.pid && window.crypto && crypto.subtle) {
+    crypto.subtle.digest("SHA-256", new TextEncoder().encode(SALT + PRO.pid)).then(function (d) {
+      var h = hex(d), el = document.querySelector('.who[data-h="' + h + '"]');
+      if (el) show(el.getAttribute("data-who"), false);
+    });
+  }
+  function withIds(url) {
+    var u = new URL(url, location.href);
+    if (PRO.pid) u.searchParams.set("PROLIFIC_PID", PRO.pid);
+    if (PRO.study) u.searchParams.set("STUDY_ID", PRO.study);
+    if (PRO.session) u.searchParams.set("SESSION_ID", PRO.session);
+    return u.toString();
+  }
+  var go = document.getElementById("go");
+  go.href = withIds("annotate.html");
+  function report(partial) {
+    if (posted || !PRO.pid || !ENDPOINT) return;
+    if (!partial) posted = true;
+    if (since) { visibleMs += Date.now() - since; since = document.hidden ? 0 : Date.now(); }
+    var body = JSON.stringify({tool: VERSION, stage: "prod_feedback", partial: !!partial,
+      prolific: PRO, prolific_pid: PRO.pid, study_id: PRO.study, session_id: PRO.session,
+      who: who, read_s: Math.round(visibleMs / 1000),
+      wall_s: Math.round((Date.now() - opened) / 1000), scrolled_pct: deepest,
+      submitted_at: new Date().toISOString()});
+    try {
+      if (navigator.sendBeacon && navigator.sendBeacon(ENDPOINT,
+          new Blob([body], {type: "text/plain;charset=utf-8"}))) return;
+      fetch(ENDPOINT, {method: "POST", keepalive: true, mode: "no-cors",
+        headers: {"Content-Type": "text/plain;charset=utf-8"}, body: body});
+    } catch (e) {}
+  }
+  go.addEventListener("click", function () { report(false); });
+  addEventListener("pagehide", function () { report(true); });
+  var themeBtn = document.getElementById("theme");
+  function paint() {
+    themeBtn.textContent = document.documentElement.getAttribute("data-theme") === "dark"
+      ? "\u2600 Light" : "\u263E Dark";
+  }
+  themeBtn.addEventListener("click", function () {
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    if (dark) document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", "dark");
+    try { localStorage.setItem("gl-theme", dark ? "light" : "dark"); } catch (e) {}
+    paint();
+  });
+  paint();
+})();
+</script>
+</body>
+</html>
